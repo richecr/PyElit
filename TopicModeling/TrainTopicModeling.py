@@ -151,7 +151,6 @@ def init():
     # lda_model_tfidf.save("./modelo/meu_lda_model")
     return lda_model_tfidf
 
-
 lda_model_tfidf = init()
 
 # Imprimir os tópicos do modelo.
