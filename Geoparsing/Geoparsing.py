@@ -1,27 +1,21 @@
-import csv
 import nltk
-import spacy
-import pandas as pd
-
-import requests
-import json
-import geocoder
-
-import gensim
 from nltk.stem.porter import *
 from nltk.stem import WordNetLemmatizer
 
-from googletrans import Translator
+import json
+import spacy
+import geocoder
 
 import truecase
+# from googletrans import Translator
 
 class Geoparsing:
     def __init__(self):
-        self.translator = Translator()
+#        self.translator = Translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
-        self.stop_words_spacy = nlp.Defaults.stop_words
+        self.stop_words_spacy = self.nlp.Defaults.stop_words
 
     def remove_stop_words(self, text):
         saida = ""
@@ -59,13 +53,11 @@ class Geoparsing:
             end = g.json
             if (end != None):
                 ends.append(end)
-        # print("1: ", json.dumps(ends, indent=4))
 
         ends_corretos = []
         for e in ends:
-            if (verifica_endereco(e)):
+            if (self.verifica_endereco(e)):
                 ends_corretos.append(e)
-        # print("2: ", json.dumps(ends_corretos, indent=4))
 
         if (len(ends_corretos)):
             end_final = ends_corretos[0]
@@ -80,19 +72,12 @@ class Geoparsing:
 
     def geoparsing(self, text, case_correct=None):
         if (case_correct):
-            pass
-            # TODO
-        else:
-            text_en = self.translator.translate(text, src="pt", dest="en")
-            text_en = text_en.text
-            text_true_case = truecase.caser.get_true_case(text_en)
-
-            text_pt = self.translator.translate(text_true_case, src="en", dest="pt")
-            text = text_pt.text
             doc = self.nlp(text)
             ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
+            print(ents_loc)
             address_found = self.concantena_end(ents_loc)
-            result = self.verfica(end_encontrados)
+            print(address_found)
+            result = self.verfica(address_found)
             
             if (result[0]):
                 return result[1]
@@ -100,6 +85,6 @@ class Geoparsing:
                 raise Exception("Não foi possivel realizar o geoparsing do texto")
 
 g = Geoparsing()
-r = g.geoparsing("eu moro na rua joão sergio de almeida no bairro de bodocongo", case_correct=False)
+r = g.geoparsing(text="eu moro na Rua João Sergio de Almeida no Bairro de Bodocongo", case_correct=True)
 
 print(r)
