@@ -14,7 +14,6 @@ class Geoparsing:
         self.translator = Translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
-        self.nlp_en = spacy.load("en_core_web_sm")
         self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
 
