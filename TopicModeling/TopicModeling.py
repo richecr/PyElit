@@ -1,8 +1,10 @@
+import os
 import nltk
 import spacy
 import gensim
 import numpy as np
 import pandas as pd
+import pyLDAvis.gensim
 from nltk.stem import *
 from nltk.stem.porter import *
 import matplotlib.pyplot as plt
@@ -12,7 +14,6 @@ from gensim.test.utils import datapath
 from gensim.parsing.preprocessing import STOPWORDS
 from gensim.utils import simple_preprocess, deaccent
 from gensim.models.coherencemodel import CoherenceModel
-import pyLDAvis.gensim
 
 class TopicModeling:
     """
@@ -32,8 +33,9 @@ class TopicModeling:
         nltk.download('wordnet')
         self.allowed_postags = ['NOUN', 'ADJ', 'PRON']
         # Carrega o modelo.
-        fname = datapath("./modelo/meu_lda_model")
-        self.model = gensim.models.LdaMulticore.load(fname="./modelo/meu_lda_model")
+        ROOT = os.path.abspath(os.path.dirname(__file__))
+        fname = datapath(ROOT + "/modelo/meu_lda_model")
+        self.model = gensim.models.LdaMulticore.load(fname=fname)
 
     def pre_processing(self, text):
         """

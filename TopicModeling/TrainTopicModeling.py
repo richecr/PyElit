@@ -1,3 +1,4 @@
+import os
 import nltk
 import spacy
 import gensim
@@ -29,10 +30,11 @@ nlp = spacy.load('pt_core_news_sm')
 allowed_postags = ['NOUN', 'ADJ', 'PRON']
 
 # CARREGANDO OS DADOS.
-dados = pd.read_csv("../dados/textos_videos.csv")
+ROOT = os.path.abspath(os.path.dirname("dados"))
+dados = pd.read_csv(ROOT + "/dados/textos_videos.csv")
 dados.drop_duplicates(['texto'], inplace=True)
 textos = dados['texto']
-# print(textos[:5])
+print(textos[:5])
 
 # PRÉ-PROCESSAMENTO DOS DADOS.
 
@@ -125,10 +127,11 @@ def pre_processamento(texto):
     texto = lista_para_texto(doc_out)
     return texto
 
-def init():
-    # Chamando a função de pré-processamento para cada texto.
-    processed_docs = dados['texto'].map(lambda texto: pre_processamento(texto).split())
-    print(processed_docs[:10])
+# Chamando a função de pré-processamento para cada texto.
+processed_docs = dados['texto'].map(lambda texto: pre_processamento(texto).split())
+
+def init():  
+    # print(processed_docs[:10])
 
     # Criando dicionário de palavras.
     dictionary = gensim.corpora.Dictionary(processed_docs)
@@ -149,9 +152,13 @@ def init():
     # Criando e treinando o modelo.
     lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4)
     # lda_model_tfidf.save("./modelo/meu_lda_model")
-    return lda_model_tfidf
+    return lda_model_tfidf, corpus_tfidf
 
-lda_model_tfidf = init()
+# Provavelmente com algum erro, pois o score deu muito baixo.
+
+result = init()
+lda_model_tfidf = result[0]
+corpus_tfidf = result[1]
 
 # Imprimir os tópicos do modelo.
 topics = lda_model_tfidf.show_topics()
@@ -162,4 +169,4 @@ def coherence_model(lda_model_, processed_docs, corpus_tfidf, dictionary):
 	coherence_model_lda = CoherenceModel(model=lda_model_, texts=processed_docs, corpus=corpus_tfidf, dictionary=dictionary, coherence='c_v')
 	coherence_lda = coherence_model_lda.get_coherence()
 	print('\nCoherence Score LDAModelTfIdf: ', coherence_lda)
-coherence_model(lda_model_tfidf, processed_docs, corpus_tfidf, dictionary)
+coherence_model(lda_model_tfidf, processed_docs, corpus_tfidf, lda_model_tfidf.id2word)
