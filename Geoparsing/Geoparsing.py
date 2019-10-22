@@ -93,14 +93,27 @@ class Geoparsing:
         # Pode ser feito uma lógica para capturar os melhores endereços.
         return addresses_residentials, adresses_geral
 
+    def filterAddressCGText(text):
+        addresses_residentials = {}
+        adresses_geral = {}
+        for address in self.residential:
+            if re.search("\\b" + address + "\\b", text):
+                # TODO
+                pass
+        
+        # TODO
+        return 0
+
     def geoparsing(self, text, case_correct=None, limit=5, gazettteer_cg=True):
         if (case_correct):
-            doc = self.nlp(text)
-            ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-            address_found = self.concantena_end(ents_loc)
-            result = self.verfica(address_found, limit)
             if gazettteer_cg:
-                result[0] = self.filterAddressCG(address_found)
+                pass
+            else:
+                doc = self.nlp(text)
+                ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
+                address_found = self.concantena_end(ents_loc)
+                result = self.verfica(address_found, limit)
+                # result[0] = self.filterAddressCG(address_found)
 
             if (result[0]):
                 return result[1]
