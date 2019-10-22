@@ -16,6 +16,17 @@ class Geoparsing:
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
+        self.residential = {}
+        self.gazetteer_ln = csv.DictReader(open("./processamento/gazetteer/gazetteer_ln.csv", "r", encoding='utf-8'))
+        self.gazetteer_pt = csv.DictReader(open("./processamento/gazetteer/gazetteer_pt.csv", "r", encoding='utf-8'))
+        self.pre_process(self.gazetteer_ln)
+    
+    def pre_process(self, gazetteer):
+        for row in gazetteer:
+            if row['fclass'] == "residential":
+                self.residencial[row['name'].lower()] = row['coordenates']
+            else:
+                self.gazetteer_ln[row['name'].lower()] = row['coordenates']
 
     def remove_stop_words(self, text):
         saida = ""
@@ -70,13 +81,27 @@ class Geoparsing:
         else:
             return (False, [])
 
-    def geoparsing(self, text, case_correct=None, limit=5):
+    def filterAddressCG(addresses):
+        addresses_residentials = {}
+        adresses_geral = {}
+        for address in addresses:
+            if address in self.residential:
+                addresses_residentials[address] = self.residential[address]
+            elif address in self.gazetteer_ln:
+                adresses_geral[address] = self.adresses_geral[address]
+
+        # Pode ser feito uma lógica para capturar os melhores endereços.
+        return addresses_residentials, adresses_geral
+
+    def geoparsing(self, text, case_correct=None, limit=5, gazettteer_cg=True):
         if (case_correct):
             doc = self.nlp(text)
             ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
             address_found = self.concantena_end(ents_loc)
             result = self.verfica(address_found, limit)
-            
+            if gazettteer_cg:
+                result[0] = self.filterAddressCG(address_found)
+
             if (result[0]):
                 return result[1]
             else:
