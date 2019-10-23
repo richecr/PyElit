@@ -103,7 +103,7 @@ class Geoparsing:
     def choose_best_addresses(self, addresses_residentials, addresses_geral):
         # TODO: Implementar algoritmos que escolham os melhores endereços
         # Ex 1: Filtrar por endereços que estejam em um determinado bairro
-        # que também esteja entre esses endereços.
+        # que também esteja nestes endereços.
         # Ex 2: Olhar qual endereço mais se repete no texto.
         # Ex 3: Aplicar os dois algoritmos acima. E etc.
         result = {}
@@ -184,8 +184,6 @@ sucess = 0
 fail = 0
 total = 0
 for p in arq:
-    if (total == 100):
-        break
     try:
         r = g.geoparsing(text=p['texto'], case_correct=True)
         # print(r)
