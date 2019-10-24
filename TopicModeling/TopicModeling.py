@@ -39,23 +39,23 @@ class TopicModeling:
 
     def pre_processing(self, text):
         """
-            Realiza o pré-processamento de um texto:
-                - Remove Stop Words.
-                - Remove palavras que são entidades de localizações.
-                - Colocar as palavras para caixa baixa.
-                - Realiza a lematização das palavras.
-                - Apenas palavras que são: substantivos, adjetivos e pronomes.
-            Parâmetro:
-            ----------
-            texto : String
-                - Texto que irá sofrer o pré-processamento.
-            titulo: String
-                - Titulo do texto.
+        Realiza o pré-processamento de um texto:
+            - Remove Stop Words.
+            - Remove palavras que são entidades de localizações.
+            - Colocar as palavras para caixa baixa.
+            - Realiza a lematização das palavras.
+            - Apenas palavras que são: substantivos, adjetivos e pronomes.
+        Parâmetro:
+        ----------
+        texto : String
+            - Texto que irá sofrer o pré-processamento.
+        titulo: String
+            - Titulo do texto.
 
-            Retorno:
-            ----------
-            doc_out : List
-                - Lista de palavras que passaram pelo pré-processamento.
+        Retorno:
+        ----------
+        doc_out : List
+            - Lista de palavras que passaram pelo pré-processamento.
         """
         doc_out = []
         doc = self.nlp(text)

@@ -101,6 +101,21 @@ class Geoparsing:
         return addresses_residentials, adresses_geral
 
     def choose_best_addresses(self, addresses_residentials, addresses_geral):
+        """
+        Realiza a escolha dos melhores endereços encontrados.
+
+        Parâmetro:
+        ----------
+        addresses_residentials : Dict
+            - Dicionário de endereços residenciais e suas respectivas coordenadas.
+        addresses_geral : Dict
+            - Dicionário de endereços gerais(menos residenciais) e suas respectivas coordenadas.
+
+        Retorno:
+        ----------
+        result : Dict
+            - Dicionário de `melhores` endereços e suas respectivas coordenadas.
+        """
         # TODO: Implementar algoritmos que escolham os melhores endereços
         # Ex 1: Filtrar por endereços que estejam em um determinado bairro
         # que também esteja nestes endereços.
@@ -112,6 +127,19 @@ class Geoparsing:
         return result
 
     def filterAddressCGText(self, text):
+        """
+        Realiza a filtragem dos endereços do texto que estão no gazetteer.
+
+        Parâmetro:
+        ----------
+        text : String
+            - Texto que para realizar o geoparsing.
+
+        Retorno:
+        ----------
+        result : Dict
+            - Dicionário de endereços e suas respectivas coordenadas.
+        """
         addresses_residentials = {}
         addresses_geral = {}
         for address in self.residential.keys():
@@ -133,9 +161,29 @@ class Geoparsing:
         result = self.choose_best_addresses(addresses_residentials, addresses_geral)
         return result
 
-    def geoparsing(self, text, case_correct=None, limit=5, gazettteer_cg=True):
+    def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=True):
+        """
+        Realiza o geoparsing do texto.
+
+        Parâmetro:
+        ----------
+        text : String
+            - Texto que para realizar o geoparsing.
+        case_correct: Bool
+            - Caso o texto já esteja com o case correto, True, caso contrário False.
+        limit: Int
+            - Limite máximo de endereços retornados.
+        gazetteer_cg: Bool
+            - Caso deseje utilizar o gazetteer da região de Campina Grande.
+            - Assim aumentando a acurácia se os endereços buscados sejam da região.
+
+        Retorno:
+        ----------
+        result : List
+            - Lista de endereços.
+        """
         if (case_correct):
-            if gazettteer_cg:
+            if gazetteer_cg:
                 result = self.filterAddressCGText(text.lower())
                 # TODO: Usar a biblioteca do GeoCoder para que por meio
                 # das coordenadas, seja retornado um objeto representando o
@@ -147,7 +195,9 @@ class Geoparsing:
             else:
                 doc = self.nlp(text)
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-                address_found = self.concantena_end(ents_loc)
+                gazetteer_cg: Bool
+                    - Caso deseje utilizar o gazetteer da região de Campina Grande.
+                    - Assim aumentando a acurácia.nd = self.concantena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 # result[0] = self.filterAddressCG(address_found)
 
