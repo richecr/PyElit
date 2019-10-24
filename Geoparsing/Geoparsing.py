@@ -122,8 +122,16 @@ class Geoparsing:
         # Ex 2: Olhar qual endereço mais se repete no texto.
         # Ex 3: Aplicar os dois algoritmos acima. E etc.
         result = {}
-        result.update(addresses_residentials)
-        result.update(addresses_geral)
+        for loc in addresses_residentials.keys():
+            if addresses_residentials[loc][0] != list:
+                loc_ = ", ".join(map(str, a))
+                g = geocoder.reverse(location=loc_, provider="arcgis")
+                g = g.json
+                result[loc] = g
+        # CONCLUIR.
+
+        # result.update(addresses_residentials)
+        # result.update(addresses_geral)
         return result
 
     def filterAddressCGText(self, text):
@@ -149,7 +157,7 @@ class Geoparsing:
             if len(address_aux) > 1:
                 if re.search("\\b" + address + "\\b", text):
                     addresses_residentials[address] = self.residential[address]
-        
+
         for address in self.gazetteer.keys():
             address_aux = address.split()
             if address_aux[0] == "rua":
@@ -195,9 +203,7 @@ class Geoparsing:
             else:
                 doc = self.nlp(text)
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-                gazetteer_cg: Bool
-                    - Caso deseje utilizar o gazetteer da região de Campina Grande.
-                    - Assim aumentando a acurácia.nd = self.concantena_end(ents_loc)
+                address_found = self.concantena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 # result[0] = self.filterAddressCG(address_found)
 
@@ -226,27 +232,29 @@ class Geoparsing:
 
 g = Geoparsing()
 
-textos_limpos = []
-titulos = []
-arq = csv.DictReader(open("../dados/textos_videos.csv", "r", encoding='utf-8'))
+a = g.geoparsing(text="hora do calendário dessa vez nossa equipe de reportagem foi até o conjunto Severino Cabral ali perto da Feirinha nós já fizemos uma reportagem lá só que tá acontecendo é que a prefeitura asfaltou as ruas local mas não colocou sinalização aí os moradores estão muito preocupados Por que estão acontecendo muitos acidentes agente sabe que um problema tá sério quando a gente volta no local Já é a segunda vez que nossa equipe de reportagem tá aqui no Severino Cabral dá uma volta Damião para mostrar para circular para mostrar para o pessoal onde a gente tá feirinha do Severino Cabral aqui entre Bodocongó Severino Cabral Mas o problema continua não faz muito tempo que a gente teve aqui não hein seu francinaldo' é verdade você existe vieram aqui no dia 19 de setembro para cá tem o que é dois nem dois meses o que aconteceu o terceiro três acidentes O mais grave foi agora recente né cara se chocou com a moto a moto ficou com carro ao mesmo tempo e quer dizer esse preocupado e fazemos uma pena na verdade aí TP para que tomar as providências era para você vai ser que aconteça um objeto para que ele ia fazer isso aí como não tem sinalização aí o que dá entender que cada um deles é a vez mas não é isso que eu ia mostrar presta atenção dá só uma olhada na rua a rua bem lisinha tá com asfalto novinho em folha mas não tem uma sinalização não consigo ver uma marquinha de tinta aqui branca no local é verdade é justamente preocupado que vai ter acidente como é que não vai ter acidente Quem é que sabe quem é a vez do ônibus do carro da moto quem vai quem entra não tem como saber aqui e sim essa rua foi asfaltada a um ano não é isso seu francinaldo' faz mais ou menos um ano só que até então não é Providência foi tomada e estamos preocupado tanto a mim como namorado daqui também como age os demais moradores da localidade olha aqui como é difícil vamos comigo também a gente tá tentando atravessar aqui aqui no meio do cruzamento ela não tem uma faixa de pedestre a gente não sabe qual o carro que que passa que tem prioridade aqui os carros param né Por causa que tem esse comércio aqui senhor quando precisa atravessar tem medo claro com certeza tem medo né muito perigoso acidente aqui já já ele já Olha então a gente ainda a gente ficou que precisa aqui no local um quebra-mola porque os veículos passam e muita velocidade depois que a ficha tá asfaltada uma faixa de pedestre porque não tem nenhuma faixa de pedestre mestre para os pedestres atravessar com segurança que é que também falta a placa nos cruzamentos para indicar qual é quem tem a vez quem não tem e a dona Gerusa tá me contando aqui uma outra situação olha só a gente tá no ponto de ônibus só que como a rua", case_correct=True)
+print(g)
+# textos_limpos = []
+# titulos = []
+# arq = csv.DictReader(open("../dados/textos_videos.csv", "r", encoding='utf-8'))
 
-sucess = 0
-fail = 0
-total = 0
-for p in arq:
-    try:
-        r = g.geoparsing(text=p['texto'], case_correct=True)
-        # print(r)
-        total += 1
-        sucess += 1
-    except Exception as error:
-        total += 1
-        fail += 1
-        # print(error)
+# sucess = 0
+# fail = 0
+# total = 0
+# for p in arq:
+#     try:
+#         r = g.geoparsing(text=p['texto'], case_correct=True)
+#         # print(r)
+#         total += 1
+#         sucess += 1
+#     except Exception as error:
+#         total += 1
+#         fail += 1
+#         # print(error)
 
-print("Total: ", total)
-print("Sucess: ", sucess)
-print("Fail: ", fail)
+# print("Total: ", total)
+# print("Sucess: ", sucess)
+# print("Fail: ", fail)
 
 # for e in r:
 #     print(e['address'])
