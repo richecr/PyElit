@@ -93,4 +93,4 @@ def main():
     for loc in locs:
         features(localidade=loc)
 
-main()
+# main()
