@@ -1,0 +1,10 @@
+gensim
+geocoder
+spacy
+nltk
+truecase
+googletrans
+csv
+json
+plpygis
+pandas

@@ -3,7 +3,6 @@ import nltk
 import spacy
 import gensim
 import numpy as np
-import pandas as pd
 import pyLDAvis.gensim
 from nltk.stem import *
 from nltk.stem.porter import *
