@@ -1,39 +1,104 @@
+import sys
 import csv
 import pandas as pd
 from plpygis import Geometry
 
-def converterGeometryPoint(geometry):
-    g = Geometry(geometry)
-    coord = g.geojson['coordinates']
-    return [coord[1], coord[0]]
+# Aumentando o tamanho limite do csv.
+maxInt = sys.maxsize
+csv.field_size_limit(maxInt)
 
-# print(converterGeometryPoint("0101000000A46C36FBA8F241C0C3E1BB838EF41CC0"))
+def to_convert_geometry_point(geometry):
+	g = Geometry(geometry)
+	coord = g.geojson['coordinates']
+	coord.reverse()
+	return coord
 
-#gazetteer_ln = csv.reader(open("./gazetteer/processados/gazetteer_ln.csv", "r", encoding='utf-8'))
-gazetteer_ln = pd.read_csv(open("./gazetteer/processados/gazetteer_ln.csv"))
-a = "[[-7.2283327, -35.8862199], [-7.228354, -35.8860804], [-7.228354, -35.8860804], [-7.228354, -35.8860804]]"
-b = a.replace("[", "")
-b = b.replace("]", "")
+def to_convert_geometry_polygon(geometry):
+	g = Geometry(geometry)
+	coord = g.geojson['coordinates']
+	saida = []
+	for c in coord[0]:
+		c.reverse()
+		saida.append(c)
+	return saida
 
-a = b.split(", ")
-print(a)
+def to_convert_feature(geometry):
+	g = Geometry(geometry)
+	coord = g.geojson['coordinates'][0][0]
+	saida = []
+	for c in coord:
+		c.reverse()
+		saida.append(c)
+	return saida
 
-lat = []
-lon = []
-for i in range(len(a)):
-    if i % 2 == 0:
-        lat.append(float(a[i]))
-    else:
-        lon.append(float(a[i]))
+def polygons(localidade="cg"):
+	if (localidade == "cg"):
+		arq = csv.DictReader(open("./dados/features_campina_ln.csv", "r", encoding='utf-8'))
+	elif (localidade == "jp"):
+		arq = csv.DictReader(open("./dados/features_jp_ln.csv", "r", encoding='utf-8'))
+	elif (localidade == "pb"):
+		arq = csv.DictReader(open("./dados/features_paraiba_ln.csv", "r", encoding='utf-8'))
+	
+	fields = ["osm_id", "fclass", "name", "type", "coordenates"]
+	f = csv.writer(open('./processamento/gazetteer/'+ localidade + '_ln.csv', 'w', encoding='utf-8'))
+	f.writerow(fields)
 
-print("Lat: ", sum(lat) / len(lat))
-print("Lon: ", sum(lon) / len(lon))
+	for p in arq:
+		coord = converterGeometryPolygon(p['geometry'])
+		t = [ p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(), p["type"].__str__(), coord ]
+		f.writerow(t)
 
-# print(gazetteer_ln.values[10][4])
-# c = 0
-# for i in a:
-#     print(type(i[4]))
-#     if c == 1:
-#         break
-#     else:
-#         c = 1
+def points(localidade="cg"):
+	if (localidade == "cg"):
+		arq = csv.DictReader(open("./dados/features_campina_pt.csv", "r", encoding='utf-8'))
+	elif (localidade == "jp"):
+		arq = csv.DictReader(open("./dados/features_jp_pt.csv", "r", encoding='utf-8'))
+	elif (localidade == "pb"):
+		arq = csv.DictReader(open("./dados/features_paraiba_pt.csv", "r", encoding='utf-8'))
+
+	fields = ["osm_id", "fclass", "name", "type", "coordenates"]
+	f = csv.writer(open('./processamento/gazetteer/' + localidade + '_pt.csv', 'w', encoding='utf-8'))
+	f.writerow(fields)
+
+	for p in arq:
+		coord = converterGeometryPoint(p['geometry'])
+		t = [ p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(), p["type"].__str__(), coord ]
+		f.writerow(t)
+
+def features(localidade="cg"):
+	if (localidade == "cg"):
+		arq = csv.DictReader(open("./dados/features_campina.csv", mode="r"))
+	elif (localidade == "jp"):
+		arq = csv.DictReader(open("./dados/features_jp.csv", mode="r"))
+	elif (localidade == "pb"):
+		arq = csv.DictReader(open("./dados/features_paraiba.csv", mode="r"))
+	
+	fields = ["osm_id", "fclass", "name", "type", "coordenates"]
+	f = csv.writer(open('./processamento/gazetteer/' + localidade + '.csv', 'w', encoding='utf-8'))
+	f.writerow(fields)
+
+	for p in arq:
+		coord = converterFeature(p['geometry'])
+		t = [ p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(), p["type"].__str__(), coord ]
+		f.writerow(t)
+
+def string_to_list(coor_str):
+    b = coor_str.replace("[", "")
+    b = b.replace("]", "")
+
+    coor_str = b.split(", ")
+    # print(coor_str)
+
+    lat = []
+    lon = []
+    for i in range(len(coor_str)):
+        if i % 2 == 0:
+            lat.append(float(coor_str[i]))
+        else:
+            lon.append(float(coor_str[i]))
+
+    # print("Lat: ", sum(lat) / len(lat))
+    # print("Lon: ", sum(lon) / len(lon))
+    lat = sum(lat) / len(lat)
+    lon = sum(lon) / len(lon)
+    return (lat, lon)
