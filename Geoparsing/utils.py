@@ -11,19 +11,25 @@ def converterGeometryPoint(geometry):
 
 #gazetteer_ln = csv.reader(open("./gazetteer/processados/gazetteer_ln.csv", "r", encoding='utf-8'))
 gazetteer_ln = pd.read_csv(open("./gazetteer/processados/gazetteer_ln.csv"))
-a = "[[-7.2283327, -35.8862199], [-7.228354, -35.8860804]]"
+a = "[[-7.2283327, -35.8862199], [-7.228354, -35.8860804], [-7.228354, -35.8860804], [-7.228354, -35.8860804]]"
 b = a.replace("[", "")
 b = b.replace("]", "")
 
 a = b.split(", ")
 print(a)
 
-nova = []
-for target_list in expression_list:
-    pass
+lat = []
+lon = []
+for i in range(len(a)):
+    if i % 2 == 0:
+        lat.append(float(a[i]))
+    else:
+        lon.append(float(a[i]))
 
-print(gazetteer_ln.values[10][4])
+print("Lat: ", sum(lat) / len(lat))
+print("Lon: ", sum(lon) / len(lon))
 
+# print(gazetteer_ln.values[10][4])
 # c = 0
 # for i in a:
 #     print(type(i[4]))
