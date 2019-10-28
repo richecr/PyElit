@@ -1,4 +1,6 @@
 # PyElit
-> Repositório para o desenvolvimento de uma biblioteca com funcionalidades de: Geoparsing e Topic Modeling.
+> Extraction of Locations and Issues of a Text
 
-Participo de um projeto de pesquisa no LSI e minhas atividades são com Geoparsing e TopicModeling. Com as atividades realizadas, foi decidido que seria adequado a criação dessa biblioteca para ser disponibilizada para a comunidade. 
+- Repositório para o desenvolvimento de uma biblioteca com funcionalidades de: Geoparsing e Topic Modeling.
+
+- Participo de um projeto de pesquisa no LSI e minhas atividades são com Geoparsing e TopicModeling. Com as atividades realizadas, foi decidido que seria adequado a criação dessa biblioteca para ser disponibilizada para a comunidade. 
