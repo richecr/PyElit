@@ -2,6 +2,7 @@ import sys
 import csv
 import pandas as pd
 from plpygis import Geometry
+import geocoder
 
 # Aumentando o tamanho limite do csv.
 maxInt = sys.maxsize
@@ -102,3 +103,25 @@ def string_to_list(coor_str):
     lat = sum(lat) / len(lat)
     lon = sum(lon) / len(lon)
     return (lat, lon)
+
+def clear_gazetteer():
+	"""
+	Realizando limpeza dos dados do gazetteer, deixando apenas endereços do estado da Paraíba.
+	"""
+	arq = csv.DictReader(open("./gazetteer/processados/gazetteer.csv", "r", encoding='utf-8'))
+	arq1 = csv.writer(open("./gazetteer/processados/gazetteer1.csv", "w", encoding='utf-8'))
+	arq1.writerow(["osm_id", "fclass", "name", "type", "coordenates"])
+
+	for row in arq:
+		lat, lon = string_to_list(row['coordenates'])
+		loc_= str(lat) + ", " + str(lon)
+		g = geocoder.reverse(location=loc_, provider="arcgis")
+		g = g.json
+		try:
+			if (g['state'] == "Paraíba"):
+				t = [ row['osm_id'].__str__(), row["fclass"].__str__(), row["name"].__str__(), row["type"].__str__(), row['coordenates'] ]
+				arq1.writerow(t)
+		except Exception as e:
+			continue
+
+# clear_gazetteer()
