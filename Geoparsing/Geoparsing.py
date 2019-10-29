@@ -21,21 +21,16 @@ class Geoparsing:
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
-        print("rua" in self.stop_words_spacy)
         self.residential = {}
         self.gazetteer = {}
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
         self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteer.csv", "r", encoding='utf-8'))
         self.pre_process(self.gazetteer_ln)
-        print(self.gazetteer.__contains__("liberdade"))
 
     def pre_process(self, gazetteer):
-        cont = 0
         for row in gazetteer:
-            cont += 1
             self.gazetteer[row['name'].lower()] = (row['coordenates'], row['fclass'])
-        print(cont)
 
     def remove_stop_words(self, text):
         saida = ""
