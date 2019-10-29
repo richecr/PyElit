@@ -111,12 +111,12 @@ def clear_gazetteer():
 	arq = csv.DictReader(open("./gazetteer/processados/gazetteer.csv", "r", encoding='utf-8'))
 	arq1 = csv.writer(open("./gazetteer/processados/gazetteer1.csv", "w", encoding='utf-8'))
 	arq1.writerow(["osm_id", "fclass", "name", "type", "coordenates"])
-
 	for row in arq:
 		lat, lon = string_to_list(row['coordenates'])
 		loc_= str(lat) + ", " + str(lon)
 		g = geocoder.reverse(location=loc_, provider="arcgis")
 		g = g.json
+
 		try:
 			if (g['state'] == "Paraíba"):
 				t = [ row['osm_id'].__str__(), row["fclass"].__str__(), row["name"].__str__(), row["type"].__str__(), row['coordenates'] ]

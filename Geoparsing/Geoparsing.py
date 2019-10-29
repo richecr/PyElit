@@ -115,17 +115,21 @@ class Geoparsing:
 
         Retorno:
         ----------
-        result : Dict
-            - Dicionário de `melhores` endereços e suas respectivas coordenadas.
+        result : List
+            - lista de dicionários de `melhores` endereços e suas respectivas coordenadas.
         """
         # TODO: Implementar algoritmos que escolham os melhores endereços
-        # Ex 0: Ordenar por níveis de prioridades.
-        # Ex 1: Filtrar por endereços que estejam em um determinado bairro
+        # (x) 0: Ordenar por níveis de prioridades.
+        # (x) 1: Filtrar por endereços que estejam em um determinado bairro
         # que também esteja nestes endereços.
-        # Ex 2: Olhar qual endereço mais se repete no texto.
-        # Ex 3: Aplicar os três algoritmos acima. E etc.
+        # ( ) 2: Olhar qual endereço mais se repete no texto.
+        # ( ) 3: Aplicar os três algoritmos acima. E etc.
+        
+        # Olha qual endereço mais se repete no texto.
+        # Ex: { "rua joão sergio": 3 }
         print(adresses.keys())
         result = []
+        # Adicionar os endereços por ordem de prioridades.
         for loc in adresses.keys():
             coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
@@ -136,16 +140,25 @@ class Geoparsing:
             self.insert_ordened_to_priority(result, g, type_)
         
         for a in result:
-            print(a['address'], a['raw']['address']['District'])
-        print("---------------------")
-        for i in range(len(result)):
-            l = result[i]
-            if l['raw']['address']['District'].lower() in adresses.keys():
-                result.remove(l)
-                result.insert(0, l)
+            if (a == None):
+                result.remove(a)
 
         for a in result:
             print(a['address'], a['raw']['address']['District'])
+        print("---------------------")
+        # Ordenando os endereços por endereços que também foram encontrados seus bairros, 
+        # assim possuindo uma chance maior de ser o endereço correto.
+        new_result = []
+        for i in range(len(result) - 1, -1, -1):
+            l = result[i]
+            if l['raw']['address']['District'].lower() in adresses.keys():
+                new_result.insert(0, l)
+            else:
+                new_result.append(l)
+
+        for a in new_result:
+            print(a['address'], a['raw']['address']['District'])
+
         return result
 
     def filterAddressCGText(self, text):
@@ -193,7 +206,6 @@ class Geoparsing:
             - Limite máximo de endereços retornados.
         gazetteer_cg: Bool
             - Caso deseje utilizar o gazetteer da região de Campina Grande.
-            - Assim aumentando a acurácia se os endereços buscados sejam da região.
 
         Retorno:
         ----------
@@ -203,19 +215,15 @@ class Geoparsing:
         if (case_correct):
             if gazetteer_cg:
                 result = self.filterAddressCGText(text.lower())
-                # TODO: Usar a biblioteca do GeoCoder para que por meio
-                # das coordenadas, seja retornado um objeto representando o
-                # endereço.
                 if result:
                     return result
                 else:
-                    raise Exception("não foi possível realizar o geoparsing do texto")        
+                    raise Exception("Não foi possível realizar o geoparsing do texto")        
             else:
                 doc = self.nlp(text)
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
                 address_found = self.concantena_end(ents_loc)
                 result = self.verfica(address_found, limit)
-
                 if (result[0]):
                     return result[1]
                 else:
@@ -241,7 +249,7 @@ class Geoparsing:
 
 g = Geoparsing()
 
-text = "JPB de hoje começa na Rua Napoleão Crispim bairro de oitizeiro Esse é o endereço do abandono não tem outra definição para quem mora numa rua que é cheia de crateras o calendário vem acompanhando esse problema Desde janeiro já foram 3 visitas a prefeitura até fez um remendo nos buracos mas com as últimas chuvas foi tudo Ladeira abaixo esse buraco aqui é novo foi o que se formou na última chuva se prepara agora para ver como é que tá a situação do restante da rua é buraco e Desmantelo demais só para o pessoal de casa tem uma ideia da força da água quando chove aqui na Rua Napoleão Crispim olha só o que aconteceu com o poste tombou completamente Alexandre eu tô espantado aqui com a situação que a gente encontra essa rua por que na nossa última reportagem também não existe esse buraco que eu tava lá dentro Eu tô observando o que é essa outra cratera maior tá começando a avançar para o lado de cá e vocês estão ficando encurralados nesse monte de Cratera né da última vez que vocês vieram eles fizeram um serviço de terraplanagem que realmente ao menos uma situação era um paliativo a gente sabia disso mas só que infelizmente não pode chover qualquer chuvinha que dá volta aí as cartelas como você tá vendo esse buraco vem cada dia mais aumentando em direção a rua daqui a pouco a rua vai desaparecer vai ser um buraco só o problema piorou porque ele tá avançando para o lado de cá para o lado onde ficam as casas e a rua tá sendo literalmente engolida por esse buraco como se não bastasse existe esse outro aqui que a prefeitura conseguiu colocar um aterro na nossa última reportagem Melhorou a situação não mas olha bastou uma chuva para ele abrir novamente começar engolir não só essa rua mas aquela outra ali porque não pode passar mais nem carro por essas duas ruas aqui entre uma rua e outra e a gente tem que ter cuidado até para caminhar aqui eu vou pedir para o meu cinegrafista me acompanhar vocês também porque existe uma galeria pluvial aqui nessa rua que conduz água da chuva e vem muita água durante a chuva e a gente já tinha mostrado na última reportagem que ela tinha se rompido né a força da água é tão grande que ela havia se rompido vamos ver como é que ela tá agora isso aqui gente foi o que sobrou de uma galeria pluvial ela diz morou aqui completamente e essa área tá cheia de aterro o que acontece quando chove vem muito muita água com força e agora tá entupido né não tá entrando água aqui dentro das casas Por que tem essa mureta aqui mas eu acho que fica perto né Alexandre Com certeza é muita água e esse buraco Aí tá cada dia também aumentando"
+text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
 a = g.geoparsing(text=text, case_correct=True)
 # print(a)
 print(len(a))
