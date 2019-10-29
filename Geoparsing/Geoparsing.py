@@ -21,22 +21,27 @@ class Geoparsing:
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
+        print("rua" in self.stop_words_spacy)
         self.residential = {}
         self.gazetteer = {}
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
         self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteer.csv", "r", encoding='utf-8'))
-        # self.gazetteer.update(self.pre_process(gazetteer_pt))
         self.pre_process(self.gazetteer_ln)
+        print(self.gazetteer.__contains__("liberdade"))
 
     def pre_process(self, gazetteer):
+        cont = 0
         for row in gazetteer:
+            cont += 1
             self.gazetteer[row['name'].lower()] = (row['coordenates'], row['fclass'])
+        print(cont)
 
     def remove_stop_words(self, text):
         saida = ""
-        for palavra in texto.split():
-            if (palavra.lower() not in stop_words_spacy and len(palavra) > 3):
+        text = text.lower()
+        for palavra in text.split():
+            if (palavra not in self.stop_words_spacy and (len(palavra) > 3 or palavra == "rua")):
                 saida += palavra + " "
         s = saida.strip()
         return s
@@ -104,13 +109,13 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adrresses):
+    def choose_best_addresses(self, adresses):
         """
         Realiza a escolha dos melhores endereços encontrados.
 
         Parâmetro:
         ----------
-        adrresses : Dict
+        adresses : Dict
             - Dicionário de endereços e suas respectivas coordenadas.
 
         Retorno:
@@ -124,15 +129,28 @@ class Geoparsing:
         # que também esteja nestes endereços.
         # Ex 2: Olhar qual endereço mais se repete no texto.
         # Ex 3: Aplicar os três algoritmos acima. E etc.
+        print(adresses.keys())
         result = []
-        for loc in adrresses.keys():
-            coord, type_ = adrresses[loc]
+        for loc in adresses.keys():
+            coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
             loc_= str(lat) + ", " + str(lon)
             g = geocoder.reverse(location=loc_, provider="arcgis")
             g = g.json
+            result.append(g)
             self.insert_ordened_to_priority(result, g, type_)
+        
+        for a in result:
+            print(a['address'], a['raw']['address']['District'])
+        print("---------------------")
+        for i in range(len(result)):
+            l = result[i]
+            if l['raw']['address']['District'].lower() in adresses.keys():
+                result.remove(l)
+                result.insert(0, l)
 
+        for a in result:
+            print(a['address'], a['raw']['address']['District'])
         return result
 
     def filterAddressCGText(self, text):
@@ -156,7 +174,7 @@ class Geoparsing:
             address_aux = address.split()
             if address_aux[0] == "rua":
                 address_aux = address_aux[1:]
-            if len(address_aux) > 1:
+            if len(address_aux) > 1 or self.gazetteer[address][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 if re.search("\\b" + address + "\\b", text):
@@ -228,9 +246,12 @@ class Geoparsing:
 
 g = Geoparsing()
 
-a = g.geoparsing(text="hora do calendário dessa vez nossa equipe de reportagem foi até o conjunto rua Severino Cabral ali perto da Feirinha nós já fizemos uma reportagem lá só que tá acontecendo é que a prefeitura asfaltou as ruas local mas não colocou sinalização aí os moradores estão muito preocupados Por que estão acontecendo muitos acidentes agente sabe que um problema tá sério quando a gente volta no local Já é a segunda vez que nossa equipe de reportagem tá aqui no Severino Cabral dá uma volta Damião para mostrar para circular para mostrar para o pessoal onde a gente tá feirinha do Severino Cabral aqui entre Bodocongó Severino Cabral Mas o problema continua não faz muito tempo que a gente teve aqui não hein seu francinaldo' é verdade você existe vieram aqui no dia 19 de setembro para cá tem o que é dois nem dois meses o que aconteceu o terceiro três acidentes O mais grave foi agora recente né cara se chocou com a moto a moto ficou com carro ao mesmo tempo e quer dizer esse preocupado e fazemos uma pena na verdade aí TP para que tomar as providências era para você vai ser que aconteça um objeto para que ele ia fazer isso aí como não tem sinalização aí o que dá entender que cada um deles é a vez mas não é isso que eu ia mostrar presta atenção dá só uma olhada na rua a rua bem lisinha tá com asfalto novinho em folha mas não tem uma sinalização não consigo ver uma marquinha de tinta aqui branca no local é verdade é justamente preocupado que vai ter acidente como é que não vai ter acidente Quem é que sabe quem é a vez do ônibus do carro da moto quem vai quem entra não tem como saber aqui e sim essa rua foi asfaltada a um ano não é isso seu francinaldo' faz mais ou menos um ano só que até então não é Providência foi tomada e estamos preocupado tanto a mim como namorado daqui também como age os demais moradores da localidade olha aqui como é difícil vamos comigo também a gente tá tentando atravessar aqui aqui no meio do cruzamento ela não tem uma faixa de pedestre a gente não sabe qual o carro que que passa que tem prioridade aqui os carros param né Por causa que tem esse comércio aqui senhor quando precisa atravessar tem medo claro com certeza tem medo né muito perigoso acidente aqui já já ele já Olha então a gente ainda a gente ficou que precisa aqui no local um quebra-mola porque os veículos passam e muita velocidade depois que a ficha tá asfaltada uma faixa de pedestre porque não tem nenhuma faixa de pedestre mestre para os pedestres atravessar com segurança que é que também falta a placa nos cruzamentos para indicar qual é quem tem a vez quem não tem e a dona Gerusa tá me contando aqui uma outra situação olha só a gente tá no ponto de ônibus só que como a rua", case_correct=True)
-print(a)
+text = "JPB de hoje começa na Rua Napoleão Crispim bairro de oitizeiro Esse é o endereço do abandono não tem outra definição para quem mora numa rua que é cheia de crateras o calendário vem acompanhando esse problema Desde janeiro já foram 3 visitas a prefeitura até fez um remendo nos buracos mas com as últimas chuvas foi tudo Ladeira abaixo esse buraco aqui é novo foi o que se formou na última chuva se prepara agora para ver como é que tá a situação do restante da rua é buraco e Desmantelo demais só para o pessoal de casa tem uma ideia da força da água quando chove aqui na Rua Napoleão Crispim olha só o que aconteceu com o poste tombou completamente Alexandre eu tô espantado aqui com a situação que a gente encontra essa rua por que na nossa última reportagem também não existe esse buraco que eu tava lá dentro Eu tô observando o que é essa outra cratera maior tá começando a avançar para o lado de cá e vocês estão ficando encurralados nesse monte de Cratera né da última vez que vocês vieram eles fizeram um serviço de terraplanagem que realmente ao menos uma situação era um paliativo a gente sabia disso mas só que infelizmente não pode chover qualquer chuvinha que dá volta aí as cartelas como você tá vendo esse buraco vem cada dia mais aumentando em direção a rua daqui a pouco a rua vai desaparecer vai ser um buraco só o problema piorou porque ele tá avançando para o lado de cá para o lado onde ficam as casas e a rua tá sendo literalmente engolida por esse buraco como se não bastasse existe esse outro aqui que a prefeitura conseguiu colocar um aterro na nossa última reportagem Melhorou a situação não mas olha bastou uma chuva para ele abrir novamente começar engolir não só essa rua mas aquela outra ali porque não pode passar mais nem carro por essas duas ruas aqui entre uma rua e outra e a gente tem que ter cuidado até para caminhar aqui eu vou pedir para o meu cinegrafista me acompanhar vocês também porque existe uma galeria pluvial aqui nessa rua que conduz água da chuva e vem muita água durante a chuva e a gente já tinha mostrado na última reportagem que ela tinha se rompido né a força da água é tão grande que ela havia se rompido vamos ver como é que ela tá agora isso aqui gente foi o que sobrou de uma galeria pluvial ela diz morou aqui completamente e essa área tá cheia de aterro o que acontece quando chove vem muito muita água com força e agora tá entupido né não tá entrando água aqui dentro das casas Por que tem essa mureta aqui mas eu acho que fica perto né Alexandre Com certeza é muita água e esse buraco Aí tá cada dia também aumentando"
+a = g.geoparsing(text=text, case_correct=True)
+# print(a)
 print(len(a))
+
+# text = "hora equipe reportagem conjunto Severino Cabral bairro liberdade Feirinha fizemos reportagem acontecendo asfaltou ruas colocou sinalização preocupados acontecendo acidentes agente sério volta equipe reportagem Severino Cabral volta Damião mostrar circular mostrar feirinha Severino Cabral Bodocongó Severino Cabral continua hein francinaldo' verdade existe vieram setembro aconteceu acidentes grave recente cara chocou moto moto ficou carro preocupado pena verdade tomar providências aconteça objeto sinalização entender deles mostrar presta atenção olhada lisinha asfalto novinho folha sinalização consigo marquinha tinta branca verdade justamente preocupado acidente acidente ônibus carro moto entra asfaltada francinaldo' Providência tomada estamos preocupado namorado daqui localidade difícil comigo tentando atravessar cruzamento faixa pedestre carro passa prioridade carros param causa comércio senhor precisa atravessar medo claro medo perigoso acidente ficou precisa quebra-mola veículos passam muita velocidade ficha asfaltada faixa pedestre faixa pedestre mestre pedestres atravessar segurança placa cruzamentos indicar dona Gerusa contando situação ônibus
 
 # textos_limpos = []
 # titulos = []
