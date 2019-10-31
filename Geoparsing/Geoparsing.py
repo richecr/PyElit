@@ -25,7 +25,7 @@ class Geoparsing:
         self.gazetteer = {}
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
-        self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteer.csv", "r", encoding='utf-8'))
+        self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteer1.csv", "r", encoding='utf-8'))
         self.pre_process(self.gazetteer_ln)
 
     def pre_process(self, gazetteer):
@@ -104,13 +104,19 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses):
+    def choose_best_addresses(self, adresses, text):
         """
         Realiza a escolha dos melhores endereços encontrados.
 
+        Algoritmos implementados:
+            - Ordenar por níveis de prioridades
+            - Filtrar por endereços que estejam em um determinado bairro 
+            que também esteja nestes endereços.
+            - Endereços que mais se repetem no texto.
+
         Parâmetro:
         ----------
-        adresses : Dict
+        adresses: Dict
             - Dicionário de endereços e suas respectivas coordenadas.
 
         Retorno:
@@ -122,31 +128,25 @@ class Geoparsing:
         # (x) 0: Ordenar por níveis de prioridades.
         # (x) 1: Filtrar por endereços que estejam em um determinado bairro
         # que também esteja nestes endereços.
-        # ( ) 2: Olhar qual endereço mais se repete no texto.
-        # ( ) 3: Aplicar os três algoritmos acima. E etc.
-        
-        # Olha qual endereço mais se repete no texto.
-        # Ex: { "rua joão sergio": 3 }
+        # (X) 2: Olhar qual endereço mais se repete no texto.
+        # (X) 3: Aplicar os três algoritmos acima. E etc.
+
         print(adresses.keys())
         result = []
         # Adicionar os endereços por ordem de prioridades.
+        # Ocorrências dos endereços no texto.
         for loc in adresses.keys():
             coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
             loc_= str(lat) + ", " + str(lon)
             g = geocoder.reverse(location=loc_, provider="arcgis")
             g = g.json
-            result.append(g)
-            self.insert_ordened_to_priority(result, g, type_)
-        
-        for a in result:
-            if (a == None):
-                result.remove(a)
+            g['occurrences_in_text'] = text.count(loc)
+            if g != None:
+                result.append(g)
+                self.insert_ordened_to_priority(result, g, type_)
 
-        for a in result:
-            print(a['address'], a['raw']['address']['District'])
-        print("---------------------")
-        # Ordenando os endereços por endereços que também foram encontrados seus bairros, 
+        # Ordenando por endereços que também foram encontrados seus bairros na filtragem, 
         # assim possuindo uma chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
@@ -156,8 +156,8 @@ class Geoparsing:
             else:
                 new_result.append(l)
 
-        for a in new_result:
-            print(a['address'], a['raw']['address']['District'])
+        # Ordenando por quantidade de ocorrências no texto.
+        sorted(new_result, key=lambda e: e['occurrences_in_text'])
 
         return result
 
@@ -189,7 +189,7 @@ class Geoparsing:
                     print(address)
                     addresses_geral[address] = self.gazetteer[address]
 
-        result = self.choose_best_addresses(addresses_geral)
+        result = self.choose_best_addresses(addresses_geral, text)
         return result
 
     def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=True):
@@ -205,7 +205,7 @@ class Geoparsing:
         limit: Int
             - Limite máximo de endereços retornados.
         gazetteer_cg: Bool
-            - Caso deseje utilizar o gazetteer da região de Campina Grande.
+            - Caso deseje utilizar o gazetteer com detalhes do estado da Paraíba.
 
         Retorno:
         ----------
@@ -249,9 +249,9 @@ class Geoparsing:
 
 g = Geoparsing()
 
-text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
+text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem Avenida Conde te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
 a = g.geoparsing(text=text, case_correct=True)
-# print(a)
+print(a)
 print(len(a))
 
 # text = "hora equipe reportagem conjunto Severino Cabral bairro liberdade Feirinha fizemos reportagem acontecendo asfaltou ruas colocou sinalização preocupados acontecendo acidentes agente sério volta equipe reportagem Severino Cabral volta Damião mostrar circular mostrar feirinha Severino Cabral Bodocongó Severino Cabral continua hein francinaldo' verdade existe vieram setembro aconteceu acidentes grave recente cara chocou moto moto ficou carro preocupado pena verdade tomar providências aconteça objeto sinalização entender deles mostrar presta atenção olhada lisinha asfalto novinho folha sinalização consigo marquinha tinta branca verdade justamente preocupado acidente acidente ônibus carro moto entra asfaltada francinaldo' Providência tomada estamos preocupado namorado daqui localidade difícil comigo tentando atravessar cruzamento faixa pedestre carro passa prioridade carros param causa comércio senhor precisa atravessar medo claro medo perigoso acidente ficou precisa quebra-mola veículos passam muita velocidade ficha asfaltada faixa pedestre faixa pedestre mestre pedestres atravessar segurança placa cruzamentos indicar dona Gerusa contando situação ônibus
