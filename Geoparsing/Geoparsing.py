@@ -15,7 +15,13 @@ from googletrans import Translator
 from utils import string_to_list
 
 class Geoparsing:
+    """
+    Classe responsável por realizar o Geoparsing.
+    """
     def __init__(self):
+        """
+        Construtor da classe. Onde todos os atributos são iniciandos e sofrem pré-processamento.
+        """
         self.translator = Translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
@@ -25,14 +31,31 @@ class Geoparsing:
         self.gazetteer = {}
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
-        self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteer1.csv", "r", encoding='utf-8'))
+        self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteerpb.csv", "r", encoding='utf-8'))
         self.pre_process(self.gazetteer_ln)
 
     def pre_process(self, gazetteer):
+        """
+        Método que realiza o pré-processamento do gazetteer.
+        Carrega as informações do gazetteer para um dicionário.
+
+        Parâmetro:
+        ----------
+        gazetteer: DictReader
+            - Objeto da biblioteca nativa do python `CSV`.
+        """
         for row in gazetteer:
             self.gazetteer[row['name'].lower()] = (row['coordenates'], row['fclass'])
 
     def remove_stop_words(self, text):
+        """
+        Método que remove stop words do texto.
+
+        Parâmetro:
+        ----------
+        text: String
+            - Texto que esta passando pelo processo do geoparsing.
+        """
         saida = ""
         text = text.lower()
         for palavra in text.split():
@@ -41,7 +64,15 @@ class Geoparsing:
         s = saida.strip()
         return s
 
-    def concantena_end(self, lista_end):
+    def concatena_end(self, lista_end):
+        """
+        Método que concatena os endereços.
+
+        Parâmetro:
+        ----------
+        lista_end: List
+            - Lista contendo todos os endereços encontrados.
+        """
         saida = []
         for i in range(len(lista_end) - 1):
             for j in range(i+1, len(lista_end)):
@@ -50,8 +81,14 @@ class Geoparsing:
         return saida
 
     def verifica_endereco(self, end):
-        # if (end['address'].lower() in ruas):
-        #	return True
+        """
+        Método que verifica se um endereço é da Paraíba e se sua confiabilidade é maior ou igual a 5.
+
+        Parâmetro:
+        ----------
+        end: Dict
+            - Dicionário contendo todas as informações do endereço.
+        """
         if (end['confidence'] >= 5):
             # ", campina grande" in end['address'].lower() and
             if (", paraíba" in end['address'].lower()):
@@ -86,6 +123,14 @@ class Geoparsing:
             return (False, [])
 
     def search_next_index(self, lista):
+        """
+        Método que busca uma nova posição a ser adicionado na lista de melhores endereços.
+
+        Parâmetro:
+        ----------
+        lista: List
+            - Lista contendo todos os endereços encontrados.
+        """
         for i in range(len(lista)):
             if lista[i]['type_class'] == "geral":
                 return i
@@ -93,6 +138,18 @@ class Geoparsing:
         return len(lista) - 1
 
     def insert_ordened_to_priority(self, result, address, type_):
+        """
+        Método que insere na lista de melhores endereços ordenado por prioridades.
+
+        Parâmetro:
+        ----------
+        result: List
+            - Lista de melhores endereços.
+        address: Dict
+            - Endereço a ser inserido na lista.
+        type_: String
+            Tipo do endereço.
+        """
         if address not in result:
             if type_ == "school":
                 address['type_class'] = "school"
@@ -118,19 +175,14 @@ class Geoparsing:
         ----------
         adresses: Dict
             - Dicionário de endereços e suas respectivas coordenadas.
+        text: String
+            - Texto que esta passando pelo geoparsing.
 
         Retorno:
         ----------
         result : List
-            - lista de dicionários de `melhores` endereços e suas respectivas coordenadas.
+            -Lista de objetos de `melhores` endereços.
         """
-        # TODO: Implementar algoritmos que escolham os melhores endereços
-        # (x) 0: Ordenar por níveis de prioridades.
-        # (x) 1: Filtrar por endereços que estejam em um determinado bairro
-        # que também esteja nestes endereços.
-        # (X) 2: Olhar qual endereço mais se repete no texto.
-        # (X) 3: Aplicar os três algoritmos acima. E etc.
-
         print(adresses.keys())
         result = []
         # Adicionar os endereços por ordem de prioridades.
@@ -192,7 +244,7 @@ class Geoparsing:
         result = self.choose_best_addresses(addresses_geral, text)
         return result
 
-    def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=True):
+    def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=False):
         """
         Realiza o geoparsing do texto.
 
@@ -222,7 +274,7 @@ class Geoparsing:
             else:
                 doc = self.nlp(text)
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-                address_found = self.concantena_end(ents_loc)
+                address_found = self.concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if (result[0]):
                     return result[1]
@@ -239,7 +291,7 @@ class Geoparsing:
             doc = self.nlp(text)
 
             ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-            address_found = self.concantena_end(ents_loc)
+            address_found = self.concatena_end(ents_loc)
             result = self.verfica(address_found, limit)
 
             if (result[0]):
@@ -250,7 +302,7 @@ class Geoparsing:
 g = Geoparsing()
 
 text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem Avenida Conde te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
-a = g.geoparsing(text=text, case_correct=True)
+a = g.geoparsing(text=text, case_correct=True, gazetteer_cg=True)
 print(a)
 print(len(a))
 
