@@ -35,6 +35,7 @@ class TopicModeling:
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = datapath(ROOT + "/modelo/meu_lda_model")
         self.model = gensim.models.LdaMulticore.load(fname=fname)
+        self.topics = {}
 
     def pre_processing(self, text):
         """
@@ -125,17 +126,33 @@ class TopicModeling:
 
         return False
 
-    def print_topics(self):
+    def print_topics(self, quant_max_palavras=None):
         """
             Método que irá imprimir os tópicos do modelo.
+
+            Parâmetros:
+            ----------
+            quant_max_palavras: Int
+                - Quantidade máxima de palavras que representam um tópico a serem retornadas.
+
             Retorno:
             ----------
             topics : List
                 - Lista de tópicos do modelo.
         """
+        if quant_max_palavras == None:
+            quant_max_palavras = 5
         topics = []
-        for topic in model.print_topics(-1, 15):
+        for topic in self.model.print_topics(-1, quant_max_palavras):
             topics.append(topic)
+        return topics
+
+    def representar_topicos(self, ids_topics, nomes_topicos):
+        for id_topic, nome in zip(ids_topics, nomes_topicos):
+            self.topics[id_topic] = nome
+
+    def get_topic(self, id_topic):
+        return self.topics[id_topic]
 
     def rate_text(self, text):
         """
@@ -149,13 +166,17 @@ class TopicModeling:
             Retorno:
             ----------
             Topico : List
-                - Uma lista contento o tópico que esse texto pertence e também sua probabilidade.
+                - Uma lista de tuplas com o id do tópico que esse texto pertence e também a probabilidade.
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
         result = self.model.get_document_topics(bow_vector)
         return result
 
 m = TopicModeling()
+# print(m.print_topics())
+m.representar_topicos([0, 1, 2, 3], ['saneamento', 'obras', 'trânsito', 'diversos'])
 r = m.rate_text('calendário JPB aqui nas nossas telas nós vamos agora até o bairro Jardim Paulistano zona sul de Campinas Você lembra que nossa equipe ouviu os moradores da Rua Riachuelo que reclamavam da falta de calçamento no local então o problema foi resolvido só que na época a prefeitura também se comprometeu e fazer o calçamento da Rua Ariel que fica bem pertinho essa parte foi feita mas só que pela metade Laisa grisi foi conferido calendário JPB desembarcou aqui no Jardim Paulistano E olha que maravilha hoje é possível andar na rua com calçamento sem tanta poeira sem pisar em lama Quando chove essa foi uma conquista dos moradores junto com calendário Desde o ano passado em 2015 quando a prefeitura calçou essa rua calça com a Rua Riachuelo também mas presta atenção dois passos seguintes e rua de terra essa rua que esse trechinho não foi calçado vou aqui conversar com os moradores já tá todo mundo reunido Por que me explica como é que pode só esse trechinho não foi calçada só esse trecho você imagina que fizeram as duas por duas partes né fizeram aquela parte de lá aí ficou a metade depois fizeram essa daqui aí deixar essa parte aqui sem sem tá feita né nessa parte de baixo é pior ainda porque quando chove a água invade a Casa dos moradores e olha só aqui nessa casa foi colocado um monte de pedra bem na frente para impedir que a água entre vamos lá falar com ela é dona Severina é dona Bill Olá tudo bom com a senhora como é que tá aqui essa situação a senhora Teve que colocar pedra aqui né é chover em entrar aqui sozinha imagina aperreio Aí tem que dar um jeito aqui é pior difícil hein dona Bill quanto tempo já que a senhora mora aqui nessa rua 8 anos viu o resultado de vergonha né a gente não tem né É porque se ele tivesse vergonha ele já tinha feito isso todos vocês moram aqui nessa rua aí o que que acontece nessas ruas aqui né aí o que que acontece a Rua Areal lá em cima Foi calçada a Rua Riachuelo também E vocês ficaram só um gostinho só na saudade e o pior que não se desviar da Lama dos buracos e ele prometeu Então olha você tá vendo aquela cerâmica Vale Aí depois ele dá o que é o povo que bota para que ele possa passar infelizmente é uma situação difícil a gente já pediu muitas vezes recado dado essa essa rua que já é assunto do calendário a gente conseguiu algumas ruas outras não voltamos em 2016 em 2016 o secretário André agra secretário de obras de Campina Grande e disse que ia voltar aqui não foi então vamos lá calendário novo quem é o representante')
 
 print(r)
+print(m.get_topic(r[0][0]))
+
