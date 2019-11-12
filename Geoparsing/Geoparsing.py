@@ -69,7 +69,7 @@ class Geoparsing:
         out = out.strip()
         return out
 
-    def concatena_end(self, list_end):
+    def __concatena_end(self, list_end):
         """
         Método que concatena os endereços.
 
@@ -83,7 +83,7 @@ class Geoparsing:
         out : List
              - Lista de endereços concatenados.
         """
-        out = []
+        out = [e for e in list_end]
         for i in range(len(list_end) - 1):
             for j in range(i+1, len(list_end)):
                 temp = str(list_end[i]) + " " + str(list_end[j])
@@ -146,7 +146,7 @@ class Geoparsing:
 
         ends_corretos = []
         for e in ends:
-            if (self.verifica_endereco(e)):
+            if (self.__verifica_endereco(e)):
                 ends_corretos.append(e)
 
         if (len(ends_corretos)):
@@ -290,6 +290,9 @@ class Geoparsing:
         """
         Realiza o geoparsing do texto.
 
+        OBS: Utilizar o geoparsing sem o case correct e sem o gazetteer
+        fará com que você tenha resultados ruins. 
+
         Parâmetros:
         ----------
         text : String
@@ -299,7 +302,7 @@ class Geoparsing:
         limit: Int
             - Limite máximo de endereços retornados.
         gazetteer_cg: Bool
-            - Caso deseje utilizar o gazetteer com detalhes do estado da Paraíba.
+            - Caso deseje utilizar o gazetteer com localidades do estado da Paraíba.
 
         Retorno:
         ----------
@@ -316,7 +319,7 @@ class Geoparsing:
             if case_correct:
                 doc = self.nlp(text)
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-                address_found = self.concatena_end(ents_loc)
+                address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:
                     return result[1]
@@ -333,18 +336,17 @@ class Geoparsing:
                 doc = self.nlp(text)
 
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
-                address_found = self.concatena_end(ents_loc)
+                address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
-
                 if result[0]:
                     return result[1]
                 else:
                     raise Exception("Não foi possivel realizar o geoparsing do texto")
 
-g = Geoparsing()
 
+g = Geoparsing()
 text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem Avenida Conde te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
-a = g.geoparsing(text=text, case_correct=True, gazetteer_cg=True)
+a = g.geoparsing(text=text, case_correct=True, gazetteer_cg=False)
 print(a)
 print(len(a))
 
