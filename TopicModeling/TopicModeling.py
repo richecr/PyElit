@@ -16,13 +16,17 @@ from gensim.models.coherencemodel import CoherenceModel
 
 class TopicModeling:
     """
-        Classe de Modelagem de tópicos com um score de coherence de 0.52. Descreve textos que tratam sobre problemas urbanos.
-        
-        Permite que a partir de um texto eu consiga descrever qual tópico esse texto pertence com uma boa probabilidade.
+    Classe de Modelagem de tópicos com um score de coherence de 0.52.
+    Como é usado uma abordagem de aprendizado não-supervisionado não foi
+    feito testes de acurácia, mas os que foram realizados manualmente 
+    obteram bons resultados.
+    Descreve textos que tratam sobre problemas urbanos.
+    
+    Permite que a partir de um texto seja possível descrever qual tópico aquele texto pertence, com uma boa probabilidade.
     """
     def __init__(self):
         """
-            Construtor da classe. Inicia os principais objetos/variaveis para o funcionamento do mesmo.
+        Construtor da classe. Inicia os principais objetos/atributos para o funcionamento do mesmo.
         """
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
@@ -43,13 +47,13 @@ class TopicModeling:
         Realiza o pré-processamento de um texto:
             - Remove Stop Words.
             - Remove palavras que são entidades de localizações.
-            - Colocar as palavras para caixa baixa.
+            - Coloca todo o texto para caixa baixa.
             - Realiza a lematização das palavras.
-            - Apenas palavras que são: substantivos, adjetivos e pronomes.
+            - Deixa apenas palavras que são: substantivos, adjetivos e pronomes.
 
         Parâmetro:
         ----------
-        texto : String
+        text : String
             - Texto que irá sofrer o pré-processamento.
 
         Retorno:
@@ -66,21 +70,21 @@ class TopicModeling:
 
         return doc_out
 
-    def lemmatization(self, palavra):
+    def lemmatization(self, word):
         """
         Realiza a lematização de uma palavra.
 
         Parâmetro:
         ----------
-        palavra : String
+        word : String
             - Palavra que irá sofrer a lematização.
 
         Retorno:
         ----------
-        palavra : String
+        word : String
             - Palavra lematizada.
         """
-        return self.stemmer.stem(WordNetLemmatizer().lemmatize(palavra, pos="v"))
+        return self.stemmer.stem(WordNetLemmatizer().lemmatize(word, pos="v"))
 
     def is_entities_loc(self, word, entities_loc):
         """
@@ -153,17 +157,17 @@ class TopicModeling:
 
     def rate_text(self, text):
         """
-        Método que irá retorna de qual tópico o texto passado como parametro tem mais probabilidade de pertencer.
+        Método que irá retorna de qual tópico o texto, passado como parametro, tem mais probabilidade de pertencer.
         
         Parâmetro:
         ----------
-        texto : String
+        text : String
             - Texto que irá ser avaliado.
 
         Retorno:
         ----------
-        Topico : List
-            - Uma lista de tuplas com o id do tópico que esse texto pertence e também a probabilidade.
+        reult : List
+            - Uma lista de tuplass com o id do tópico que esse texto pertence e também a probabilidade.
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
         result = self.model.get_document_topics(bow_vector)
