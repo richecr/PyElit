@@ -37,12 +37,12 @@ class Geoparsing:
     def pre_process(self, gazetteer):
         """
         Método que realiza o pré-processamento do gazetteer.
-        Carrega as informações do gazetteer para um dicionário.
+        Carrega as informações do gazetteer em um dicionário.
 
-        Parâmetro:
+        Parâmetros:
         ----------
         gazetteer: DictReader
-            - Objeto da biblioteca nativa do python `CSV`.
+            - Objeto da biblioteca nativa do python: `CSV`.
         """
         for row in gazetteer:
             self.gazetteer[row['name'].lower()] = (row['coordenates'], row['fclass'])
@@ -51,43 +51,59 @@ class Geoparsing:
         """
         Método que remove stop words do texto.
 
-        Parâmetro:
+        Parâmetros:
         ----------
         text: String
             - Texto que esta passando pelo processo do geoparsing.
+        
+        Retorno:
+        ----------
+        out : String
+            - Texto pré-processado, sem conter palavras de stop words.
         """
-        saida = ""
+        out = ""
         text = text.lower()
         for palavra in text.split():
             if (palavra not in self.stop_words_spacy and (len(palavra) > 3 or palavra == "rua")):
-                saida += palavra + " "
-        s = saida.strip()
-        return s
+                out += palavra + " "
+        out = out.strip()
+        return out
 
-    def concatena_end(self, lista_end):
+    def concatena_end(self, list_end):
         """
         Método que concatena os endereços.
 
-        Parâmetro:
+        Parâmetros:
         ----------
-        lista_end: List
+        list_end: List
             - Lista contendo todos os endereços encontrados.
+        
+        Retorno:
+        ----------
+        out : List
+             - Lista de endereços concatenados.
         """
-        saida = []
-        for i in range(len(lista_end) - 1):
-            for j in range(i+1, len(lista_end)):
-                temp = str(lista_end[i]) + " " + str(lista_end[j])
-                saida.append(temp)
-        return saida
+        out = []
+        for i in range(len(list_end) - 1):
+            for j in range(i+1, len(list_end)):
+                temp = str(list_end[i]) + " " + str(list_end[j])
+                out.append(temp)
+        return out
 
-    def verifica_endereco(self, end):
+    def __verifica_endereco(self, end):
         """
-        Método que verifica se um endereço é da Paraíba e se sua confiabilidade é maior ou igual a 5.
+        Método que verifica se um endereço é da Paraíba 
+        e se sua confiabilidade é maior ou igual a 5.
 
-        Parâmetro:
+        Parâmetros:
         ----------
         end: Dict
             - Dicionário contendo todas as informações do endereço.
+        
+        Retorno:
+        ----------
+        True: Caso o endereço obedeça aos requisitos.
+        False: Caso contrário.
         """
         if (end['confidence'] >= 5):
             # ", campina grande" in end['address'].lower() and
@@ -99,6 +115,27 @@ class Geoparsing:
             return False
 
     def verfica(self, ents_loc, limit):
+        """
+        Método que verifica se os endereços estão corretos. 
+            - Encontra as localizações das entidades de localizações(Geocoder com arcgis).
+            - Verifica se é da PB e sua confiabilidade(`verifica_endereco`).
+            - Concatena os endereços.
+            - Ordena endereços pela confiabilidade.
+
+        Parâmetros:
+        ----------
+        ents_loc : List
+            - Lista de entidades de localizações.
+        limit : Integer
+            - Quantidade de endereços que desejar retornar.
+
+        Retorno:
+        ----------
+        out : Tuple
+            - Uma tupla do tipo (Boolean, List).
+            Caso tenha encontrado pelo menos um endereço nesses requisitos.
+            Lista de endereços(len = limit)
+        """
         ends = []
         for loc in ents_loc:
             l = str(loc)
@@ -122,33 +159,38 @@ class Geoparsing:
         else:
             return (False, [])
 
-    def search_next_index(self, lista):
+    def search_next_index(self, list_best_address):
         """
         Método que busca uma nova posição a ser adicionado na lista de melhores endereços.
 
-        Parâmetro:
+        Parâmetros:
         ----------
-        lista: List
+        list_best_address : List
             - Lista contendo todos os endereços encontrados.
+        
+        Retorno:
+        ----------
+        out : Integer
+            - Posição onde o novo endereço deve ser adicionado.
         """
-        for i in range(len(lista)):
-            if lista[i]['type_class'] == "geral":
+        for i in range(len(list_best_address)):
+            if list_best_address[i]['type_class'] == "geral":
                 return i
         
-        return len(lista) - 1
+        return len(list_best_address) - 1
 
     def insert_ordened_to_priority(self, result, address, type_):
         """
-        Método que insere na lista de melhores endereços ordenado por prioridades.
+        Método que insere na lista de melhores endereços ordenando por prioridades.
 
-        Parâmetro:
+        Parâmetros:
         ----------
-        result: List
+        result : List
             - Lista de melhores endereços.
-        address: Dict
+        address : Dict
             - Endereço a ser inserido na lista.
-        type_: String
-            Tipo do endereço.
+        type_ : String
+            - Tipo do endereço.
         """
         if address not in result:
             if type_ == "school":
@@ -168,20 +210,20 @@ class Geoparsing:
         Algoritmos implementados:
             - Ordenar por níveis de prioridades
             - Filtrar por endereços que estejam em um determinado bairro 
-            que também esteja nestes endereços.
+            que também esteja nestes endereços filtrados.
             - Endereços que mais se repetem no texto.
 
-        Parâmetro:
+        Parâmetros:
         ----------
-        adresses: Dict
+        adresses : Dict
             - Dicionário de endereços e suas respectivas coordenadas.
-        text: String
+        text : String
             - Texto que esta passando pelo geoparsing.
 
         Retorno:
         ----------
         result : List
-            -Lista de objetos de `melhores` endereços.
+            - Lista de objetos de `melhores` endereços.
         """
         print(adresses.keys())
         result = []
@@ -217,7 +259,7 @@ class Geoparsing:
         """
         Realiza a filtragem dos endereços do texto que estão no gazetteer.
 
-        Parâmetro:
+        Parâmetros:
         ----------
         text : String
             - Texto que para realizar o geoparsing.
@@ -248,7 +290,7 @@ class Geoparsing:
         """
         Realiza o geoparsing do texto.
 
-        Parâmetro:
+        Parâmetros:
         ----------
         text : String
             - Texto que para realizar o geoparsing.
@@ -264,7 +306,7 @@ class Geoparsing:
         result : List
             - Lista de endereços.
         """
-        if (case_correct):
+        if case_correct:
             if gazetteer_cg:
                 result = self.filterAddressCGText(text.lower())
                 if result:
@@ -276,7 +318,7 @@ class Geoparsing:
                 ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
                 address_found = self.concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
-                if (result[0]):
+                if result[0]:
                     return result[1]
                 else:
                     raise Exception("Não foi possivel realizar o geoparsing do texto")
@@ -294,7 +336,7 @@ class Geoparsing:
             address_found = self.concatena_end(ents_loc)
             result = self.verfica(address_found, limit)
 
-            if (result[0]):
+            if result[0]:
                 return result[1]
             else:
                 raise Exception("Não foi possivel realizar o geoparsing do texto")
