@@ -1,16 +1,15 @@
 import os
 import csv
-import json
+import unicodedata
+
+import truecase
+from googletrans import Translator
+
 import spacy
 import geocoder
 
 import nltk
 from nltk.stem.porter import *
-from nltk.stem import WordNetLemmatizer
-from gensim.test.utils import datapath
-
-import truecase
-from googletrans import Translator
 
 from utils import string_to_list
 
@@ -45,7 +44,20 @@ class Geoparsing:
             - Objeto da biblioteca nativa do python: `CSV`.
         """
         for row in gazetteer:
-            self.gazetteer[row['name'].lower()] = (row['coordenates'], row['fclass'])
+            self.gazetteer[self.remove_accents(row['name'].lower())] = (row['coordenates'], row['fclass'])
+
+    def remove_accents(self, input_str):
+        """
+        Método que remove acentos das palavras.
+
+        Parâmetros:
+        ----------
+        input_str: String
+            - Entrada a ser removido os acentos
+        """
+        nfkd_form = unicodedata.normalize('NFKD', input_str)
+        only_ascii = nfkd_form.encode('ASCII', 'ignore')
+        return only_ascii.decode('utf-8')
 
     def remove_stop_words(self, text):
         """
@@ -271,6 +283,7 @@ class Geoparsing:
         """
         addresses_residentials = {}
         addresses_geral = {}
+        text = self.remove_accents(text)
 
         for address in self.gazetteer.keys():
             address_aux = address.split()
@@ -346,7 +359,7 @@ class Geoparsing:
 
 g = Geoparsing()
 text = "vamos falar de coisa boa hoje tem comemoração no calendário JPB festa porque tem carimbo de Resolvido antes mesmo do esperado ela em Santa Rita moradores de tibiri reclamavam de uma cratera no meio da rua e não era só isso não quando chovia a água invade as casas uma falta de infraestrutura geral Então bora mostrar como é que tá lá Bruno você já ouviu aquele ditado Quem te viu quem Avenida Conde te vê pois ele se aplica muito bem aqui Avenida Conde em junho quando o calendário JPB chegou aqui o Desmantelo era grande agora a gente não pode mais nem ficar muito tempo na rua porque olha só o trânsito tá fluindo Normalmente quando nós chegamos aqui a Rua Claro que estava interditada Então vamos para calçada que tem gente com força hoje aqui o Aluízio o senhor que entrou dentro do buraco comigo exatamente Não entendi o que você falou na televisão no dia certo e foi atendido mas o presente é porque hoje era para a gente voltar aqui para quem sabe ver o início da obra e hoje o calendário volta e já vê a obra pronta em uma mulher brava naquele dia ele clama Por que a gente sofre muito aqui sofreu muito o senhor voltou para sua casa tem uma briga desde fevereiro que comecei Desde o ano passado com o ex-prefeito de Netinho né E hoje foi concluído com através da TV Cabo Branco é o mesmo que a gente chamou e ela fez presente hoje trabalho está concluído o problema aqui não era pequeno não gente era muito grande a tubulação de água estava exposta a tubulação de esgoto tava exposta a tubulação de drenagem tava toda destruída e o que acontecia quando chovia a água ia toda para dentro da casa dos moradores se a gente reparar todas as casas aqui tem uma Molekinha para a gente entrar o outro lado olha só vou pedir para o Cardoso mostrar além de uma calçada bem alta A moradora ainda construiu esses batentes essas muletinhas e a informação que eu tenho é que não encheu mais de água na tubulação as maneiras que era de 200 toda substituída por 800 então o volume de água a vazão de água que suporta quatro vezes mais agora gente eu vou chamar a secretária de infraestrutura porque assim o calendário deu aquela força mas foi ela juntamente com a equipe que pode resolver com boa vontade esse problemão da vida de vocês secretária chega para cá e agora é Problema resolvido Chegamos aqui cumprimos a missão o que os soldados refizemos a tubulação colocamos de novo calçamento como vocês podem ver e assim isso tudo diante dos pedidos da população que a gente tá atendendo de acordo com as possibilidades com São Pedro a chuva a gente vem fazendo tudo que é possível nessa gestão mais vezes que a comida"
-a = g.geoparsing(text=text, case_correct=True, gazetteer_cg=False)
+a = g.geoparsing(text=text, case_correct=False, gazetteer_cg=True)
 print(a)
 print(len(a))
 
