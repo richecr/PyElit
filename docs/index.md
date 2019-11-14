@@ -1,6 +1,8 @@
 # PyElit
 Extraction of Locations and Issues of a Text
 
+- [Documentação](start.md)
+
 ## Por que essa biblioteca existe ?
 Participo de um projeto de pesquisa no [LSI-UFCG](https://sites.google.com/view/lsi-ufcg) e minhas atividades são com Geoparsing e Topic Modeling. Com as atividades realizadas foi decidido que seria adequado a criação dessa biblioteca para ser disponibilizada para a comunidade.
 
@@ -10,6 +12,6 @@ Participo de um projeto de pesquisa no [LSI-UFCG](https://sites.google.com/view/
 - A saída dessa biblioteca será usada em uma outra aplicação na área de cidades inteligentes.
 - Contribuir para a comunidade de Geoparsing e/ou TopicModeling.
 
-## Documentação da biblioteca:
+## Quem Somos ?
 
-- [Documentação](docs/index.html)
+- Rich Elton
