@@ -12,4 +12,8 @@ Participo de um projeto de pesquisa no [LSI-UFCG](https://sites.google.com/view/
 
 ## Documentação da biblioteca:
 
-- [Documentação](docs/start.md)
+- [Documentação](docs/index.md)
+
+## Mantenedores:
+
+- Rich Elton
