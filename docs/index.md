@@ -36,9 +36,8 @@ Detalhes de como funciona e como usar o Geoparsing da biblioteca.
 ## TopicModeling
 Detalhes de como funciona e como usar o TopicModeling da biblioteca
 
-- [Introdução](topic_modeling/introdution.md)
-    - [Objetivo](#)
-    - [Entendendo o funcionamento da classe](#)
+- [Introdução](topic_modeling/introdution.md#introdução)
+    - [Objetivo](topic_modeling/introdution.md#objetivo)
 - [Como usar ?](topic_modeling/introdution.md#como-usar-)
     - [Classificar um texto](topic_modeling/introdution.md#topicmodeling-classificar-um-texto)
     - [Imrpimir tópicos](topic_modeling/introdution.md#topicmodeling-imprimir-tópicos)
