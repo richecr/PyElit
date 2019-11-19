@@ -27,12 +27,11 @@ E assim os usuários que conseguirem fazer melhorias poderia enviar PRs para o a
 Detalhes de como funciona e como usar o Geoparsing da biblioteca.
 
 - [Introdução](geoparsing/introdution.md)
-    - [Objetivo](#)
-    - [Entendendo o funcionamento da classe](#)
-- [Como usar ?](#)
-    - [Geoparsing em texto com case correto](#)
-    - [Geoparsing em texto com case incorreto](#)
-    - [Geoparsing com o gazetteer(disponibilizado pela própria biblioteca)](#)
+    - [Objetivo](geoparsing/introdution.md#objetivo)
+- [Como usar ?](geoparsing/introdution.md#como-usar-)
+    - [Geoparsing em texto com case correto](geoparsing/introdution.md#geoparsing-com-case-correto-sem-utilização-do-gazetteer)
+    - [Geoparsing em texto com case incorreto](geoparsing/introdution.md#geoparsing-com-case-incorreto-sem-utilização-do-gazetteer)
+    - [Geoparsing com o gazetteer(disponibilizado pela própria biblioteca)](geoparsing/introdution.md#geoparsing-com-gazetteer)
 
 ## TopicModeling
 Detalhes de como funciona e como usar o TopicModeling da biblioteca
