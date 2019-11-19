@@ -15,7 +15,7 @@ O `geoparsing` é o principal método da classe, pois ele quem é responsável p
 
 Vamos ver alguns exemplos de como usar:
 
-### Geoparsing com case correto **sem** utilização do gazetteer:
+## Geoparsing com case correto **sem** utilização do gazetteer:
 
 ```python3
 geop = Geoparsing()
@@ -30,7 +30,7 @@ Entidades reconhecidas nesse exemplo:
 [Rua João Sérgio de Almeida, Bodócongo, Campina Grande]
 ```
 
-### Geoparsing com case incorreto **sem** utilização do gazetteer:
+## Geoparsing com case incorreto **sem** utilização do gazetteer:
 
 ```python3
 geop = Geoparsing()
@@ -45,7 +45,7 @@ Entidades reconhecidas nesse exemplo:
 [Bodocongó]
 ```
 
-### Geoparsing com o gazetteer:
+## Geoparsing com o gazetteer:
 
 ```python3
 geop = Geoparsing()

@@ -108,9 +108,9 @@ class TopicModeling:
 
         return False
 
-    def print_topics(self, quant_max_palavras=None):
+    def print_keywords(self, quant_max_palavras=None):
         """
-        Método que irá imprimir os tópicos do modelo.
+        Método que irá imprimir as palavras chaves de cada tópicos do modelo.
 
         Parâmetros:
         ----------
@@ -120,7 +120,7 @@ class TopicModeling:
         Retorno:
         ----------
         topics : List
-            - Lista de tópicos do modelo.
+            - Lista de palavras chaves por tópicos do modelo.
         """
         if quant_max_palavras == None:
             quant_max_palavras = 5
@@ -128,6 +128,9 @@ class TopicModeling:
         for topic in self.model.print_topics(-1, quant_max_palavras):
             topics.append(topic)
         return topics
+
+    def print_topics(self):
+        return self.topics
 
     def represent_topics(self, ids_topics, names_topics):
         """
@@ -171,13 +174,15 @@ class TopicModeling:
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
         result = self.model.get_document_topics(bow_vector)
+        result = sorted(result, reverse=True, key=lambda t: t[1])
         return result
 
 m = TopicModeling()
 # print(m.print_topics())
 # m.represent_topics([0, 1, 2, 3], ['saneamento', 'trânsito', 'obras', 'diversos'])
-r = m.rate_text('a gente chegou o Ginásio da Escola Maria honorina Santiago lá em Santa Rita a gente não passava de um depósito teve luta Teve muita insistência diga logo que não vamos carimbar o resolvido hoje ainda mais a sensação é quase essa Quem esteve aqui em outubro do ano passado e entra agora na escola só percebe muita diferença por exemplo nessa rampa aqui o piso era outro inadequado mas o nosso objetivo mesmo tá lá dentro o Ginásio da escola bota o capacete porque ainda é um ambiente obra né Se bem que a gente olha e já é outra escola daquela que a gente chegou aqui com certeza a escola está praticamente pronto tá faltando alguns detalhes de pintura por fora precisa secar parar de chover para secar para que as paredes ficam resistente a minha curiosidade hoje é o vinagre Bora lá chega aqui que eu não tô reconhecendo bem o ambiente porque esse caminho aqui com cobertura não existia rei da escola e pré-escola errada porque tá completamente diferente eu lembro que na primeira vez que o calendário teve aqui uma amiga de vocês que é cadeirante nem pode ir até o ginásio porque não tinha como ir hoje ela já teria condições de Com certeza a gente fez tudo isso mas pensando mais né Olha só o suspense abrindo a porta do ginásio Olha o colorido gente olha só que coisa linda que tá esse ginásio o chão chega brilha Pois é é lindo de ver isso eu tô vendo que tá tudo pintado já esse piso que era uma das fases mais complicadas da obra também já tá pronto é a área mais demorada era esse piso né tá pronto já está pronto como foi a primeira solicitação dos alunos do ginásio está concluído e Inclusive a parte de vestiário a parte de banheiro toda concluída a pintura concluída o piso concluído e a partir da escola está sendo concluída também dá para lembrar aí na edição como era antes e como tá agora é diferente porque antigamente não tinha nem o piso não tinha nada a infraestrutura mudou bastante banheiro e vestiário masculino também com acessibilidade aqui dá para cadeira de rodas passar e aqui atrás os chuveiros calendário JPB E hoje vai marcar o carimbo em andamento mas é um em andamento assim um sabor de Resolvido e aqui eu coloco o carinho em andamento qual seria um prazo bom para a gente voltar aqui testa segurança que os alunos querem festa vamos fazer')
+# print(m.print_keywords(quant_max_palavras=2))
+print("Tópico com id = 1:",m.get_topic(id_topic=1))
+# r = m.rate_text("o ginásio da Escola Maria Honoriana Santiago está com obras paradas desde do início do ano.")
 
-print(r)
-print(m.get_topic(r[0][0]))
-
+# print("Tópicos e probabilidades:", r)
+# print("Tópico:", m.get_topic(r[0][0]))
