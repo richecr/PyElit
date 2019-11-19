@@ -9,3 +9,11 @@ Participo de um projeto de pesquisa no [LSI-UFCG](https://sites.google.com/view/
 - O objetivo da biblioteca é a criação de um Geoparsing e de um Classificador de Problemas Urbanos.
 - A saída dessa biblioteca será usada em uma outra aplicação na área de cidades inteligentes.
 - Contribuir para a comunidade de Geoparsing e/ou TopicModeling.
+
+## Documentação da biblioteca:
+
+- [Documentação](docs/index.md)
+
+## Mantenedores:
+
+- Rich Elton
