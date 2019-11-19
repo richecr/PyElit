@@ -11,7 +11,7 @@ import geocoder
 import nltk
 from nltk.stem.porter import *
 
-from utils import string_to_list
+from .utils.utils import string_to_list
 
 class Geoparsing:
     """
