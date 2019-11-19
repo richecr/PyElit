@@ -1,4 +1,8 @@
-# PyElit
+![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/Rickecr/PyElit)
+![PyPI](https://img.shields.io/pypi/v/PyElit)
+![PyPI - License](https://img.shields.io/pypi/l/PyElit)
+
+# [PyElit](https://pypi.org/project/PyElit/)
 Extraction of Locations and Issues of a Text
 
 ## Por que essa biblioteca existe ?
