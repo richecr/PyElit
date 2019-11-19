@@ -8,7 +8,7 @@ setup(
     version = '0.1.0',
     author = 'Rich Elton',
     author_email = 'richelton14@gmail.com',
-    description = 'Extração de localizações e de problemas urbanos de textos',
+    description = 'Extraction of Locations and Issues of a Text',
     long_description = long_description,
     long_description_content_type="text/markdown",
     packages=find_packages(),
