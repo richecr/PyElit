@@ -11,7 +11,19 @@ setup(
     description = 'Extraction of Locations and Issues of a Text',
     long_description = long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(),
+    packages=["pyelit"],
+    install_requires=[
+        "gensim",
+        "geocoder",
+        "numpy",
+        "spacy",
+        "nltk",
+        "pandas",
+        "googletrans",
+        "truecase",
+        "plpygis",
+        "pyLDAvis"
+    ],
     include_package_data=True,
     url="https://github.com/Rickecr/PyElit",
     project_urls = {
