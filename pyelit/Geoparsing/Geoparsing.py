@@ -81,7 +81,7 @@ class Geoparsing:
         out = out.strip()
         return out
 
-    def __concatena_end(self, list_end):
+    def __concatena_end(self, list_end, exclude=False):
         """
         Método que concatena os endereços.
 
@@ -95,7 +95,10 @@ class Geoparsing:
         out : List
              - Lista de endereços concatenados.
         """
-        out = [e for e in list_end]
+        if exclude:
+            out = []
+        else:
+            out = [e for e in list_end]
         for i in range(len(list_end) - 1):
             for j in range(i+1, len(list_end)):
                 temp = str(list_end[i]) + " " + str(list_end[j])
@@ -215,7 +218,7 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text):
+    def choose_best_addresses(self, adresses, text, addresses_):
         """
         Realiza a escolha dos melhores endereços encontrados.
 
@@ -252,18 +255,31 @@ class Geoparsing:
                 result.append(g)
                 self.insert_ordened_to_priority(result, g, type_)
 
+        # Ordenando por quantidade de ocorrências no texto.
+        result = sorted(result, key=lambda e: e['occurrences_in_text'])
+
         # Ordenando por endereços que também foram encontrados seus bairros na filtragem, 
         # assim possuindo uma chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
             l = result[i]
-            if l['raw']['address']['District'].lower() in adresses.keys():
-                new_result.insert(0, l)
+            if l['raw'].__contains__('address'):
+                if l['raw']['address']['District'].lower() in adresses.keys():
+                    new_result.insert(0, l)
+                else:
+                    new_result.append(l)
             else:
-                new_result.append(l)
+                if l['raw']['name'].lower() in adresses.keys():
+                    new_result.insert(0, l)
+                else:
+                    new_result.append(l)
+        result = new_result
 
-        # Ordenando por quantidade de ocorrências no texto.
-        sorted(new_result, key=lambda e: e['occurrences_in_text'])
+        for loc in addresses_:
+            l = str(loc)
+            g = geocoder.arcgis(l)
+            end = g.json
+            result.insert(0, end)
 
         return result
 
@@ -293,11 +309,21 @@ class Geoparsing:
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 if re.search("\\b" + address + "\\b", text):
-                    print(address)
-                    addresses_geral[address] = self.gazetteer[address]
+                    if not self.repeticoes_enderecos(addresses_geral.keys(), address):
+                        print(address)
+                        addresses_geral[address] = self.gazetteer[address]
 
-        result = self.choose_best_addresses(addresses_geral, text)
+        addresses_ = [str(a) for a in addresses_geral.keys()]
+        addresses_ = self.__concatena_end(addresses_, exclude=True)
+        print(addresses_)
+        result = self.choose_best_addresses(addresses_geral, text, addresses_)
         return result
+
+    def repeticoes_enderecos(self, addresses, address):
+        for a in addresses:
+            if address in a:
+                return True
+        return False
 
     def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=False):
         """
