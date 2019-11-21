@@ -114,21 +114,25 @@ def pre_processamento(texto, titulo):
     texto = lista_para_texto(doc_out)
     return texto
 
-# PREPARANDO ARQUIVOS.
 
-fields = ["titulo", "texto"]
-f = csv.writer(open('../dados/textos_limpos.csv', 'w', encoding='utf-8'))
-f.writerow(fields)
+def main():
+	# PREPARANDO ARQUIVOS.
 
-# Carregando dados.
-dados = csv.DictReader(open("../dados/textos_videos.csv", encoding='utf-8'))
-textos = []
-titulo_textos = []
+	fields = ["titulo", "texto"]
+	f = csv.writer(open('../dados/textos_limpos.csv', 'w', encoding='utf-8'))
+	f.writerow(fields)
 
-for arq in dados:
-    textos.append(arq['texto'])
-    titulo_textos.append(arq['titulo'])
+	# Carregando dados.
+	dados = csv.DictReader(open("../dados/textos_videos.csv", encoding='utf-8'))
+	textos = []
+	titulo_textos = []
 
-for texto, titulo in zip(textos, titulo_textos):
-	t = pre_processamento(texto, titulo)
-	f.writerow([titulo, t])
+	for arq in dados:
+		textos.append(arq['texto'])
+		titulo_textos.append(arq['titulo'])
+
+	for texto, titulo in zip(textos, titulo_textos):
+		t = pre_processamento(texto, titulo)
+		f.writerow([titulo, t])
+
+# main()

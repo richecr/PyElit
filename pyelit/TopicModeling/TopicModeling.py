@@ -176,13 +176,3 @@ class TopicModeling:
         result = self.model.get_document_topics(bow_vector)
         result = sorted(result, reverse=True, key=lambda t: t[1])
         return result
-
-m = TopicModeling()
-# print(m.print_topics())
-# m.represent_topics([0, 1, 2, 3], ['saneamento', 'trânsito', 'obras', 'diversos'])
-# print(m.print_keywords(quant_max_palavras=2))
-print("Tópico com id = 1:",m.get_topic(id_topic=1))
-# r = m.rate_text("o ginásio da Escola Maria Honoriana Santiago está com obras paradas desde do início do ano.")
-
-# print("Tópicos e probabilidades:", r)
-# print("Tópico:", m.get_topic(r[0][0]))
