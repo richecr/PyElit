@@ -281,6 +281,19 @@ class Geoparsing:
             end = g.json
             result.insert(0, end)
 
+        # Ordenar por endereços que são do tipo "StreetName"
+        new_result = []
+        for i in range(len(result) - 1, -1, -1):
+            if result[i].__contains__('quality'):
+                if result[i]['quality'] == "StreetName":
+                    new_result.insert(0, result[i])
+                else:
+                    new_result.append(result[i])
+            else:
+                new_result.append(result[i])
+            
+        result = new_result
+
         return result
 
     def filterAddressCGText(self, text):
