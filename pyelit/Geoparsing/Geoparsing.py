@@ -218,7 +218,7 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text, addresses_):
+    def choose_best_addresses(self, adresses, text, addresses_, cities):
         """
         Realiza a escolha dos melhores endereços encontrados.
 
@@ -291,9 +291,21 @@ class Geoparsing:
                     new_result.append(result[i])
             else:
                 new_result.append(result[i])
-            
+
         result = new_result
 
+        # ordenar por endereços que pertencem a cidade que foi encontrada no texto.
+        new_result = []
+        for i in range(len(result) - 1, -1, -1):
+            if result[i].__contains__('quality'):
+                for city in cities:
+                    if city in result[i]['address'].lower():
+                        new_result.insert(0, result[i])
+                    else:
+                        new_result.append(result[i])
+            else:
+                new_result.append(result[i])
+        result = new_result
         return result
 
     def filterAddressCGText(self, text):
@@ -310,8 +322,8 @@ class Geoparsing:
         result : Dict
             - Dicionário de endereços e suas respectivas coordenadas.
         """
-        addresses_residentials = {}
         addresses_geral = {}
+
         text = self.remove_accents(text)
 
         for address in self.gazetteer.keys():
@@ -326,10 +338,11 @@ class Geoparsing:
                         print(address)
                         addresses_geral[address] = self.gazetteer[address]
 
+        cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
+        print(cities)
         addresses_ = [str(a) for a in addresses_geral.keys()]
         addresses_ = self.__concatena_end(addresses_, exclude=True)
-        print(addresses_)
-        result = self.choose_best_addresses(addresses_geral, text, addresses_)
+        result = self.choose_best_addresses(addresses_geral, text, addresses_, cities)
         return result
 
     def repeticoes_enderecos(self, addresses, address):
