@@ -227,6 +227,8 @@ class Geoparsing:
             - Filtrar por endereços que estejam em um determinado bairro 
             que também esteja nestes endereços filtrados.
             - Endereços que mais se repetem no texto.
+            - Endereços que são StreatName
+            - Endereços que estão contidos nas cidades encontradas no texto.
 
         Parâmetros:
         ----------
@@ -234,6 +236,10 @@ class Geoparsing:
             - Dicionário de endereços e suas respectivas coordenadas.
         text : String
             - Texto que esta passando pelo geoparsing.
+        addresses_ : List
+            - Lista com todos os endereços concatenados entre si.
+        cities : List
+            - Lista de nomes das cidades encontradas.
 
         Retorno:
         ----------
