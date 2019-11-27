@@ -303,14 +303,14 @@ class Geoparsing:
         # ordenar por endereços que pertencem a cidade que foi encontrada no texto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
-            if result[i].__contains__('quality'):
-                for city in cities:
+            for city in cities:
+                if result[i].__contains__('quality'):
                     if city in result[i]['address'].lower():
                         new_result.insert(0, result[i])
-                    else:
-                        new_result.append(result[i])
-            else:
-                new_result.append(result[i])
+                else:
+                    if str(result[i]['raw']['address']['City']).lower() == city:
+                        new_result.insert(0, result[i])
+                    
         result = new_result
         return result
 
@@ -345,7 +345,6 @@ class Geoparsing:
                         addresses_geral[address] = (self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
 
         cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
-        print(cities)
         addresses_ = [str(a) for a in addresses_geral.keys()]
         addresses_ = self.__concatena_end(addresses_, exclude=True)
         result = self.choose_best_addresses(addresses_geral, text, addresses_, cities)
