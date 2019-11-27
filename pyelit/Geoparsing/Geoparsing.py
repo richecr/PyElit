@@ -44,7 +44,7 @@ class Geoparsing:
             - Objeto da biblioteca nativa do python: `CSV`.
         """
         for row in gazetteer:
-            self.gazetteer[self.remove_accents(row['name'].lower())] = (row['coordenates'], row['fclass'])
+            self.gazetteer[self.remove_accents(row['osm_id'])] = (row['coordenates'], row['fclass'], row['name'].lower())
 
     def remove_accents(self, input_str):
         """
@@ -332,17 +332,17 @@ class Geoparsing:
 
         text = self.remove_accents(text)
 
-        for address in self.gazetteer.keys():
+        for osm_id in self.gazetteer.keys():
+            address = self.gazetteer.get(osm_id)[2]
             address_aux = address.split()
             if address_aux[0] == "rua":
                 address_aux = address_aux[1:]
-            if len(address_aux) > 1 or self.gazetteer[address][1] == "suburb":
+            if len(address_aux) > 1 or self.gazetteer[osm_id][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 if re.search("\\b" + address + "\\b", text):
                     if not self.repeticoes_enderecos(addresses_geral.keys(), address):
-                        print(address)
-                        addresses_geral[address] = self.gazetteer[address]
+                        addresses_geral[address] = (self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
 
         cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
         print(cities)
