@@ -44,7 +44,7 @@ class Geoparsing:
             - Objeto da biblioteca nativa do python: `CSV`.
         """
         for row in gazetteer:
-            self.gazetteer[self.remove_accents(row['name'].lower())] = (row['coordenates'], row['fclass'])
+            self.gazetteer[self.remove_accents(row['osm_id'])] = (row['coordenates'], row['fclass'], row['name'].lower())
 
     def remove_accents(self, input_str):
         """
@@ -81,7 +81,7 @@ class Geoparsing:
         out = out.strip()
         return out
 
-    def __concatena_end(self, list_end):
+    def __concatena_end(self, list_end, exclude=False):
         """
         Método que concatena os endereços.
 
@@ -95,7 +95,10 @@ class Geoparsing:
         out : List
              - Lista de endereços concatenados.
         """
-        out = [e for e in list_end]
+        if exclude:
+            out = []
+        else:
+            out = [e for e in list_end]
         for i in range(len(list_end) - 1):
             for j in range(i+1, len(list_end)):
                 temp = str(list_end[i]) + " " + str(list_end[j])
@@ -215,7 +218,7 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text):
+    def choose_best_addresses(self, adresses, text, addresses_, cities):
         """
         Realiza a escolha dos melhores endereços encontrados.
 
@@ -224,6 +227,8 @@ class Geoparsing:
             - Filtrar por endereços que estejam em um determinado bairro 
             que também esteja nestes endereços filtrados.
             - Endereços que mais se repetem no texto.
+            - Endereços que são StreatName
+            - Endereços que estão contidos nas cidades encontradas no texto.
 
         Parâmetros:
         ----------
@@ -231,6 +236,10 @@ class Geoparsing:
             - Dicionário de endereços e suas respectivas coordenadas.
         text : String
             - Texto que esta passando pelo geoparsing.
+        addresses_ : List
+            - Lista com todos os endereços concatenados entre si.
+        cities : List
+            - Lista de nomes das cidades encontradas.
 
         Retorno:
         ----------
@@ -252,19 +261,57 @@ class Geoparsing:
                 result.append(g)
                 self.insert_ordened_to_priority(result, g, type_)
 
+        # Ordenando por quantidade de ocorrências no texto.
+        result = sorted(result, key=lambda e: e['occurrences_in_text'])
+
         # Ordenando por endereços que também foram encontrados seus bairros na filtragem, 
         # assim possuindo uma chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
             l = result[i]
-            if l['raw']['address']['District'].lower() in adresses.keys():
-                new_result.insert(0, l)
+            if l['raw'].__contains__('address'):
+                if l['raw']['address']['District'].lower() in adresses.keys():
+                    new_result.insert(0, l)
+                else:
+                    new_result.append(l)
             else:
-                new_result.append(l)
+                if l['raw']['name'].lower() in adresses.keys():
+                    new_result.insert(0, l)
+                else:
+                    new_result.append(l)
+        result = new_result
 
-        # Ordenando por quantidade de ocorrências no texto.
-        sorted(new_result, key=lambda e: e['occurrences_in_text'])
+        for loc in addresses_:
+            l = str(loc)
+            g = geocoder.arcgis(l)
+            end = g.json
+            result.insert(0, end)
 
+        # Ordenar por endereços que são do tipo "StreetName"
+        new_result = []
+        for i in range(len(result) - 1, -1, -1):
+            if result[i].__contains__('quality'):
+                if result[i]['quality'] == "StreetName":
+                    new_result.insert(0, result[i])
+                else:
+                    new_result.append(result[i])
+            else:
+                new_result.append(result[i])
+
+        result = new_result
+
+        # ordenar por endereços que pertencem a cidade que foi encontrada no texto.
+        new_result = []
+        for i in range(len(result) - 1, -1, -1):
+            for city in cities:
+                if result[i].__contains__('quality'):
+                    if city in result[i]['address'].lower():
+                        new_result.insert(0, result[i])
+                else:
+                    if str(result[i]['raw']['address']['City']).lower() == city:
+                        new_result.insert(0, result[i])
+                    
+        result = new_result
         return result
 
     def filterAddressCGText(self, text):
@@ -281,23 +328,33 @@ class Geoparsing:
         result : Dict
             - Dicionário de endereços e suas respectivas coordenadas.
         """
-        addresses_residentials = {}
         addresses_geral = {}
+
         text = self.remove_accents(text)
 
-        for address in self.gazetteer.keys():
+        for osm_id in self.gazetteer.keys():
+            address = self.gazetteer.get(osm_id)[2]
             address_aux = address.split()
             if address_aux[0] == "rua":
                 address_aux = address_aux[1:]
-            if len(address_aux) > 1 or self.gazetteer[address][1] == "suburb":
+            if len(address_aux) > 1 or self.gazetteer[osm_id][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 if re.search("\\b" + address + "\\b", text):
-                    print(address)
-                    addresses_geral[address] = self.gazetteer[address]
+                    if not self.repeticoes_enderecos(addresses_geral.keys(), address):
+                        addresses_geral[address] = (self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
 
-        result = self.choose_best_addresses(addresses_geral, text)
+        cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
+        addresses_ = [str(a) for a in addresses_geral.keys()]
+        addresses_ = self.__concatena_end(addresses_, exclude=True)
+        result = self.choose_best_addresses(addresses_geral, text, addresses_, cities)
         return result
+
+    def repeticoes_enderecos(self, addresses, address):
+        for a in addresses:
+            if address in a:
+                return True
+        return False
 
     def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=False):
         """
