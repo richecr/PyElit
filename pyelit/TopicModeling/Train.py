@@ -9,6 +9,7 @@ from gensim.models.coherencemodel import CoherenceModel
 
 from sklearn.model_selection import train_test_split
 
+# Utilizando cross-validation
 def main_cross_val():
 	# Configurando bibliotecas para ter um melhor resultado.
 	np.random.seed(2018)
@@ -22,10 +23,8 @@ def main_cross_val():
 	textos = [str(texto) for texto in textos]
 	cross = kfoldcv(textos)
 	print("Total: ", len(textos))
-	print(len(cross))
 
 	for train_tests in cross:
-		print(len(train_tests))
 		train = train_tests[0]
 		test = train_tests[1]
 
@@ -53,7 +52,7 @@ def main_cross_val():
 		corpus_tfidf = tfidf[bow_corpus]
 
 		# Criando e treinando o modelo.
-		lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4)
+		lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4, alpha=0.01, eta=0.9)
 
 		coherence_model(lda_model_tfidf, processed_test, corpus_tfidf, dictionary)
 
