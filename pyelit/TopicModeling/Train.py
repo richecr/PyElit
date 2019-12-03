@@ -29,7 +29,7 @@ def main_cross_val():
 		test = train_tests[1]
 
 		# print(train)
-		processed_docs = [t1.split() for t in train for t1 in t]
+		processed_docs = [t.split() for t in train]
 		processed_test = [t.split() for t in test]
 
 		print("Train: ", len(processed_docs))
@@ -73,7 +73,8 @@ def kfoldcv(dados, k = 6, seed = 42):
 		train = []
 		for subset in subsets:
 			if subset != test:
-				train.append(subset)
+				for ss in subset:
+					train.append(ss)
 		kfolds.append((train,test))
 	
 	return kfolds
