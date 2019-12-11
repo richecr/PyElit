@@ -105,6 +105,11 @@ class Geoparsing:
                 out.append(temp)
         return out
 
+    def concantena_address(self, cities, places, street):
+        out = []
+        # TODO
+        return out
+
     def __verifica_endereco(self, end):
         """
         Método que verifica se um endereço é da Paraíba 
@@ -345,6 +350,9 @@ class Geoparsing:
                         addresses_geral[address] = (self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
 
         cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
+        places = [str(a) for a in addresses_geral.keys() if addresses_geral[a][3] == "place"]
+        ruas = [str(a) for a in addresses_geral.keys() if addresses_geral[a][3] == "road"]
+        addresses__ = self.concantena_address(cities, places, ruas)
         addresses_ = [str(a) for a in addresses_geral.keys()]
         addresses_ = self.__concatena_end(addresses_, exclude=True)
         result = self.choose_best_addresses(addresses_geral, text, addresses_, cities)
