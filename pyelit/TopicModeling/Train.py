@@ -1,3 +1,4 @@
+import os
 import nltk
 import random
 import spacy
@@ -6,6 +7,8 @@ import numpy as np
 import pandas as pd
 from gensim import corpora, models
 from gensim.models.coherencemodel import CoherenceModel
+import matplotlib.pyplot as plt
+from gensim.test.utils import datapath
 
 from sklearn.model_selection import train_test_split
 
@@ -79,46 +82,76 @@ def kfoldcv(dados, k = 6, seed = 42):
 	
 	return kfolds
 
-main_cross_val()
+# main_cross_val()
 
-# def main():
-# 	# Configurando bibliotecas para ter um melhor resultado.
-# 	np.random.seed(2018)
-# 	nltk.download('wordnet')
-# 	nlp = spacy.load('pt_core_news_sm')
+def main():
+	# Configurando bibliotecas para ter um melhor resultado.
+	np.random.seed(2018)
+	nltk.download('wordnet')
+	nlp = spacy.load('pt_core_news_sm')
 
-# 	# PREPARANDO ARQUIVOS.
-# 	dados = pd.read_csv("../../dados/textos_limpos.csv")
-# 	dados.drop_duplicates(['texto'], inplace=True)
-# 	textos = dados['texto']
+	# PREPARANDO ARQUIVOS.
+	dados = pd.read_csv("../../dados/textos_limpos.csv")
+	dados.drop_duplicates(['texto'], inplace=True)
+	textos = dados['texto']
 
-# 	processed_docs = dados['texto'].map(lambda texto: texto.split())
-# 	print(processed_docs[:10])
+	processed_docs = dados['texto'].map(lambda texto: texto.split())
+	print(processed_docs[:10])
 
-# 	# Criando dicionário de palavras.
-# 	dictionary = gensim.corpora.Dictionary(processed_docs)
+	# Criando dicionário de palavras.
+	dictionary = gensim.corpora.Dictionary(processed_docs)
 
-# 	# Gensim Filter Extremes
-# 	# Filtrar tokens que aparecem em menos de 15 documentos
-# 	# ou em mais de 0.5 documentos(fração do tamanho total do corpus)
-# 	# Após essas duas etapas, mantenha apenas os 100000
-# 	dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
+	# Gensim Filter Extremes
+	# Filtrar tokens que aparecem em menos de 15 documentos
+	# ou em mais de 0.5 documentos(fração do tamanho total do corpus)
+	# Após essas duas etapas, mantenha apenas os 100000
+	dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
-# 	# Bag of Words(Saco de Palavras).
-# 	bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
+	# Bag of Words(Saco de Palavras).
+	bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-# 	# Usando TF-IDF.
-# 	tfidf = models.TfidfModel(bow_corpus)
-# 	corpus_tfidf = tfidf[bow_corpus]
+	# Usando TF-IDF.
+	tfidf = models.TfidfModel(bow_corpus)
+	corpus_tfidf = tfidf[bow_corpus]
 
-# 	# Criando e treinando o modelo.
-# 	lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4, alpha=0.01, eta=0.9)
-# 	# lda_model_tfidf.save("./modelo/meu_lda_model")
+	# Criando e treinando o modelo.
+	# lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4, alpha=0.01, eta=0.9)
+	# lda_model_tfidf.save("./modelo/meu_lda_model")
 
-# 	def coherence_model(lda_model_, processed_docs, corpus_tfidf, dictionary):
-# 		coherence_model_lda = CoherenceModel(model=lda_model_, texts=processed_docs, corpus=corpus_tfidf, dictionary=dictionary, coherence='c_v')
-# 		coherence_lda = coherence_model_lda.get_coherence()
-# 		print('\nCoherence Score LDAModelTfIdf: ', coherence_lda)
+	ROOT = os.path.abspath(os.path.dirname(__file__))
+	fname = datapath(ROOT + "/modelo/meu_lda_model")
+	model = gensim.models.LdaMulticore.load(fname=fname)
 
-# 	coherence_model(lda_model_tfidf, processed_docs, corpus_tfidf, dictionary)
-# main()
+	def coherence_model(lda_model_, processed_docs, corpus_tfidf, dictionary):
+		coherence_model_lda = CoherenceModel(model=lda_model_, texts=processed_docs, corpus=corpus_tfidf, dictionary=dictionary, coherence='c_v')
+		coherence_lda = coherence_model_lda.get_coherence()
+		print('\nCoherence Score LDAModelTfIdf load: ', coherence_lda)
+
+	coherence_model(model, processed_docs, corpus_tfidf, dictionary)
+
+	def compute_num_steps(dct, corpus_tfidf, texts, limit, start, step):
+		coherence_values = []
+		model_list = []
+		for passes in range(start, limit, 1):
+			model = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=passes, workers=4, alpha=0.01, eta=0.9)
+			model_list.append(model)
+			coherencemodel = CoherenceModel(model=model, texts=texts, corpus=corpus_tfidf, dictionary=dct, coherence='c_v')
+			coherence_values.append(coherencemodel.get_coherence())
+		
+		return model_list, coherence_values
+	
+	model_list, coherence_values = compute_num_steps(dictionary, corpus_tfidf, processed_docs, 13, 9, 1)
+
+	limit=13; start=9; step=1;
+	x = range(start, limit, step)
+	plt.plot(x, coherence_values)
+	plt.xlabel("Steps")
+	plt.ylabel("Coherence score")
+	plt.legend(("coherence_values"), loc='best')
+	plt.show()
+
+	for m, cv in zip(x, coherence_values):
+		print("Step =", m, " has Coherence Value of", round(cv, 4))
+
+	# coherence_model(lda_model_tfidf, processed_docs, corpus_tfidf, dictionary)
+main()
