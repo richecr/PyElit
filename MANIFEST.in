@@ -1,5 +1,5 @@
 include requirements.txt
 include dados/*
-include Geoparsing/gazetteer/*
-include Geoparsing/gazetteer/processados/*
-include TopicModeling/modelo/*
+include pyelit/Geoparsing/gazetteer/*
+include pyelit/Geoparsing/gazetteer/processados/*
+include pyelit/TopicModeling/modelo/*

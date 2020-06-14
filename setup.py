@@ -29,7 +29,7 @@ class PostInstallCommand(install):
 
 setup(
     name='PyElit',
-    version='0.1.1',
+    version='0.1.2',
     author='Rich Elton',
     author_email='richelton14@gmail.com',
     description='Extraction of Locations and Issues of a Text',
