@@ -1,3 +1,4 @@
+include requirements.txt
 include dados/*
 include Geoparsing/gazetteer/*
 include Geoparsing/gazetteer/processados/*
