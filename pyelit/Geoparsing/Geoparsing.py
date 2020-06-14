@@ -132,10 +132,8 @@ class Geoparsing:
         """
         if (end['confidence'] >= 5):
             # ", campina grande" in end['address'].lower() and
-            if (", paraíba" in end['address'].lower()):
-                return True
-            else:
-                return False
+            # if (", paraíba" in end['address'].lower()):
+            return True
         else:
             return False
 
@@ -166,6 +164,7 @@ class Geoparsing:
             l = str(loc)
             g = geocoder.arcgis(l)
             end = g.json
+            print(end)
             if (end != None):
                 ends.append(end)
 
@@ -370,7 +369,7 @@ class Geoparsing:
                 return True
         return False
 
-    def geoparsing(self, text, case_correct=None, limit=5, gazetteer_cg=False):
+    def geoparsing(self, text, case_correct=False, limit=5, gazetteer_cg=False):
         """
         Realiza o geoparsing do texto.
 
@@ -403,8 +402,9 @@ class Geoparsing:
         else:
             if case_correct:
                 doc = self.nlp(text)
-                ents_loc = [entity for entity in doc.ents if entity.label_ ==
-                            "LOC" or entity.label_ == "GPE"]
+                print(text)
+                ents_loc = list(filter(lambda entity: entity.label_ ==
+                                       "LOC" or entity.label_ == "GPE", doc.ents))
                 address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:
@@ -413,22 +413,17 @@ class Geoparsing:
                     raise Exception(
                         "Não foi possivel realizar o geoparsing do texto")
             else:
-                text_en = self.translator.translate(text, src="pt", dest="en")
+                text = truecase.get_true_case(text)
+
+                text_en = self.translator.translate(text, dest="en")
                 text_en = text_en.text
-                text_true_case = truecase.caser.get_true_case(text_en)
+                print(text_en)
+                text_true_case = truecase.get_true_case(text_en)
+                print(text_true_case)
 
                 text_pt = self.translator.translate(
                     text_true_case, src="en", dest="pt")
                 text = text_pt.text
 
                 doc = self.nlp(text)
-
-                ents_loc = [entity for entity in doc.ents if entity.label_ ==
-                            "LOC" or entity.label_ == "GPE"]
-                address_found = self.__concatena_end(ents_loc)
-                result = self.verfica(address_found, limit)
-                if result[0]:
-                    return result[1]
-                else:
-                    raise Exception(
-                        "Não foi possivel realizar o geoparsing do texto")
+                return self.geoparsing(text, case_correct=True)
