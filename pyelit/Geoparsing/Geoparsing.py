@@ -13,10 +13,12 @@ from nltk.stem.porter import *
 
 from .utils.utils import string_to_list
 
+
 class Geoparsing:
     """
     Classe responsável por realizar o Geoparsing.
     """
+
     def __init__(self):
         """
         Construtor da classe. Onde todos os atributos são iniciandos e sofrem pré-processamento.
@@ -24,13 +26,15 @@ class Geoparsing:
         self.translator = Translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
-        self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
+        self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário",
+                                         "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         self.residential = {}
         self.gazetteer = {}
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
-        self.gazetteer_ln = csv.DictReader(open(fname + "/gazetteerpb.csv", "r", encoding='utf-8'))
+        self.gazetteer_ln = csv.DictReader(
+            open(fname + "/gazetteerpb.csv", "r", encoding='utf-8'))
         self.pre_process(self.gazetteer_ln)
 
     def pre_process(self, gazetteer):
@@ -44,7 +48,8 @@ class Geoparsing:
             - Objeto da biblioteca nativa do python: `CSV`.
         """
         for row in gazetteer:
-            self.gazetteer[self.remove_accents(row['osm_id'])] = (row['coordenates'], row['fclass'], row['name'].lower(), row['type'])
+            self.gazetteer[self.remove_accents(row['osm_id'])] = (
+                row['coordenates'], row['fclass'], row['name'].lower(), row['type'])
 
     def remove_accents(self, input_str):
         """
@@ -67,7 +72,7 @@ class Geoparsing:
         ----------
         text: String
             - Texto que esta passando pelo processo do geoparsing.
-        
+
         Retorno:
         ----------
         out : String
@@ -89,7 +94,7 @@ class Geoparsing:
         ----------
         list_end: List
             - Lista contendo todos os endereços encontrados.
-        
+
         Retorno:
         ----------
         out : List
@@ -119,7 +124,7 @@ class Geoparsing:
         ----------
         end: Dict
             - Dicionário contendo todas as informações do endereço.
-        
+
         Retorno:
         ----------
         True: Caso o endereço obedeça aos requisitos.
@@ -187,7 +192,7 @@ class Geoparsing:
         ----------
         list_best_address : List
             - Lista contendo todos os endereços encontrados.
-        
+
         Retorno:
         ----------
         out : Integer
@@ -196,7 +201,7 @@ class Geoparsing:
         for i in range(len(list_best_address)):
             if list_best_address[i]['type_class'] == "geral":
                 return i
-        
+
         return len(list_best_address) - 1
 
     def insert_ordened_to_priority(self, result, address, type_):
@@ -258,7 +263,7 @@ class Geoparsing:
         for loc in adresses.keys():
             coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
-            loc_= str(lat) + ", " + str(lon)
+            loc_ = str(lat) + ", " + str(lon)
             g = geocoder.reverse(location=loc_, provider="arcgis")
             g = g.json
             g['occurrences_in_text'] = text.count(loc)
@@ -269,7 +274,7 @@ class Geoparsing:
         # Ordenando por quantidade de ocorrências no texto.
         result = sorted(result, key=lambda e: e['occurrences_in_text'])
 
-        # Ordenando por endereços que também foram encontrados seus bairros na filtragem, 
+        # Ordenando por endereços que também foram encontrados seus bairros na filtragem,
         # assim possuindo uma chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
@@ -315,7 +320,7 @@ class Geoparsing:
                 else:
                     if str(result[i]['raw']['address']['City']).lower() == city:
                         new_result.insert(0, result[i])
-                    
+
         result = new_result
         return result
 
@@ -347,15 +352,16 @@ class Geoparsing:
                 address = address.replace(")", "")
                 if re.search("\\b" + address + "\\b", text):
                     if not self.repeated_address(addresses_geral.keys(), address):
-                        addresses_geral[address] = (self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
+                        addresses_geral[address] = (
+                            self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
 
-        cities = [str(a) for a in addresses_geral.keys() if addresses_geral[a][1] == "city"]
-        places = [str(a) for a in addresses_geral.keys() if addresses_geral[a][3] == "place"]
-        ruas = [str(a) for a in addresses_geral.keys() if addresses_geral[a][3] == "road"]
-        addresses__ = self.concantena_address(cities, places, ruas)
+        cities = [str(a) for a in addresses_geral.keys()
+                  if addresses_geral[a][1] == "city"]
+
         addresses_ = [str(a) for a in addresses_geral.keys()]
         addresses_ = self.__concatena_end(addresses_, exclude=True)
-        result = self.choose_best_addresses(addresses_geral, text, addresses_, cities)
+        result = self.choose_best_addresses(
+            addresses_geral, text, addresses_, cities)
         return result
 
     def repeated_address(self, addresses, address):
@@ -392,31 +398,37 @@ class Geoparsing:
             if result:
                 return result
             else:
-                raise Exception("Não foi possível realizar o geoparsing do texto") 
+                raise Exception(
+                    "Não foi possível realizar o geoparsing do texto")
         else:
             if case_correct:
                 doc = self.nlp(text)
-                ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
+                ents_loc = [entity for entity in doc.ents if entity.label_ ==
+                            "LOC" or entity.label_ == "GPE"]
                 address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:
                     return result[1]
                 else:
-                    raise Exception("Não foi possivel realizar o geoparsing do texto")
+                    raise Exception(
+                        "Não foi possivel realizar o geoparsing do texto")
             else:
                 text_en = self.translator.translate(text, src="pt", dest="en")
                 text_en = text_en.text
                 text_true_case = truecase.caser.get_true_case(text_en)
 
-                text_pt = self.translator.translate(text_true_case, src="en", dest="pt")
+                text_pt = self.translator.translate(
+                    text_true_case, src="en", dest="pt")
                 text = text_pt.text
 
                 doc = self.nlp(text)
 
-                ents_loc = [entity for entity in doc.ents if entity.label_ == "LOC" or entity.label_ == "GPE"]
+                ents_loc = [entity for entity in doc.ents if entity.label_ ==
+                            "LOC" or entity.label_ == "GPE"]
                 address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:
                     return result[1]
                 else:
-                    raise Exception("Não foi possivel realizar o geoparsing do texto")
+                    raise Exception(
+                        "Não foi possivel realizar o geoparsing do texto")

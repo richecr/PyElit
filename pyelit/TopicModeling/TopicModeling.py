@@ -6,13 +6,13 @@ import numpy as np
 import pyLDAvis.gensim
 from nltk.stem import *
 from nltk.stem.porter import *
-import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 from gensim import corpora, models
 from gensim.test.utils import datapath
 from gensim.parsing.preprocessing import STOPWORDS
 from gensim.utils import simple_preprocess, deaccent
 from gensim.models.coherencemodel import CoherenceModel
+
 
 class TopicModeling:
     """
@@ -21,16 +21,18 @@ class TopicModeling:
     feito testes de acurácia, mas os que foram realizados manualmente 
     obteram bons resultados.
     Descreve textos que tratam sobre problemas urbanos.
-    
+
     Permite que a partir de um texto seja possível descrever qual tópico aquele texto pertence, com uma boa probabilidade.
     """
+
     def __init__(self):
         """
         Construtor da classe. Inicia os principais objetos/atributos para o funcionamento do mesmo.
         """
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
-        self.nlp.Defaults.stop_words |= {"tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua", "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
+        self.nlp.Defaults.stop_words |= {"tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar",
+                                         "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua", "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         np.random.seed(2018)
         nltk.download('wordnet')
@@ -40,7 +42,8 @@ class TopicModeling:
         fname = datapath(ROOT + "/modelo/meu_lda_model")
         self.model = gensim.models.LdaMulticore.load(fname=fname)
         self.topics = {}
-        self.represent_topics([0, 1, 2, 3], ['saneamento', 'trânsito', 'obras', 'diversos'])
+        self.represent_topics(
+            [0, 1, 2, 3], ['saneamento', 'trânsito', 'obras', 'diversos'])
 
     def pre_processing(self, text):
         """
@@ -63,7 +66,8 @@ class TopicModeling:
         """
         doc_out = []
         doc = self.nlp(text)
-        entidades_loc = [entidade for entidade in doc.ents if entidade.label_ == "LOC"]
+        entidades_loc = [
+            entidade for entidade in doc.ents if entidade.label_ == "LOC"]
         for token in doc:
             if (token.text not in self.stop_words_spacy and len(token.text) > 3 and token.pos_ in self.allowed_postags and not self.is_entities_loc(token.text, entidades_loc)):
                 doc_out.append(self.lemmatization(token.text))
@@ -101,7 +105,7 @@ class TopicModeling:
         ----------
         True : Caso a palavra seja uma entidade de localização.\n
         False : Caso a palavra não seja uma entidade de localização.
-	    """
+            """
         for e in entities_loc:
             if (e.text.lower() == word.lower()):
                 return True
@@ -161,7 +165,7 @@ class TopicModeling:
     def rate_text(self, text):
         """
         Método que irá retorna de qual tópico o texto, passado como parametro, tem mais probabilidade de pertencer.
-        
+
         Parâmetro:
         ----------
         text : String
@@ -169,7 +173,7 @@ class TopicModeling:
 
         Retorno:
         ----------
-        reult : List
+        result : List
             - Uma lista de tuplass com o id do tópico que esse texto pertence e também a probabilidade.
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
