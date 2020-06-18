@@ -17,7 +17,7 @@ Vamos ver alguns exemplos de como usar:
 
 ## Geoparsing com case correto **sem** utilização do gazetteer:
 
-```python3
+```python
 geop = Geoparsing()
 text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
 a = geop.geoparsing(text=text, case_correct=True)
@@ -26,13 +26,13 @@ print(a)
 
 Entidades reconhecidas nesse exemplo:
 
-```python3
+```python
 [Rua João Sérgio de Almeida, Bodócongo, Campina Grande]
 ```
 
 ## Geoparsing com case incorreto **sem** utilização do gazetteer:
 
-```python3
+```python
 geop = Geoparsing()
 text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
 a = geop.geoparsing(text=text, case_correct=False)
@@ -41,13 +41,13 @@ print(a)
 
 Entidades reconhecidas nesse exemplo:
 
-```python3
+```python
 [Bodocongó]
 ```
 
 ## Geoparsing com o gazetteer:
 
-```python3
+```python
 geop = Geoparsing()
 text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande.".lower()
 a = geop.geoparsing(text=text, case_correct=True, gazetteer_cg=True)
@@ -56,6 +56,6 @@ print(a)
 
 Entidades reconhecidas nesse exemplo:
 
-```python3
+```python
 [['rua joao sergio de almeida', 'campina grande', 'bodocongo']]
 ```
