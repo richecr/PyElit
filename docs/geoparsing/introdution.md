@@ -27,7 +27,7 @@ print(a)
 Entidades reconhecidas nesse exemplo:
 
 ```python
-[Rua João Sérgio de Almeida, Bodócongo, Campina Grande]
+["Rua João Sérgio de Almeida", "Bodócongo", "Campina Grande"]
 ```
 
 ## Geoparsing com case incorreto **sem** utilização do gazetteer:
@@ -42,7 +42,7 @@ print(a)
 Entidades reconhecidas nesse exemplo:
 
 ```python
-[Bodocongó]
+["Bodocongó"]
 ```
 
 ## Geoparsing com o gazetteer:
@@ -57,5 +57,5 @@ print(a)
 Entidades reconhecidas nesse exemplo:
 
 ```python
-[['rua joao sergio de almeida', 'campina grande', 'bodocongo']]
+[["rua joao sergio de almeida", "campina grande", "bodocongo"]]
 ```
