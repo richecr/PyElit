@@ -1,12 +1,10 @@
 # Introdução
 
-PyElit é uma biblioteca que permite realizar o geoparsing de um certo texto. Por enquanto não é possível treinar com um gazetteer passado, mas isso está com futuras funcionalidades da biblioteca.
+PyElit é uma biblioteca que permite realizar o geoparsing de um certo texto. Por enquanto não é possível treinar com um gazetteer passado, mas isso está como ideias futuras para a biblioteca.
 
 ## Objetivo
 
 A biblioteca tem como um dos objetivos realizar o Geoparsing de textos, permitindo que seja utilizados gazetteer para melhorar as buscas, atualmente só tem o gazetteer de algumas regiões do estado da Paraíba, em grande parte nas cidades de: Campina Grande e João Pessoa.
-
-E também tem como objetivo realizar a classificação de textos que envolvam certos tipos de problemas urbanos. Futuramente poderiamos permitir que o usuário da biblioteca forneça os textos para que então realizassemos o tratamento e a geração de tópicos.
 
 # Como usar ?
 

@@ -14,7 +14,7 @@ A classe `TopicModeling` é bastante simple de ser utilizada. Basta importar e i
 
 Vamos ver alguns exemplos de como usar:
 
-## TopicModeling: Classificar um texto
+## Topic Modeling: Classificar um texto
 
 ```python
 topicModeling = TopicModeling()
@@ -31,7 +31,7 @@ Tópicos e probabilidades: [(2, 0.80940521), (0, 0.064506963), (1, 0.063506372),
 Tópico: obras
 ```
 
-## TopicModeling: Imprimir tópicos
+## Topic Modeling: Imprimir tópicos
 
 ```python
 topicModeling = TopicModeling()
@@ -44,7 +44,7 @@ Saída para esse exemplo:
 {0: 'saneamento', 1: 'trânsito', 2: 'obras', 3: 'diversos'}
 ```
 
-## TopicModeling: Imprimir palavras chaves e seus pesos em cada tópico
+## Topic Modeling: Imprimir palavras chaves e seus pesos em cada tópico
 
 ```python
 topicModeling = TopicModeling()
@@ -58,7 +58,7 @@ Saída para esse exemplo:
 [(0, '0.016*"água" + 0.015*"esgoto"'), (1, '0.025*"velocidad" + 0.024*"faixa"'), (2, '0.012*"escola" + 0.011*"obra"'), (3, '0.034*"estrada" + 0.015*"féria"')]
 ```
 
-## TopicModeling: Mudar representatividade do nomes dos tópicos
+## Topic Modeling: Mudar representatividade do nomes dos tópicos
 
 ```python
 topicModeling = TopicModeling()
@@ -73,7 +73,7 @@ Saída para esse exemplo:
 {0: 'Saneamento', 1: 'Trânsito', 2: 'Obras', 3: 'Diversos'}
 ```
 
-## TopicModeling: Imprimir um tópico por meio do id dele
+## Topic Modeling: Imprimir um tópico por meio do id dele
 
 ```python
 topicModeling = TopicModeling()
