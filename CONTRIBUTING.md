@@ -99,12 +99,25 @@ O projeto se encontra na pasta `pyelit`, estamos aceitando dicas de nomes para b
 
 ### Como executar a aplicação:
 
-Primeiro você precisa instalar as dependências usadas no projeto.
+Usamos o pipenv para melhor facilidade de gerenciamento das dependências.
+Então é preciso instalar antes de tudo:
 
-- Instalar as dependências:
+- Instalar o pipenv:
 
 ```bash
-$ pip install -r requirements.txt
+$ pip install pipenv
+```
+
+Agora você deve ativar o virtualenv(aqui já será instalada todas as libs utilizadas):
+
+```bash
+$ pipenv shell
+```
+
+Agora você precisar instalar o modelo em pt-br do spacy:
+
+```bash
+$ python -m spacy download pt_core_news_sm
 ```
 
 E pronto, você está pronto para iniciar o desenvolvimento.
@@ -119,11 +132,9 @@ Nós optamos por seguir o padrão da [PEP 8](https://www.python.org/dev/peps/pep
 
 #### Pycodestyle:
 
-- Primeiro você precisa instalar o pycodestyle:
+Ele já é uma dev-package no projeto.
 
-  ```bash
-  $ pip install pycodestyle
-  ```
+Com o virtualenv ativado, você pode executar o pycodestyle:
 
 - Para executar o pycodestyle:
 
