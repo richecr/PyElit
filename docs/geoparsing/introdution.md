@@ -16,8 +16,10 @@ Vamos ver alguns exemplos de como usar:
 ## Geoparsing com case correto **sem** utilização do gazetteer:
 
 ```python
+from pyelit import Geoparsing
+
 geop = Geoparsing()
-text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
+text = "Eu moro na Rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
 a = geop.geoparsing(text=text, case_correct=True)
 print(a)
 ```
@@ -31,8 +33,10 @@ Entidades reconhecidas nesse exemplo:
 ## Geoparsing com case incorreto **sem** utilização do gazetteer:
 
 ```python
+from pyelit import Geoparsing
+
 geop = Geoparsing()
-text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
+text = "Eu moro na Rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande."
 a = geop.geoparsing(text=text, case_correct=False)
 print(a)
 ```
@@ -46,8 +50,10 @@ Entidades reconhecidas nesse exemplo:
 ## Geoparsing com o gazetteer:
 
 ```python
+from pyelit import Geoparsing
+
 geop = Geoparsing()
-text = "Eu moro na rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande.".lower()
+text = "Eu moro na Rua João Sérgio de Almeida no bairro de bodocongó em Campina Grande.".lower()
 a = geop.geoparsing(text=text, case_correct=True, gazetteer_cg=True)
 print(a)
 ```

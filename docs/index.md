@@ -26,6 +26,14 @@ E assim os usuários que conseguirem fazer melhorias poderá enviar PRs para o a
 | Geoparsing     | Permite extrair localizações de um texto qualquer.           |
 | Topic Modeling | Permite classificar um dado texto para um determinado tópico |
 
+## Como instalar:
+
+A versão 0.1.2 do PyElit está publicada no [PyPI](https://pypi.org/). Portanto para instalar basta executar:
+
+```sh
+$ pip install PyElit
+```
+
 ## Geoparsing
 
 Detalhes de como funciona o Geoparsing da biblioteca.
