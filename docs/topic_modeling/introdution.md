@@ -17,6 +17,8 @@ Vamos ver alguns exemplos de como usar:
 ## Topic Modeling: Classificar um texto
 
 ```python
+from pyelit import TopicModeling
+
 topicModeling = TopicModeling()
 result = topicModeling.rate_text("o ginásio da Escola Maria Honoriana Santiago está com obras paradas desde do início do ano.")
 
@@ -34,6 +36,8 @@ Tópico: obras
 ## Topic Modeling: Imprimir tópicos
 
 ```python
+from pyelit import TopicModeling
+
 topicModeling = TopicModeling()
 print(topicModeling.print_topics())
 ```
@@ -47,8 +51,9 @@ Saída para esse exemplo:
 ## Topic Modeling: Imprimir palavras chaves e seus pesos em cada tópico
 
 ```python
-topicModeling = TopicModeling()
+from pyelit import TopicModeling
 
+topicModeling = TopicModeling()
 print(topicModeling.print_keywords(quant_max_palavras=2))
 ```
 
@@ -61,6 +66,8 @@ Saída para esse exemplo:
 ## Topic Modeling: Mudar representatividade do nomes dos tópicos
 
 ```python
+from pyelit import TopicModeling
+
 topicModeling = TopicModeling()
 
 topicModeling.represent_topics([0, 1, 2, 3], ['Saneamento', 'Trânsito','Obras', 'Diversos'])
@@ -76,6 +83,8 @@ Saída para esse exemplo:
 ## Topic Modeling: Imprimir um tópico por meio do id dele
 
 ```python
+from pyelit import TopicModeling
+
 topicModeling = TopicModeling()
 
 print(topicModeling.get_topic(id_topic=1))
