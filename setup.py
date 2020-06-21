@@ -27,6 +27,8 @@ class PostInstallCommand(install):
         install.run(self)
 
 
+keywords = 'geoparsing topic modeling locations text issues problems urbans'
+
 setup(
     name='PyElit',
     version='0.1.2',
@@ -42,7 +44,7 @@ setup(
     project_urls={
         'Código fonte': 'https://github.com/Rickecr/PyElit',
     },
-    keywords='geoparsing topic modeling geo locations text issues problems urbans',
+    keywords=keywords,
     license='MIT',
     cmdclass={
         'develop': PostDevelopCommand,

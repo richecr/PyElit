@@ -18,21 +18,28 @@ class TopicModeling:
     """
     Classe de Modelagem de tópicos com um score de coherence de 0.52.
     Como é usado uma abordagem de aprendizado não-supervisionado não foi
-    feito testes de acurácia, mas os que foram realizados manualmente 
+    feito testes de acurácia, mas os que foram realizados manualmente
     obteram bons resultados.
     Descreve textos que tratam sobre problemas urbanos.
 
-    Permite que a partir de um texto seja possível descrever qual tópico aquele texto pertence, com uma boa probabilidade.
+    Permite que a partir de um texto seja possível descrever qual tópico
+    aquele texto pertence, com uma boa probabilidade.
     """
 
     def __init__(self):
         """
-        Construtor da classe. Inicia os principais objetos/atributos para o funcionamento do mesmo.
+        Construtor da classe. Inicia os principais objetos/atributos para o
+        funcionamento do mesmo.
         """
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
-        self.nlp.Defaults.stop_words |= {"tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário", "jpb", "agora", "voltar",
-                                         "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua", "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
+        self.nlp.Defaults.stop_words |= {
+            "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido",
+            "aqui", "gente", "tá", "né", "calendário", "jpb", "agora",
+            "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque",
+            "moradores", "fazer", "rua", "bairro", "prefeitura", "todo",
+            "vamos", "problema", "fica", "ver", "tô"
+        }
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         np.random.seed(2018)
         nltk.download('wordnet')
@@ -52,7 +59,8 @@ class TopicModeling:
             - Remove palavras que são entidades de localizações.
             - Coloca todo o texto para caixa baixa.
             - Realiza a lematização das palavras.
-            - Deixa apenas palavras que são: substantivos, adjetivos e pronomes.
+            - Deixa apenas palavras que são: substantivos,
+            adjetivos e pronomes.
 
         Parâmetro:
         ----------
@@ -69,7 +77,10 @@ class TopicModeling:
         entidades_loc = [
             entidade for entidade in doc.ents if entidade.label_ == "LOC"]
         for token in doc:
-            if (token.text not in self.stop_words_spacy and len(token.text) > 3 and token.pos_ in self.allowed_postags and not self.is_entities_loc(token.text, entidades_loc)):
+            if (token.text not in self.stop_words_spacy and
+                len(token.text) > 3 and
+                token.pos_ in self.allowed_postags and not
+                    self.is_entities_loc(token.text, entidades_loc)):
                 doc_out.append(self.lemmatization(token.text))
 
         return doc_out
@@ -119,14 +130,15 @@ class TopicModeling:
         Parâmetros:
         ----------
         quant_max_palavras: Int
-            - Quantidade máxima de palavras que representam um tópico a serem retornadas.
+            - Quantidade máxima de palavras que representam um tópico
+            a serem retornadas.
 
         Retorno:
         ----------
         topics : List
             - Lista de palavras chaves por tópicos do modelo.
         """
-        if quant_max_palavras == None:
+        if quant_max_palavras is None:
             quant_max_palavras = 5
         topics = []
         for topic in self.model.print_topics(-1, quant_max_palavras):
@@ -146,7 +158,9 @@ class TopicModeling:
             - Lista de ids dos tópicos.
         names_topics: List
             - Lista de nomes dos tópicos.
-        Os dois devem vim na mesma ordem, nome na posição 0 é do id na posição 0.
+
+        Os dois devem vim na mesma ordem, nome na posição 0 é do id na
+        posição 0.
         """
         for id_topic, name in zip(ids_topics, names_topics):
             self.topics[id_topic] = name
@@ -164,7 +178,8 @@ class TopicModeling:
 
     def rate_text(self, text):
         """
-        Método que irá retorna de qual tópico o texto, passado como parametro, tem mais probabilidade de pertencer.
+        Método que irá retorna de qual tópico o texto, passado como
+        parametro, tem mais probabilidade de pertencer.
 
         Parâmetro:
         ----------
@@ -174,7 +189,8 @@ class TopicModeling:
         Retorno:
         ----------
         result : List
-            - Uma lista de tuplass com o id do tópico que esse texto pertence e também a probabilidade.
+            - Uma lista de tuplass com o id do tópico que esse
+            texto pertence e também a probabilidade.
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
         result = self.model.get_document_topics(bow_vector)

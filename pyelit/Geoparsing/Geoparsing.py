@@ -21,13 +21,20 @@ class Geoparsing:
 
     def __init__(self):
         """
-        Construtor da classe. Onde todos os atributos são iniciandos e sofrem pré-processamento.
+        Construtor da classe. Onde todos os atributos são iniciandos
+         e sofrem pré-processamento.
         """
         self.translator = Translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
-        self.nlp.Defaults.stop_words |= {"vamos", "olha", "pois", "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui", "gente", "tá", "né", "calendário",
-                                         "jpb", "agora", "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"}
+        self.nlp.Defaults.stop_words |= {
+            "vamos", "olha", "pois", "tudo",
+            "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui",
+            "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá",
+            "hoje", "aí", "ainda", "então", "vai", "porque", "moradores",
+            "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver",
+            "tô"
+        }
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         self.residential = {}
         self.gazetteer = {}
@@ -49,7 +56,11 @@ class Geoparsing:
         """
         for row in gazetteer:
             self.gazetteer[self.remove_accents(row['osm_id'])] = (
-                row['coordenates'], row['fclass'], row['name'].lower(), row['type'])
+                row['coordenates'],
+                row['fclass'],
+                row['name'].lower(),
+                row['type']
+            )
 
     def remove_accents(self, input_str):
         """
@@ -81,7 +92,8 @@ class Geoparsing:
         out = ""
         text = text.lower()
         for palavra in text.split():
-            if (palavra not in self.stop_words_spacy and (len(palavra) > 3 or palavra == "rua")):
+            if (palavra not in self.stop_words_spacy and
+                    (len(palavra) > 3 or palavra == "rua")):
                 out += palavra + " "
         out = out.strip()
         return out
@@ -117,7 +129,7 @@ class Geoparsing:
 
     def __verifica_endereco(self, end):
         """
-        Método que verifica se um endereço é da Paraíba 
+        Método que verifica se um endereço é da Paraíba
         e se sua confiabilidade é maior ou igual a 5.
 
         Parâmetros:
@@ -139,8 +151,8 @@ class Geoparsing:
 
     def verfica(self, ents_loc, limit):
         """
-        Método que verifica se os endereços estão corretos. 
-            - Encontra as localizações das entidades de localizações(Geocoder com arcgis).
+        Método que verifica se os endereços estão corretos.
+            - Encontra as localizações das entidades de localizações.
             - Verifica se é da PB e sua confiabilidade(`verifica_endereco`).
             - Concatena os endereços.
             - Ordena endereços pela confiabilidade.
@@ -161,11 +173,10 @@ class Geoparsing:
         """
         ends = []
         for loc in ents_loc:
-            l = str(loc)
-            g = geocoder.arcgis(l)
+            loc = str(loc)
+            g = geocoder.arcgis(loc)
             end = g.json
-            print(end)
-            if (end != None):
+            if (end is not None):
                 ends.append(end)
 
         ends_corretos = []
@@ -185,7 +196,8 @@ class Geoparsing:
 
     def search_next_index(self, list_best_address):
         """
-        Método que busca uma nova posição a ser adicionado na lista de melhores endereços.
+        Método que busca uma nova posição a ser adicionado na
+        lista de melhores endereços.
 
         Parâmetros:
         ----------
@@ -205,7 +217,8 @@ class Geoparsing:
 
     def insert_ordened_to_priority(self, result, address, type_):
         """
-        Método que insere na lista de melhores endereços ordenando por prioridades.
+        Método que insere na lista de melhores endereços ordenando
+        por prioridades.
 
         Parâmetros:
         ----------
@@ -233,7 +246,7 @@ class Geoparsing:
 
         Algoritmos implementados:
             - Ordenar por níveis de prioridades
-            - Filtrar por endereços que estejam em um determinado bairro 
+            - Filtrar por endereços que estejam em um determinado bairro
             que também esteja nestes endereços filtrados.
             - Endereços que mais se repetem no texto.
             - Endereços que são StreatName
@@ -266,33 +279,35 @@ class Geoparsing:
             g = geocoder.reverse(location=loc_, provider="arcgis")
             g = g.json
             g['occurrences_in_text'] = text.count(loc)
-            if g != None:
+            if g is not None:
                 result.append(g)
                 self.insert_ordened_to_priority(result, g, type_)
 
         # Ordenando por quantidade de ocorrências no texto.
         result = sorted(result, key=lambda e: e['occurrences_in_text'])
 
-        # Ordenando por endereços que também foram encontrados seus bairros na filtragem,
-        # assim possuindo uma chance maior de ser o endereço correto.
+        # Ordenando por endereços que também foram encontrados
+        # seus bairros na filtragem, assim possuindo uma
+        # chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
-            l = result[i]
-            if l['raw'].__contains__('address'):
-                if l['raw']['address']['District'].lower() in adresses.keys():
-                    new_result.insert(0, l)
+            loc = result[i]
+            if loc['raw'].__contains__('address'):
+                loc_district = loc['raw']['address']['District'].lower()
+                if loc_district in adresses.keys():
+                    new_result.insert(0, loc)
                 else:
-                    new_result.append(l)
+                    new_result.append(loc)
             else:
-                if l['raw']['name'].lower() in adresses.keys():
-                    new_result.insert(0, l)
+                if loc['raw']['name'].lower() in adresses.keys():
+                    new_result.insert(0, loc)
                 else:
-                    new_result.append(l)
+                    new_result.append(loc)
         result = new_result
 
         for loc in addresses_:
-            l = str(loc)
-            g = geocoder.arcgis(l)
+            loc_ = str(loc)
+            g = geocoder.arcgis(loc_)
             end = g.json
             result.insert(0, end)
 
@@ -309,7 +324,8 @@ class Geoparsing:
 
         result = new_result
 
-        # ordenar por endereços que pertencem a cidade que foi encontrada no texto.
+        # ordenar por endereços que pertencem a cidade que foi
+        # encontrada no texto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
             for city in cities:
@@ -317,7 +333,8 @@ class Geoparsing:
                     if city in result[i]['address'].lower():
                         new_result.insert(0, result[i])
                 else:
-                    if str(result[i]['raw']['address']['City']).lower() == city:
+                    loc_city = str(result[i]['raw']['address']['City']).lower()
+                    if loc_city == city:
                         new_result.insert(0, result[i])
 
         result = new_result
@@ -349,10 +366,14 @@ class Geoparsing:
             if len(address_aux) > 1 or self.gazetteer[osm_id][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
-                if re.search("\\b" + address + "\\b", text):
-                    if not self.repeated_address(addresses_geral.keys(), address):
+                txt_contains_addr = re.search("\\b" + address + "\\b", text)
+                if txt_contains_addr:
+                    addr_repeated = self.repeated_address(
+                        addresses_geral.keys(), address)
+                    if not addr_repeated:
                         addresses_geral[address] = (
-                            self.gazetteer[osm_id][0], self.gazetteer[osm_id][1])
+                            self.gazetteer[osm_id][0],
+                            self.gazetteer[osm_id][1])
 
         cities = [str(a) for a in addresses_geral.keys()
                   if addresses_geral[a][1] == "city"]
@@ -369,23 +390,25 @@ class Geoparsing:
                 return True
         return False
 
-    def geoparsing(self, text, case_correct=False, limit=5, gazetteer_cg=False):
+    def geoparsing(self, text, case_correct=False, limit=5,
+                   gazetteer_cg=False):
         """
         Realiza o geoparsing do texto.
 
         OBS: Utilizar o geoparsing sem o case correct e sem o gazetteer
-        fará com que você tenha resultados ruins. 
+        fará com que você tenha resultados ruins.
 
         Parâmetros:
         ----------
         text : String
             - Texto que para realizar o geoparsing.
         case_correct: Bool
-            - Caso o texto já esteja com o case correto, True, caso contrário False.
+            - Se o texto estiver com case correto.
         limit: Int
             - Limite máximo de endereços retornados.
         gazetteer_cg: Bool
-            - Caso deseje utilizar o gazetteer com localidades do estado da Paraíba.
+            - Caso deseje utilizar o gazetteer com localidades
+            do estado da Paraíba.
 
         Retorno:
         ----------
@@ -403,8 +426,9 @@ class Geoparsing:
             if case_correct:
                 doc = self.nlp(text)
                 print(text)
-                ents_loc = list(filter(lambda entity: entity.label_ ==
-                                       "LOC" or entity.label_ == "GPE", doc.ents))
+                ents_loc = list(filter(
+                    lambda entity: entity.label_ == "LOC" or
+                    entity.label_ == "GPE", doc.ents))
                 address_found = self.__concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:

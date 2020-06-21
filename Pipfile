@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pycodestyle = "*"
 
 [packages]
 gensim = "==3.8.0"
@@ -17,4 +18,4 @@ plpygis = "*"
 pyLDAvis = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"

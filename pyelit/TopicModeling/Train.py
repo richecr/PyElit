@@ -56,7 +56,8 @@ def main_cross_val():
 
         # Criando e treinando o modelo.
         lda_model_tfidf = gensim.models.LdaMulticore(
-            corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4, alpha=0.01, eta=0.9)
+            corpus_tfidf, num_topics=4, id2word=dictionary, passes=10,
+            workers=4, alpha=0.01, eta=0.9)
 
         coherence_model(lda_model_tfidf, processed_test,
                         corpus_tfidf, dictionary)
@@ -64,7 +65,8 @@ def main_cross_val():
 
 def coherence_model(lda_model_, tests, corpus, dictionary):
     coherence_model_lda = CoherenceModel(
-        model=lda_model_, texts=tests, corpus=corpus, dictionary=dictionary, coherence='c_v')
+        model=lda_model_, texts=tests, corpus=corpus, dictionary=dictionary,
+        coherence='c_v')
     coherence_lda = coherence_model_lda.get_coherence()
     print('\nCoherence Score LDAModelTfIdf: ', coherence_lda)
 
@@ -121,8 +123,10 @@ def main():
     corpus_tfidf = tfidf[bow_corpus]
 
     # Criando e treinando o modelo.
-    # lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4, id2word=dictionary, passes=10, workers=4, alpha=0.01, eta=0.9)
-    # lda_model_tfidf.save("./modelo/meu_lda_model")
+    # lda_model = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4,
+    #                                        id2word=dictionary, passes=10,
+    #                                        workers=4, alpha=0.01, eta=0.9)
+    # slda_model.save("./modelo/meu_lda_model")
 
     ROOT = os.path.abspath(os.path.dirname(__file__))
     fname = datapath(ROOT + "/modelo/meu_lda_model")
@@ -130,7 +134,8 @@ def main():
 
     def coherence_model(lda_model_, processed_docs, corpus_tfidf, dictionary):
         coherence_model_lda = CoherenceModel(
-            model=lda_model_, texts=processed_docs, corpus=corpus_tfidf, dictionary=dictionary, coherence='c_v')
+            model=lda_model_, texts=processed_docs, corpus=corpus_tfidf,
+            dictionary=dictionary, coherence='c_v')
         coherence_lda = coherence_model_lda.get_coherence()
         print('\nCoherence Score LDAModelTfIdf load: ', coherence_lda)
 
@@ -141,10 +146,12 @@ def main():
         model_list = []
         for passes in range(start, limit, 1):
             model = gensim.models.LdaMulticore(
-                corpus_tfidf, num_topics=4, id2word=dictionary, passes=passes, workers=4, alpha=0.01, eta=0.9)
+                corpus_tfidf, num_topics=4, id2word=dictionary, passes=passes,
+                workers=4, alpha=0.01, eta=0.9)
             model_list.append(model)
             coherencemodel = CoherenceModel(
-                model=model, texts=texts, corpus=corpus_tfidf, dictionary=dct, coherence='c_v')
+                model=model, texts=texts, corpus=corpus_tfidf, dictionary=dct,
+                coherence='c_v')
             coherence_values.append(coherencemodel.get_coherence())
 
         return model_list, coherence_values
@@ -165,5 +172,5 @@ def main():
     for m, cv in zip(x, coherence_values):
         print("Step =", m, " has Coherence Value of", round(cv, 4))
 
-    # coherence_model(lda_model_tfidf, processed_docs, corpus_tfidf, dictionary)
+
 main()
