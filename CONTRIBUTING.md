@@ -1,82 +1,84 @@
 # Contributing
 
-> Pode contribuir a vontade, você será sempre bem-vindo(a). Mas temos algumas regras para serem seguidas para que todos sejam bem recebidos por todos e que todos possam contribuir de maneira feliz :smiley:.
+> You can contribute at will, you will always be welcome. But we have some rules to be followed so that everyone is well received by everyone and that everyone can contribute in a happy way :smiley:.
 
-## Adicionar/Atualizar funcionalidades
+## Add/Update Features:
 
 Você olhou a aplicação e pensou em alguma funcionalidade que deveria ser adicionada no projeto ? :open_mouth:
 
-**_Então, você tem dois passos para seguir:_**
+**_So you have two steps to follow:_**
 
-- [Abrir uma issue detalhando sua ideia](#criando-uma-issue)
-- [Você mesmo implementar a funcionalidade](#contribuir-com-implementação)
+- [Open an issue detailing your idea](#creating-an-issue)
+- [You implement the functionality yourself](#contribuir-com-implementação)
 
-## Criando uma issue
+## Creating an issue
 
-Na página do [projeto](https://github.com/Rickecr/PyElit), você pode clicar no botão `Issues` e na página irá aparecer um botão `new issue`, então é só selecionar e seguir os seguintes passos:
+On the [project](https://github.com/Rickecr/PyElit) page, you can click on the `Issues` button and a`new issue` button will appear on the page, then just select and follow the following steps:
 
-- Selecione o tipo da sua issue: `Bug ou Feature`.
-- Dê um bom nome a sua issue.
-- Detalhe bem sobre qual objetivo da issue.
-- Imagens caso possível.
-- Selecione labels para sua issue.
-- Por fim, clique em `Submit new issue`.
+- Select the type of your issue: `Bug ou Feature`.
+- Give your issue a good name
+- Detail very well about the purpose of the issue.
+- Images if possible.
+- Select labels for your issue.
+- Finaly, click on `Submit new issue`.
 
-## Clonar o repositório
+## Clone the repository
 
-Na página inicial do [repositório](https://github.com/Rickecr/PyElit) tem um botão `Fork`. Ao clicar é só esperar concluir o fork. E então ele irá criar o repositório na sua conta. E agora é só clonar em sua máquina, assim:
-
-```sh
-git clone https://github.com/<nome_de_usuario>/PyElit
-```
-
-Ao concluir, você terá o repositório em seu computador e então é só abrir em seu editor preferido e fazer suas modificações.
-
-Antes você deve criar sua branch para seu desenvolvimento:
+On the home page of the [repository](https://github.com/Rickecr/PyElit) there is a `Fork` button. When you click, just wait to complete the fork. And then it will create the repository in your account. And now just clone in your machine, this:
 
 ```sh
-git checkout -b <nome_branch>
+git clone https://github.com/<name_user>/PyElit
 ```
 
-Para o nome da branch use o número da issue para facilitar, ex: `issue_17`.
+When finished, you will have the repository on your computer and then just open in your preferred editor and make your changes.
 
-E agora pode começar o desenvolvimento :smiley: .
+Before you should create your branch for your development:
 
-Ao terminar suas modificações, você deve commitar suas alterações, mas primeiro:
+```sh
+git checkout -b <name_branch>
+```
+
+For the name of the branch use the number of the issue to facilitate, ex: `issue_17`.
+
+And now can begin the development :smiley: .
+
+When you have finished make your changes, you should commit your changes, but first:
 
 ```sh
 git add .
 ```
 
-O comando acima irá preparar todos os arquivos modificados para serem commitados, passando por todas as alterações que foram feitas por você onde decedirá se a alteração será adicionada (você deve estar dentro da pasta do projeto para usar o comando). Agora é só commitar as alterações:
+The above command will prepare all modified files to be committed, going through all the changes that were made by you where you will decide if the change will be added(you must be inside the project folder to use the command).
+Now just commit the changes:
 
 ```sh
-git commit -m "<Sua_Mensagem>"
+git commit -m "<Your_message>"
 ```
 
-Lembre-se de usar mensagens claras. Se o que você está resolvendo já possui uma issue aberta, faça referência a issue no commit. Ex: `git commit -m "#17 - Add contributing.md"`
+Remember to use message clear. If what you're solving already has an issue open, reference issue in commit.
+Ex: `git commit -m "#17 - Add contributing.md"`
 
-E por fim, você irá enviar as alterações para o repositório remoto:
+And finally, you will submit the changes to the remote repository:
 
 ```sh
-git push --set-upstream origin <nome_branch>
+git push --set-upstream origin <name_branch>
 ```
 
-Isso é apenas na primeira vez que vai enviar uma nova branch para o repositório remoto, nas próximas vezes, basta apenas:
+This is only the first time that submit a new branch to the remote repository, next times, just:
 
 ```sh
 git push
 ```
 
-Mas isso só irá alterar no seu fork, o repositório oficial não vai ter suas alterações e agora ? :confused:
+But that will only in your fork, the official repository will not have its changes now what ? :confused:
 
-Calma, agora que entra a `Pull Request` ou `PR`
+Calm down, now that the `Pull Request` ou `PR`
 
-## Contribuir com implementação:
+## Contribute to implementation:
 
-Depois de ter realizado o fork e o clone do projeto, escolhido seu editor de texto favorito. Então é hora de codar.
+After having forked and clone the project, chosen your favorite text editor. Now it's time to code.
 
-Mas calma ai, antes de qualquer coisa, você deve **escolher uma issue** que pretender trabalhar. Se a issue que trata sobre a funcionalidade não existir, você deve criar e dizer que esta trabalhando nela, caso ela exista você deve dizer lá(caso não já tenha alguém) que pretende trabalhar na issue. E após feito isso, agora sim você está pronto para **codar**.
+But calm there, first of all, you should **choose an issue** you want to work with. If the issue is about functionality does not exist, you should create and say you're working on it, case it exists, you must say that you intend to work on the issue. And after done that, now yes are you ready to **code**.
 
 ### Entendendo as pastas:
 
