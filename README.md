@@ -3,21 +3,23 @@
 ![PyPI - License](https://img.shields.io/pypi/l/PyElit)
 
 # [PyElit](https://pypi.org/project/PyElit/)
+
 Extraction of Locations and Issues of a Text
 
-## Por que essa biblioteca existe ?
-Participo de um projeto de pesquisa no [LSI-UFCG](https://sites.google.com/view/lsi-ufcg) e minhas atividades são com Geoparsing e Topic Modeling. Com as atividades realizadas foi decidido que seria adequado a criação dessa biblioteca para ser disponibilizada para a comunidade.
+## Why this library exist ?
 
-## Objetivo:
+It started with a research at [LSI-UFCG](https://sites.google.com/view/lsi-ufcg) and the activities are with Geoparsing and Topic Modeling. With the activities carried out, it was decided that it would be appropriate to create this library to be made available to the community.
 
-- O objetivo da biblioteca é a criação de um Geoparsing e de um Classificador de Problemas Urbanos.
-- A saída dessa biblioteca será usada em uma outra aplicação na área de cidades inteligentes.
-- Contribuir para a comunidade de Geoparsing e/ou TopicModeling.
+## Objective:
 
-## Documentação da biblioteca:
+- The objective of the library is to create a Geoparsing and an Urban Problem Classifier.
+- The output from this library will be used in another application in the area of ​​smart cities.
+- Contribute to the Geoparsing and Topic Modeling community.
 
-- [Documentação](docs/index.md)
+## Library documentation:
 
-## Mantenedores:
+- [Documentation](https://rickecr.github.io/PyElit/)
 
-- Rich Elton
+## Maintainers:
+
+- [Rich Elton](https://github.com/Rickecr)
