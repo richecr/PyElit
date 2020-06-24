@@ -4,6 +4,7 @@
 - [Funcionalidades](#funcionalidades)
 - [Geoparsing](#geoparsing)
 - [TopicModeling](#topicmodeling)
+- [Contribuir](#contribuir)
 
 ## O que é PyElit ?
 
@@ -57,3 +58,7 @@ Detalhes de como funciona o Topic Modeling da biblioteca
   - [Imprimir palavras chaves dos tópicos](topic_modeling/introdution.md#topicmodeling-imprimir-palavras-chaves-e-seus-pesos-em-cada-tópico)
   - [Representatividade do nome dos tópicos](topic_modeling/introdution.md#topicmodeling-mudar-representatividade-do-nomes-dos-tópicos)
   - [Imprimir tópico pelo ID](topic_modeling/introdution.md#topicmodeling-imprimir-um-tópico-por-meio-do-id-dele)
+
+## Contribuir:
+
+Se você deseja contribuir para o projeto, pode começar dando uma olhada [aqui](CONTRIBUTING-pt_br.md).
