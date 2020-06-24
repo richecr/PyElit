@@ -82,20 +82,20 @@ Mas calma ai, antes de qualquer coisa, você deve **escolher uma issue** que pre
 
 O projeto se encontra na pasta `pyelit`, estamos aceitando dicas de nomes para biblioteca também :blush: .
 
-- Na pasta `dados`: Possue os textos usados para treinar o topic modeling.
+- Na pasta `dados`: Possui os textos usados para treinar o topic modeling.
 
-- Na pasta `docs`: Encontra-se os arquivos de documentação da biblioteca.
+- Na pasta `docs`: Possui os arquivos de documentação da biblioteca.
 
-- Na pasta `Geoparsing`: Encontra-se todos os arquivos sobre as funcionalidades relacionadas com o geoparsing.
+- Na pasta `Geoparsing`: Possui todos os arquivos sobre as funcionalidades relacionadas com o geoparsing.
 
-  - Na pasta `./gazetteer`: Encontra-se os arquivos do gazetteer usados pela biblioteca.
-  - Na pasta `./utils`: Encontra-se os arquivos onde tem as funções que foram/são utilizadas pela biblioteca. Ex: Para processar os dados do gazetteer.
+  - Na pasta `./gazetteer`: Possui os arquivos do gazetteer usados pela biblioteca.
+  - Na pasta `./utils`: Possui os arquivos onde tem as funções que foram/são utilizadas pela biblioteca. Ex: Para processar os dados do gazetteer.
 
-- Na pasta `Pre_processamento`: Encontra-se os arquivos usados para processamentos dos dados, funções que podem ser uteis para o geoparsing e topic modeling.
+- Na pasta `Pre_processamento`: Possui os arquivos usados para processamentos dos dados, funções que podem ser uteis para o geoparsing e topic modeling.
 
-- Na pasta `TopicModeling`: Encontra-se todos os arquivos sobre as funcionalidades relacionadas com o topic modeling.
+- Na pasta `TopicModeling`: Possui todos os arquivos sobre as funcionalidades relacionadas com o topic modeling.
 
-  - Na pasta `modelo`: Encontra-se o modelo treinado do Topic Modeling.
+  - Na pasta `modelo`: Possui o modelo treinado do Topic Modeling.
 
 ### Como executar a aplicação:
 

@@ -4,7 +4,7 @@
 
 ## Add/Update Features:
 
-Você olhou a aplicação e pensou em alguma funcionalidade que deveria ser adicionada no projeto ? :open_mouth:
+You looked the application and thought of some feature that should be added to the project ? :open_mouth:
 
 **_So you have two steps to follow:_**
 
@@ -82,74 +82,78 @@ But calm there, first of all, you should **choose an issue** you want to work wi
 
 ### Entendendo as pastas:
 
-O projeto se encontra na pasta `pyelit`, estamos aceitando dicas de nomes para biblioteca também :blush: .
+The project is in the folder `pyelit`.
 
-- Na pasta `dados`: Possue os textos usados para treinar o topic modeling.
+It has the texts used to train the topic modeling.
 
-- Na pasta `docs`: Encontra-se os arquivos de documentação da biblioteca.
+- In the `dados` folder: It has the texts used to train the topic modeling.
 
-- Na pasta `Geoparsing`: Encontra-se todos os arquivos sobre as funcionalidades relacionadas com o geoparsing.
+- In the `docs` folder: It has the library's documentation files.
 
-  - Na pasta `./gazetteer`: Encontra-se os arquivos do gazetteer usados pela biblioteca.
-  - Na pasta `./utils`: Encontra-se os arquivos onde tem as funções que foram/são utilizadas pela biblioteca. Ex: Para processar os dados do gazetteer.
+- In the `Geoparsing` folder: It has all the files about the features related with the geoparsing
 
-- Na pasta `Pre_processamento`: Encontra-se os arquivos usados para processamentos dos dados, funções que podem ser uteis para o geoparsing e topic modeling.
+  - In the `./gazetteer` folder: It has files of gazetteer used by the library.
+  - In the `./utils` folder: It has files when has the functions that were/are used by the library. Ex: To process the data of gazetteer.
 
-- Na pasta `TopicModeling`: Encontra-se todos os arquivos sobre as funcionalidades relacionadas com o topic modeling.
+- In the `Pre_processamento` folder: It has files used to data processing, functions that can be useful for geoparsing and topic modeling.
 
-  - Na pasta `modelo`: Encontra-se o modelo treinado do Topic Modeling.
+- In the `TopicModeling` folder: It has all the files about the features related with the topic modeling.
 
-### Como executar a aplicação:
+  - In the `modelo` folder: It has the Topic Modeling trained model.
 
-Usamos o pipenv para melhor facilidade de gerenciamento das dependências.
-Então é preciso instalar antes de tudo:
+### How to run the application:
 
-- Instalar o pipenv:
+We use the pipenv for better facility of management of the dependencies.
+So you need to install first of all:
+
+- Install pipenv:
 
 ```bash
 $ pip install pipenv
 ```
 
-Agora você deve ativar o virtualenv(aqui já será instalada todas as libs utilizadas):
+Now you should ativate the virtualenv(here will be installed all the used libraries):
 
 ```bash
 $ pipenv shell
 ```
 
-Agora você precisar instalar o modelo em pt-br do spacy:
+Now you need install the model pt-br of spacy:
 
 ```bash
 $ python -m spacy download pt_core_news_sm
 ```
 
-E pronto, você está pronto para iniciar o desenvolvimento.
+And you're done, you're ready to start development.
 
-**OBS:** Executar o comando acima dentro da pasta do projeto.
+**NOTE:** Run the above command inside the project folder.
 
-- Agora você esta pronto para implementar sua funcionalidade/correção.
+- You're now ready to implement your feature/fix.
 
-### Entrando nos padrões:
+### Entering the pattern:
 
-Nós optamos por seguir o padrão da [PEP 8](https://www.python.org/dev/peps/pep-0008/). Para isso instale a extensão do [Python para o VSCode](https://marketplace.visualstudio.com/items?itemName=ms-python.python). Outra solução é usar o pycodestyle.
+We have chosen to follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) standard. For this install the extension of [Python to VSCode](https://marketplace.visualstudio.com/items?itemName=ms-python.python). Another solution is use the pycodestyle.
 
 #### Pycodestyle:
 
-Ele já é uma dev-package no projeto.
+It is already a dev-package in the project.
 
-Com o virtualenv ativado, você pode executar o pycodestyle:
+With the virtualenv ativated, you can run the pycodestyle:
 
-- Para executar o pycodestyle:
+- To run the pycodestyle:
 
   ```bash
   pycodestyle .
   ```
 
+##
+
 ## Realizando uma Pull Request - PR
 
-Na página do seu fork irá aparecer uma mensagem em amarelo solicitando que você faça uma Pull Request para o repositório original. Ao clicar irá abrir uma página para você preencher as informações sobre sua PR.
+In page of the your fork will appear a message in yellow requesting that you do open Pull Request to the original repository. By clicking will open a page for you to fill in the information about your PR.
 
-- Referencie a issue em que você está trabalhando usando `#<numero_da_issue>`
+- Reference the issue on what are you working using `#<numero_da_issue>`.
 
-- Descreva suas modificações
+- Describe your changes.
 
-- Espere pela avaliação da sua PR, e pode ocorrer de pedimos algumas alterações a seres feitas
+- Wait for the evaluation of your PR, and we may ask for some changes to be made.
