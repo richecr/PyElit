@@ -1,10 +1,8 @@
+# [PyElit](https://pypi.org/project/PyElit/)
 ![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/Rickecr/PyElit)
 ![PyPI](https://img.shields.io/pypi/v/PyElit)
 ![PyPI - License](https://img.shields.io/pypi/l/PyElit)
-
-# [PyElit](https://pypi.org/project/PyElit/)
-
-Extraction of Locations and Issues of a Text
+> Extraction of Locations and Issues of a Text
 
 ## Why this library exist ?
 
@@ -20,6 +18,12 @@ It started with a research at [LSI-UFCG](https://sites.google.com/view/lsi-ufcg)
 
 - [Documentation](https://rickecr.github.io/PyElit/)
 
-## Maintainers:
+## Contributing:
 
-- [Rich Elton](https://github.com/Rickecr)
+Contributions, issues and features are welcome. We have the file `CONTRIBUTING.md` to help contributors.
+
+## Author:
+
+- Rich Elton
+    - GitHub: [@rickecr](https://github.com/Rickecr)
+    - Twitter: [@rickzinho_ecr](https://twitter.com/rickzinho_ecr)
