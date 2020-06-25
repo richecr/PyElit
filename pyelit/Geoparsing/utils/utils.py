@@ -96,7 +96,7 @@ def features(localidade="cg"):
     f.writerow(fields)
 
     for p in arq:
-        coord = converterFeature(p['geometry'])
+        coord = to_convert_feature(p['geometry'])
         t = [p['osm_id'].__str__(), p["fclass"].__str__(
         ), p["name"].__str__(), p["type"].__str__(), coord]
         f.writerow(t)
