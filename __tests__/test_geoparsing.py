@@ -49,7 +49,8 @@ class TestGeoparsing:
     def test_geoparsing_case_correct_exception(self, init_geoparsing):
         with pytest.raises(Exception):
             init_geoparsing.geoparsing(
-                text="Eu moro na rua joão sérgio de almeida", case_correct=True)
+                text="Eu moro na rua joão sérgio de almeida",
+                case_correct=True)
 
     def test_geoparsing_case_using_gazetteer_exception(self, init_geoparsing):
         with pytest.raises(Exception):

@@ -119,8 +119,6 @@ def string_to_list(coor_str):
 
     # print("Lat: ", sum(lat) / len(lat))
     # print("Lon: ", sum(lon) / len(lon))
-    lat = sum(lat) / len(lat)
-    lon = sum(lon) / len(lon)
     return (lat, lon)
 
 
