@@ -126,6 +126,12 @@ E pronto, você está pronto para iniciar o desenvolvimento.
 
 - Agora você esta pronto para implementar sua funcionalidade/correção.
 
+### Executar os testes:
+
+```bash
+$ pytest --disable-warnings
+```
+
 ### Entrando nos padrões:
 
 Nós optamos por seguir o padrão da [PEP 8](https://www.python.org/dev/peps/pep-0008/). Para isso instale a extensão do [Python para o VSCode](https://marketplace.visualstudio.com/items?itemName=ms-python.python). Outra solução é usar o pycodestyle.
