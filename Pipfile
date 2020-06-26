@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pycodestyle = "*"
+pytest = "*"
 
 [packages]
 gensim = "==3.8.0"

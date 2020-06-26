@@ -96,7 +96,7 @@ def features(localidade="cg"):
     f.writerow(fields)
 
     for p in arq:
-        coord = converterFeature(p['geometry'])
+        coord = to_convert_feature(p['geometry'])
         t = [p['osm_id'].__str__(), p["fclass"].__str__(
         ), p["name"].__str__(), p["type"].__str__(), coord]
         f.writerow(t)
@@ -119,8 +119,6 @@ def string_to_list(coor_str):
 
     # print("Lat: ", sum(lat) / len(lat))
     # print("Lon: ", sum(lon) / len(lon))
-    lat = sum(lat) / len(lat)
-    lon = sum(lon) / len(lon)
     return (lat, lon)
 
 

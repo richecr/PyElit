@@ -58,7 +58,7 @@ class Geoparsing:
             self.gazetteer[self.remove_accents(row['osm_id'])] = (
                 row['coordenates'],
                 row['fclass'],
-                row['name'].lower(),
+                self.remove_accents(row['name'].lower()),
                 row['type']
             )
 
@@ -75,30 +75,7 @@ class Geoparsing:
         only_ascii = nfkd_form.encode('ASCII', 'ignore')
         return only_ascii.decode('utf-8')
 
-    def remove_stop_words(self, text):
-        """
-        Método que remove stop words do texto.
-
-        Parâmetros:
-        ----------
-        text: String
-            - Texto que esta passando pelo processo do geoparsing.
-
-        Retorno:
-        ----------
-        out : String
-            - Texto pré-processado, sem conter palavras de stop words.
-        """
-        out = ""
-        text = text.lower()
-        for palavra in text.split():
-            if (palavra not in self.stop_words_spacy and
-                    (len(palavra) > 3 or palavra == "rua")):
-                out += palavra + " "
-        out = out.strip()
-        return out
-
-    def __concatena_end(self, list_end, exclude=False):
+    def concatena_end(self, list_end, exclude=False):
         """
         Método que concatena os endereços.
 
@@ -122,12 +99,7 @@ class Geoparsing:
                 out.append(temp)
         return out
 
-    def concantena_address(self, cities, places, street):
-        out = []
-        # TODO
-        return out
-
-    def __verifica_endereco(self, end):
+    def verifica_endereco(self, end):
         """
         Método que verifica se um endereço é da Paraíba
         e se sua confiabilidade é maior ou igual a 5.
@@ -181,7 +153,7 @@ class Geoparsing:
 
         ends_corretos = []
         for e in ends:
-            if (self.__verifica_endereco(e)):
+            if (self.verifica_endereco(e)):
                 ends_corretos.append(e)
 
         if (len(ends_corretos)):
@@ -268,18 +240,17 @@ class Geoparsing:
         result : List
             - Lista de objetos de `melhores` endereços.
         """
-        print(adresses.keys())
         result = []
         # Adicionar os endereços por ordem de prioridades.
         # Ocorrências dos endereços no texto.
         for loc in adresses.keys():
             coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
-            loc_ = str(lat) + ", " + str(lon)
+            loc_ = str(lat[0]) + ", " + str(lon[0])
             g = geocoder.reverse(location=loc_, provider="arcgis")
             g = g.json
-            g['occurrences_in_text'] = text.count(loc)
             if g is not None:
+                g['occurrences_in_text'] = text.count(loc)
                 result.append(g)
                 self.insert_ordened_to_priority(result, g, type_)
 
@@ -327,17 +298,19 @@ class Geoparsing:
         # ordenar por endereços que pertencem a cidade que foi
         # encontrada no texto.
         new_result = []
-        for i in range(len(result) - 1, -1, -1):
-            for city in cities:
-                if result[i].__contains__('quality'):
-                    if city in result[i]['address'].lower():
-                        new_result.insert(0, result[i])
-                else:
-                    loc_city = str(result[i]['raw']['address']['City']).lower()
-                    if loc_city == city:
-                        new_result.insert(0, result[i])
+        if (cities != []):
+            for i in range(len(result) - 1, -1, -1):
+                for city in cities:
+                    if result[i].__contains__('quality'):
+                        if city in result[i]['address'].lower():
+                            new_result.insert(0, result[i])
+                    else:
+                        loc_city = str(result[i]['raw']
+                                       ['address']['City']).lower()
+                        if loc_city == city:
+                            new_result.insert(0, result[i])
+            result = new_result
 
-        result = new_result
         return result
 
     def filterAddressCGText(self, text):
@@ -379,7 +352,7 @@ class Geoparsing:
                   if addresses_geral[a][1] == "city"]
 
         addresses_ = [str(a) for a in addresses_geral.keys()]
-        addresses_ = self.__concatena_end(addresses_, exclude=True)
+        addresses_ = self.concatena_end(addresses_, exclude=True)
         result = self.choose_best_addresses(
             addresses_geral, text, addresses_, cities)
         return result
@@ -425,11 +398,10 @@ class Geoparsing:
         else:
             if case_correct:
                 doc = self.nlp(text)
-                print(text)
                 ents_loc = list(filter(
                     lambda entity: entity.label_ == "LOC" or
                     entity.label_ == "GPE", doc.ents))
-                address_found = self.__concatena_end(ents_loc)
+                address_found = self.concatena_end(ents_loc)
                 result = self.verfica(address_found, limit)
                 if result[0]:
                     return result[1]
@@ -441,9 +413,7 @@ class Geoparsing:
 
                 text_en = self.translator.translate(text, dest="en")
                 text_en = text_en.text
-                print(text_en)
                 text_true_case = truecase.get_true_case(text_en)
-                print(text_true_case)
 
                 text_pt = self.translator.translate(
                     text_true_case, src="en", dest="pt")
