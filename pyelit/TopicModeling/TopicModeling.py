@@ -16,20 +16,19 @@ from gensim.models.coherencemodel import CoherenceModel
 
 class TopicModeling:
     """
-    Classe de Modelagem de tópicos com um score de coherence de 0.52.
-    Como é usado uma abordagem de aprendizado não-supervisionado não foi
-    feito testes de acurácia, mas os que foram realizados manualmente
-    obteram bons resultados.
-    Descreve textos que tratam sobre problemas urbanos.
+    Topic Modeling Class with a coherence score of 0.52.
+    As an unsupervised learning approach is used, no accuracy tests
+    were performed, but those that were performed manually
+    obtained good results.
 
-    Permite que a partir de um texto seja possível descrever qual tópico
-    aquele texto pertence, com uma boa probabilidade.
+    It allows from a text to be able to describe which topic that
+    text belongs to with a good probability.
     """
 
     def __init__(self):
         """
-        Construtor da classe. Inicia os principais objetos/atributos para o
-        funcionamento do mesmo.
+        Class constructor. Starts the main objects/attributes
+        for its operation.
         """
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
@@ -54,23 +53,23 @@ class TopicModeling:
 
     def pre_processing(self, text):
         """
-        Realiza o pré-processamento de um texto:
-            - Remove Stop Words.
-            - Remove palavras que são entidades de localizações.
-            - Coloca todo o texto para caixa baixa.
-            - Realiza a lematização das palavras.
-            - Deixa apenas palavras que são: substantivos,
-            adjetivos e pronomes.
+        Method that performs the pre-processing of a text:
+            - Remove stop words.
+            - Remove words that are of location entities.
+            - Put all text in lower case.
+            - Performs the lemmatization of the words.
+            - Removes words that are not: substantivos, adjetivos
+             e pronomes.
 
-        Parâmetro:
+        Params:
         ----------
         text : String
-            - Texto que irá sofrer o pré-processamento.
+            - Text that will undergo pre-processing.
 
-        Retorno:
+        Return:
         ----------
         doc_out : List
-            - Lista de palavras que passaram pelo pré-processamento.
+            - List of words that have gone through pre-processing.
         """
         doc_out = []
         doc = self.nlp(text)
@@ -87,36 +86,36 @@ class TopicModeling:
 
     def lemmatization(self, word):
         """
-        Realiza a lematização de uma palavra.
+        Method that performs the lemmatization of a word.
 
-        Parâmetro:
+        Paramso:
         ----------
         word : String
-            - Palavra que irá sofrer a lematização.
+            - Word that will surffer from stemming.
 
-        Retorno:
+        Return:
         ----------
         word : String
-            - Palavra lematizada.
+            - Word lemmatization.
         """
         return self.stemmer.stem(WordNetLemmatizer().lemmatize(word, pos="v"))
 
     def is_entities_loc(self, word, entities_loc):
         """
-        Verifica se a palavra é uma entidade de localização.
+        Method that check if the word is entity of location.
 
-        Parâmetros:
+        Params:
         ----------
         word : String
-            - Palavra a ser verificada.
+            - Word.
         entities_loc : List
-            - Lista de entidades de localizações reconhecidas pelo Spacy.
+            - List of location entities recognized by spacy.
 
-        Retorno:
+        Return:
         ----------
-        True : Caso a palavra seja uma entidade de localização.\n
-        False : Caso a palavra não seja uma entidade de localização.
-            """
+        True: If the word is a location entity.\n
+        False: Othwerwise..
+        """
         for e in entities_loc:
             if (e.text.lower() == word.lower()):
                 return True
@@ -125,18 +124,17 @@ class TopicModeling:
 
     def print_keywords(self, quant_max_palavras=None):
         """
-        Método que irá imprimir as palavras chaves de cada tópicos do modelo.
+        Method that will print the keywords for each of topics in the model.
 
-        Parâmetros:
+        Params:
         ----------
         quant_max_palavras: Int
-            - Quantidade máxima de palavras que representam um tópico
-            a serem retornadas.
+            - Maximum number of words that representing a topic to be returned
 
-        Retorno:
+        Return:
         ----------
         topics : List
-            - Lista de palavras chaves por tópicos do modelo.
+            - List of keywords for topics in the model.
         """
         if quant_max_palavras is None:
             quant_max_palavras = 5
@@ -146,51 +144,65 @@ class TopicModeling:
         return topics
 
     def print_topics(self):
+        """
+        Method that will print each of topics in the model.
+
+        Return:
+        ----------
+        topics : List
+            - List of topics in the model.
+        """
         return self.topics
 
     def represent_topics(self, ids_topics, names_topics):
         """
-        Método que irá setar os valores para os tópicos, dando nomes.
+        Method that will set the values to the topics.
 
-        Parâmetros:
+        NOTE: The two must come in the same order, name in position 0
+        is from id in position 0.
+
+
+        Params:
         ----------
         ids_topics: List
-            - Lista de ids dos tópicos.
+            - List of ids in the topics.
         names_topics: List
-            - Lista de nomes dos tópicos.
-
-        Os dois devem vim na mesma ordem, nome na posição 0 é do id na
-        posição 0.
+            - List of names of topics.
         """
         for id_topic, name in zip(ids_topics, names_topics):
             self.topics[id_topic] = name
 
     def get_topic(self, id_topic):
         """
-        Método que retorna a representação de um tópico.
+        Method that returns the representation of the topic.
 
-        Parâmetro:
+        Params:
         ----------
         id_topic: Int
-            - Inteiro que representa o tópico.
+            - Integer that represent the topic.
+
+        Return:
+        ----------
+        topics: String
+            - The name that represent the topic with the `id_topic`.
         """
         return self.topics[id_topic]
 
     def rate_text(self, text):
         """
-        Método que irá retorna de qual tópico o texto, passado como
-        parametro, tem mais probabilidade de pertencer.
+        Method that will return from which topic the text is more
+        likely to belong to.
 
-        Parâmetro:
+        Params:
         ----------
         text : String
-            - Texto que irá ser avaliado.
+            - Text that will to be evaluate.
 
-        Retorno:
+        Return:
         ----------
         result : List
-            - Uma lista de tuplass com o id do tópico que esse
-            texto pertence e também a probabilidade.
+            - List of tuples with id of topic that the text belongs
+            and probability.
         """
         bow_vector = self.model.id2word.doc2bow(self.pre_processing(text))
         result = self.model.get_document_topics(bow_vector)

@@ -8,32 +8,41 @@ import gensim
 from nltk.stem.porter import *
 from nltk.stem import WordNetLemmatizer
 
-# Objetivo é colocar todos os textos(dados) em um arquivo CSV, pré-processados.
-# Resultado é ter um arquivo com todos os textos(dados) pré-processados.
+# Objective is to place all texts (data) in a CSV file, pre-processed.
+# The result is to have a file with all texts (data) pre-processed.
 
-# Configurando bibliotecas para ter um melhor resultado.
+# Configuring libraries
 np.random.seed(2018)
 nltk.download('wordnet')
 nlp = spacy.load('pt_core_news_sm')
+stemmer = PorterStemmer()
+nlp = spacy.load("pt_core_news_sm")
+nlp.Defaults.stop_words |= {
+    "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui",
+    "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje",
+    "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua",
+    "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"
+}
+stop_words_spacy = nlp.Defaults.stop_words
+allowed_postags = ['NOUN', 'ADJ', 'PRON']
 
 
 def verificar_palavra_entidade_loc(palavra, entidades_loc):
     """
-    Verifica se a palavra é uma entidade de localização.
+    Method that check if the word is entity of location.
 
-    Parâmetros:
+    Params:
     ----------
-    palavra : String
-            - Palavra a ser verificada.
-    entidades_loc : List
-            - Lista de entidades de localizações reconhecidas pelo Spacy.
+    word : String
+        - Word.
+    entities_loc : List
+        - List of location entities recognized by spacy.
 
-    Retorno:
+    Return:
     ----------
-    True : Caso a palavra seja uma entidade de localização.\n
-    False : Caso a palavra não seja uma entidade de localização.
+    True: If the word is a location entity.\n
+    False: Othwerwise..
     """
-
     for e in entidades_loc:
         if (e.text.lower() == palavra.lower()):
             return True
@@ -43,18 +52,18 @@ def verificar_palavra_entidade_loc(palavra, entidades_loc):
 
 def lista_para_texto(lista):
     """
-        Transforma uma lista de palavras em texto.
+    method that transforms a list of words into text.
 
-        Parâmetros:
-        ----------
-        lista : List
-                - Lista de palavras.
+    Params:
+    ----------
+    lista : List
+        - List of words.
 
-        Retorno:
-        ----------
-        texto : String
-                - O texto contento todas as palavras da lista.
-        """
+    Return:
+    ----------
+    texto : String
+        - The text containing all the words in the list.
+    """
     texto = ""
     for palavra in lista:
         texto += palavra + " "
@@ -62,60 +71,43 @@ def lista_para_texto(lista):
     return texto.strip()
 
 
-# Configurando bibliotecas e variaveis globais.
-stemmer = PorterStemmer()
-nlp = spacy.load("pt_core_news_sm")
-
-nlp.Defaults.stop_words |= {
-    "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui",
-    "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje",
-    "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua",
-    "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"
-}
-stop_words_spacy = nlp.Defaults.stop_words
-
-
 def lematizacao(palavra):
     """
-        Realiza a lematização de uma palavra.
+    Method that performs the lemmatization of a word.
 
-        Parâmetro:
-        ----------
-        palavra : String
-                - Palavra que irá sofrer a lematização.
+    Paramso:
+    ----------
+    word : String
+        - Word that will surffer from stemming.
 
-        Retorno:
-        ----------
-        palavra : String
-                - Palavra lematizada.
-        """
+    Return:
+    ----------
+    word : String
+        - Word lemmatization.
+    """
     return stemmer.stem(WordNetLemmatizer().lemmatize(palavra, pos="v"))
-
-
-allowed_postags = ['NOUN', 'ADJ', 'PRON']
 
 
 def pre_processamento(texto, titulo):
     """
-        Realiza o pré-processamento de um texto:
-                - Remove Stop Words.
-                - Remove palavras que são entidades de localizações.
-                - Colocar as palavras para caixa baixa.
-                - Realiza a lematização das palavras.
-                - Apenas palavras que são: substantivos, adjetivos e pronomes.
+    Method that performs the pre-processing of a text:
+        - Remove stop words.
+        - Remove words that are of location entities.
+        - Put all text in lower case.
+        - Performs the lemmatization of the words.
+        - Removes words that are not: substantivos, adjetivos
+            e pronomes.
 
-        Parâmetro:
-        ----------
-        texto : String
-                - Texto que irá sofrer o pré-processamento.
-        titulo: String
-                - Titulo do texto.
+    Params:
+    ----------
+    text : String
+        - Text that will undergo pre-processing.
 
-        Retorno:
-        ----------
-        doc_out : List
-                - Lista de palavras que passaram pelo pré-processamento.
-        """
+    Return:
+    ----------
+    doc_out : List
+        - List of words that have gone through pre-processing.
+    """
     doc_out = []
     doc = nlp(texto)
     entidades_loc = [
@@ -132,13 +124,13 @@ def pre_processamento(texto, titulo):
 
 
 def main():
-    # PREPARANDO ARQUIVOS.
+    # PREPARING FILES.
 
     fields = ["titulo", "texto"]
     f = csv.writer(open('../dados/textos_limpos.csv', 'w', encoding='utf-8'))
     f.writerow(fields)
 
-    # Carregando dados.
+    # Load data.
     dados = csv.DictReader(
         open("../dados/textos_videos.csv", encoding='utf-8'))
     textos = []

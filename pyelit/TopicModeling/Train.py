@@ -13,13 +13,13 @@ from sklearn.model_selection import train_test_split
 
 
 def main_cross_val():
-    # Utilizando cross-validation
-    # Configurando bibliotecas para ter um melhor resultado.
+    # Useing cross-validation
+    # Configuring libraries for better results.
     np.random.seed(2018)
     nltk.download('wordnet')
     nlp = spacy.load('pt_core_news_sm')
 
-    # PREPARANDO ARQUIVOS.
+    # PREPARING FILES.
     dados = pd.read_csv("../../dados/textos_limpos.csv")
     dados.drop_duplicates(['texto'], inplace=True)
     textos = dados['texto']
@@ -31,30 +31,29 @@ def main_cross_val():
         train = train_tests[0]
         test = train_tests[1]
 
-        # print(train)
         processed_docs = [t.split() for t in train]
         processed_test = [t.split() for t in test]
 
         print("Train: ", len(processed_docs))
         print("Tests: ", len(processed_test))
 
-        # Criando dicionário de palavras.
+        # Creating dictionary of words.
         dictionary = gensim.corpora.Dictionary(processed_docs)
 
         # Gensim Filter Extremes
-        # Filtrar tokens que aparecem em menos de 15 documentos
-        # ou em mais de 0.5 documentos(fração do tamanho total do corpus)
-        # Após essas duas etapas, mantenha apenas os 100000
+        # Filter tokens that appear in less than 15 documents.
+        # or in more than 0.5 documents (fraction of the total corpus size).
+        # After these two steps, keep only 100000.
         dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
-        # Bag of Words(Saco de Palavras).
+        # Bag of Words.
         bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-        # Usando TF-IDF.
+        # Using TF-IDF.
         tfidf = models.TfidfModel(bow_corpus)
         corpus_tfidf = tfidf[bow_corpus]
 
-        # Criando e treinando o modelo.
+        # Creating and training the model.
         lda_model_tfidf = gensim.models.LdaMulticore(
             corpus_tfidf, num_topics=4, id2word=dictionary, passes=10,
             workers=4, alpha=0.01, eta=0.9)
@@ -89,16 +88,14 @@ def kfoldcv(dados, k=6, seed=42):
 
     return kfolds
 
-# main_cross_val()
-
 
 def main():
-    # Configurando bibliotecas para ter um melhor resultado.
+    # Configuring libraries for better results.
     np.random.seed(2018)
     nltk.download('wordnet')
     nlp = spacy.load('pt_core_news_sm')
 
-    # PREPARANDO ARQUIVOS.
+    # PREPARING FILES.
     dados = pd.read_csv("../../dados/textos_limpos.csv")
     dados.drop_duplicates(['texto'], inplace=True)
     textos = dados['texto']
@@ -106,23 +103,23 @@ def main():
     processed_docs = dados['texto'].map(lambda texto: texto.split())
     print(processed_docs[:10])
 
-    # Criando dicionário de palavras.
+    # Creating dictionary of words.
     dictionary = gensim.corpora.Dictionary(processed_docs)
 
     # Gensim Filter Extremes
-    # Filtrar tokens que aparecem em menos de 15 documentos
-    # ou em mais de 0.5 documentos(fração do tamanho total do corpus)
-    # Após essas duas etapas, mantenha apenas os 100000
+    # Filter tokens that appear in less than 15 documents
+    # or in more than 0.5 documents (fraction of the total corpus size).
+    # After these two steps, keep only 100000.
     dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
-    # Bag of Words(Saco de Palavras).
+    # Bag of Words.
     bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-    # Usando TF-IDF.
+    # Using TF-IDF.
     tfidf = models.TfidfModel(bow_corpus)
     corpus_tfidf = tfidf[bow_corpus]
 
-    # Criando e treinando o modelo.
+    # Creating and training the model.
     # lda_model = gensim.models.LdaMulticore(corpus_tfidf, num_topics=4,
     #                                        id2word=dictionary, passes=10,
     #                                        workers=4, alpha=0.01, eta=0.9)
@@ -174,3 +171,4 @@ def main():
 
 
 main()
+# main_cross_val()

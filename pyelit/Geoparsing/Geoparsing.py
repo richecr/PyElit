@@ -16,13 +16,13 @@ from .utils.utils import string_to_list
 
 class Geoparsing:
     """
-    Classe responsável por realizar o Geoparsing.
+    Class responsible for performing Geoparsing.
     """
 
     def __init__(self):
         """
-        Construtor da classe. Onde todos os atributos são iniciandos
-         e sofrem pré-processamento.
+        Class constructor. Where all attributes are started
+        and undergo pre-processing.
         """
         self.translator = Translator()
         self.stemmer = PorterStemmer()
@@ -46,13 +46,13 @@ class Geoparsing:
 
     def pre_process(self, gazetteer):
         """
-        Método que realiza o pré-processamento do gazetteer.
-        Carrega as informações do gazetteer em um dicionário.
+        Method that performs the pre-processing of the gazetteer.
+        Loads the information fron the gazetteer into a dictionary.
 
-        Parâmetros:
+        Params:
         ----------
-        gazetteer: DictReader
-            - Objeto da biblioteca nativa do python: `CSV`.
+        gazetteer: dict
+            - Python native library object: `CSV`.
         """
         for row in gazetteer:
             self.gazetteer[self.remove_accents(row['osm_id'])] = (
@@ -64,12 +64,12 @@ class Geoparsing:
 
     def remove_accents(self, input_str):
         """
-        Método que remove acentos das palavras.
+        Method that removes accents from words.
 
-        Parâmetros:
+        Params:
         ----------
         input_str: String
-            - Entrada a ser removido os acentos
+            - Input to be removed the accents
         """
         nfkd_form = unicodedata.normalize('NFKD', input_str)
         only_ascii = nfkd_form.encode('ASCII', 'ignore')
@@ -77,17 +77,17 @@ class Geoparsing:
 
     def concatena_end(self, list_end, exclude=False):
         """
-        Método que concatena os endereços.
+        Method that concatenates addresses.
 
-        Parâmetros:
+        Params:
         ----------
         list_end: List
-            - Lista contendo todos os endereços encontrados.
+            - List containing all addresses found.
 
-        Retorno:
+        Return:
         ----------
         out : List
-             - Lista de endereços concatenados.
+            - List of addresses concatenates.
         """
         if exclude:
             out = []
@@ -101,18 +101,19 @@ class Geoparsing:
 
     def verifica_endereco(self, end):
         """
-        Método que verifica se um endereço é da Paraíba
-        e se sua confiabilidade é maior ou igual a 5.
+        Method that check if an address is from Paraíba
+        and whether its reliability is greater than or equal to 5.
 
-        Parâmetros:
+
+        Params:
         ----------
         end: Dict
-            - Dicionário contendo todas as informações do endereço.
+            - Dictionary containing all address information.
 
-        Retorno:
+        Return:
         ----------
-        True: Caso o endereço obedeça aos requisitos.
-        False: Caso contrário.
+        True: If the address meets the requirements.
+        False: otherwise
         """
         if (end['confidence'] >= 5):
             # ", campina grande" in end['address'].lower() and
@@ -123,25 +124,25 @@ class Geoparsing:
 
     def verfica(self, ents_loc, limit):
         """
-        Método que verifica se os endereços estão corretos.
-            - Encontra as localizações das entidades de localizações.
-            - Verifica se é da PB e sua confiabilidade(`verifica_endereco`).
-            - Concatena os endereços.
-            - Ordena endereços pela confiabilidade.
+        Method that checks if the addresses are correct.
+            - Find the locations of the location entities.
+            - Check if is from PB and your reliability(`verifica_endereco`).
+            - Concatenates of addresses.
+            - Sort addresses by reliability.
 
-        Parâmetros:
+        Params:
         ----------
         ents_loc : List
-            - Lista de entidades de localizações.
+             - List of locations entities.
         limit : Integer
-            - Quantidade de endereços que desejar retornar.
+            - Number of addresses you want to return.
 
-        Retorno:
+        Return:
         ----------
         out : Tuple
-            - Uma tupla do tipo (Boolean, List).
-            Caso tenha encontrado pelo menos um endereço nesses requisitos.
-            Lista de endereços(len = limit)
+            - One tuple of type (Boolean - List).
+            If you have found at least one address in these requirements.
+            List of addresses(len = limit))
         """
         ends = []
         for loc in ents_loc:
@@ -168,18 +169,19 @@ class Geoparsing:
 
     def search_next_index(self, list_best_address):
         """
-        Método que busca uma nova posição a ser adicionado na
-        lista de melhores endereços.
+        Method that search a new position to be added
+        in list of best addresses
 
-        Parâmetros:
+
+        Params:
         ----------
         list_best_address : List
-            - Lista contendo todos os endereços encontrados.
+            - List containing all addresses found.
 
-        Retorno:
+        Return:
         ----------
         out : Integer
-            - Posição onde o novo endereço deve ser adicionado.
+            - Position where the new address must be added.
         """
         for i in range(len(list_best_address)):
             if list_best_address[i]['type_class'] == "geral":
@@ -189,17 +191,16 @@ class Geoparsing:
 
     def insert_ordened_to_priority(self, result, address, type_):
         """
-        Método que insere na lista de melhores endereços ordenando
-        por prioridades.
+        Methodo that insert in list of best addresses order by priority.
 
-        Parâmetros:
+        Params:
         ----------
         result : List
-            - Lista de melhores endereços.
+            - List of best addresses.
         address : Dict
-            - Endereço a ser inserido na lista.
+            - Address to be insert in list.
         type_ : String
-            - Tipo do endereço.
+            - Type of address.
         """
         if address not in result:
             if type_ == "school":
@@ -214,35 +215,33 @@ class Geoparsing:
 
     def choose_best_addresses(self, adresses, text, addresses_, cities):
         """
-        Realiza a escolha dos melhores endereços encontrados.
+        Method that performs the chose of the best addresses found.
 
-        Algoritmos implementados:
-            - Ordenar por níveis de prioridades
-            - Filtrar por endereços que estejam em um determinado bairro
-            que também esteja nestes endereços filtrados.
-            - Endereços que mais se repetem no texto.
-            - Endereços que são StreatName
-            - Endereços que estão contidos nas cidades encontradas no texto.
+        Algorithms implemented:
+            - Sort by priority levels.
+            - Filter by addresses that are in a certain neighborhood that is
+            also in these filtered addresses.
+            - Addresses that are more repeated in the text.
+            - Addresses that are StreatName.
+            - Addresses that are contained in the cities found in the text.
 
-        Parâmetros:
+        Params:
         ----------
         adresses : Dict
-            - Dicionário de endereços e suas respectivas coordenadas.
+            - Adddresses dictionary and its cordinates .
         text : String
-            - Texto que esta passando pelo geoparsing.
+            - Text that is going through geoparsing..
         addresses_ : List
-            - Lista com todos os endereços concatenados entre si.
+            - List with all addresses concantenates with each other.
         cities : List
-            - Lista de nomes das cidades encontradas.
+            - List of city names found.
 
-        Retorno:
+        Return:
         ----------
         result : List
-            - Lista de objetos de `melhores` endereços.
+            - List of best addresses objects.
         """
         result = []
-        # Adicionar os endereços por ordem de prioridades.
-        # Ocorrências dos endereços no texto.
         for loc in adresses.keys():
             coord, type_ = adresses[loc]
             lat, lon = string_to_list(coord)
@@ -254,12 +253,8 @@ class Geoparsing:
                 result.append(g)
                 self.insert_ordened_to_priority(result, g, type_)
 
-        # Ordenando por quantidade de ocorrências no texto.
         result = sorted(result, key=lambda e: e['occurrences_in_text'])
 
-        # Ordenando por endereços que também foram encontrados
-        # seus bairros na filtragem, assim possuindo uma
-        # chance maior de ser o endereço correto.
         new_result = []
         for i in range(len(result) - 1, -1, -1):
             loc = result[i]
@@ -282,7 +277,6 @@ class Geoparsing:
             end = g.json
             result.insert(0, end)
 
-        # Ordenar por endereços que são do tipo "StreetName"
         new_result = []
         for i in range(len(result) - 1, -1, -1):
             if result[i].__contains__('quality'):
@@ -295,8 +289,6 @@ class Geoparsing:
 
         result = new_result
 
-        # ordenar por endereços que pertencem a cidade que foi
-        # encontrada no texto.
         new_result = []
         if (cities != []):
             for i in range(len(result) - 1, -1, -1):
@@ -315,17 +307,18 @@ class Geoparsing:
 
     def filterAddressCGText(self, text):
         """
-        Realiza a filtragem dos endereços do texto que estão no gazetteer.
+        Method that performs the filtering of the text addresses
+        that are in the gazetteer.
 
-        Parâmetros:
+        Params:
         ----------
         text : String
-            - Texto que para realizar o geoparsing.
+            - Text that to performs the geoparsing..
 
-        Retorno:
+        Return:
         ----------
         result : Dict
-            - Dicionário de endereços e suas respectivas coordenadas.
+            - Addresses dictionary and its cordinates.
         """
         addresses_geral = {}
 
@@ -358,6 +351,21 @@ class Geoparsing:
         return result
 
     def repeated_address(self, addresses, address):
+        """
+        Method that checks whether an address is repeated.
+
+        Params:
+        ----------
+        addresses: List
+            - List of addresses
+        address: String
+            - Address
+
+        Return:
+        ----------
+        True: if the address is repeated.
+        False: Otherwise.
+        """
         for a in addresses:
             if address in a:
                 return True
@@ -366,27 +374,27 @@ class Geoparsing:
     def geoparsing(self, text, case_correct=False, limit=5,
                    gazetteer_cg=False):
         """
-        Realiza o geoparsing do texto.
+        Method that performs the geoparsing of text,
 
-        OBS: Utilizar o geoparsing sem o case correct e sem o gazetteer
-        fará com que você tenha resultados ruins.
+        NOTE: use the geoparsing without the correct case and withour
+        the gazetteer will give you poor results.
 
-        Parâmetros:
+        Params:
         ----------
         text : String
-            - Texto que para realizar o geoparsing.
+            - Text that to performs the geoparsing.
         case_correct: Bool
-            - Se o texto estiver com case correto.
+            - If the text is with correct case.
         limit: Int
-            - Limite máximo de endereços retornados.
+            - Maximum limit of returned addresses.
         gazetteer_cg: Bool
-            - Caso deseje utilizar o gazetteer com localidades
-            do estado da Paraíba.
+            - If you want to use the gazetteer with locations in
+            the state of Paraíba.
 
-        Retorno:
+        Return:
         ----------
         result : List
-            - Lista de endereços.
+            - List of addresses.
         """
         if gazetteer_cg:
             result = self.filterAddressCGText(text.lower())
