@@ -2,25 +2,25 @@ from plpygis import Geometry
 import csv
 import sys
 
-# Aumentando o tamanho limite do csv.
+# Increasing the limit size of the CSV.
 maxInt = sys.maxsize
 csv.field_size_limit(maxInt)
 
 
 def convertGeometryPoint(geometry):
     """
-    Função de pré-processamento que transformar um código em geometria para
-      uma lista de floats.
+    Pre-processing function that turns a code into geometry(Point)
+    for a list of floats.
 
-    Parâmetros:
+    Params:
     ----------
     geometry : String
-      - String que representa um coordenada geometrica de um ponto.
+      - String that represents a geometric coordinate of a point.
 
-    Retorno:
+    Return:
     ----------
     coord : List
-      - Lista de coordenadas.
+      - List of cordenates.
     """
     g = Geometry(geometry)
     coord = g.geojson['coordinates']
@@ -30,18 +30,18 @@ def convertGeometryPoint(geometry):
 
 def convertGeometryPolygon(geometry):
     """
-    Função de pré-processamento que transformar um código em geometria
-      para uma lista de floats.
+    Pre-processing function that turns a code into geometry(polygon)
+    for a list of floats.
 
-    Parâmetros:
+    Params:
     ----------
     geometry : String
-      - String que representa um coordenada geometrica de um polígono.
+      - String that represents a geometric coordinate of a polygon.
 
-    Retorno:
+    Return:
     ----------
     coord : List
-      - Lista de coordenadas.
+      - List of cordenates.
     """
     g = Geometry(geometry)
     coord = g.geojson['coordinates']
@@ -54,18 +54,18 @@ def convertGeometryPolygon(geometry):
 
 def convertFeature(geometry):
     """
-    Função de pré-processamento que transformar um código em geometria
-      para uma lista de floats.
+    Pre-processing function that turns a code into geometry(Feature)
+    for a list of floats.
 
-    Parâmetros:
+    Params:
     ----------
     geometry : String
-      - String que representa um coordenada geometrica de uma feature.
+      - String that represents a geometric coordinate of a feature.
 
-    Retorno:
+    Return:
     ----------
     coord : List
-      - Lista de coordenadas.
+      - List of cordenates.
     """
     g = Geometry(geometry)
     coord = g.geojson['coordinates'][0][0]
@@ -78,14 +78,13 @@ def convertFeature(geometry):
 
 def polygons(localidade="cg"):
     """
-    Função de pré-processamento escreve dados dos endereços de poligonos
-      em outro arquivo
-    com as coordenadas normalizadas.
+    Pre-processing function that writes polygon address data to another
+    file with normalized coordinates.
 
-    Parâmetros:
+    Params:
     ----------
     localidade : String
-      - String que representa a cidade/estado("cg", "jp" ou "pb").
+      - String representing the city/state("cg", "jp" ou "pb").
     """
     if (localidade == "cg"):
         arq = csv.DictReader(
@@ -111,14 +110,13 @@ def polygons(localidade="cg"):
 
 def points(localidade="cg"):
     """
-    Função de pré-processamento escreve dados dos endereços de pontos
-      em outro arquivo
-    com as coordenadas normalizadas.
+    Pre-processing function that writes point address data to another
+    file with normalized coordinates.
 
-    Parâmetros:
+    Params:
     ----------
     localidade : String
-      - String que representa a cidade/estado("cg", "jp" ou "pb").
+      - String representing the city/state("cg", "jp" ou "pb").
     """
     if (localidade == "cg"):
         arq = csv.DictReader(
@@ -144,14 +142,13 @@ def points(localidade="cg"):
 
 def features(localidade="cg"):
     """
-    Função de pré-processamento escreve dados dos endereços de features
-      em outro arquivo
-    com as coordenadas normalizadas.
+    Pre-processing function that writes feature address data to another
+    file with normalized coordinates.
 
-    Parâmetros:
+    Params:
     ----------
     localidade : String
-      - String que representa a cidade/estado("cg", "jp" ou "pb").
+      - String representing the city/state("cg", "jp" ou "pb").
     """
     if (localidade == "cg"):
         arq = csv.DictReader(
@@ -175,9 +172,6 @@ def features(localidade="cg"):
 
 
 def main():
-    """
-    Função principal, onde tudo será executado.
-    """
     locs = ['cg', 'jp', 'pb']
 
     for loc in locs:
