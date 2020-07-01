@@ -20,12 +20,12 @@ def main_cross_val():
     nlp = spacy.load('pt_core_news_sm')
 
     # PREPARING FILES.
-    dados = pd.read_csv("../../dados/textos_limpos.csv")
-    dados.drop_duplicates(['texto'], inplace=True)
-    textos = dados['texto']
-    textos = [str(texto) for texto in textos]
-    cross = kfoldcv(textos)
-    print("Total: ", len(textos))
+    data = pd.read_csv("../../dados/textos_limpos.csv")
+    data.drop_duplicates(['texto'], inplace=True)
+    texts = data['texto']
+    texts = [str(texto) for text in texts]
+    cross = kfoldcv(texts)
+    print("Total: ", len(texts))
 
     for train_tests in cross:
         train = train_tests[0]
@@ -96,11 +96,10 @@ def main():
     nlp = spacy.load('pt_core_news_sm')
 
     # PREPARING FILES.
-    dados = pd.read_csv("../../dados/textos_limpos.csv")
-    dados.drop_duplicates(['texto'], inplace=True)
-    textos = dados['texto']
+    data = pd.read_csv("../../dados/textos_limpos.csv")
+    data.drop_duplicates(['texto'], inplace=True)
 
-    processed_docs = dados['texto'].map(lambda texto: texto.split())
+    processed_docs = data['texto'].map(lambda text: text.split())
     print(processed_docs[:10])
 
     # Creating dictionary of words.

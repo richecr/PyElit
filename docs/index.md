@@ -1,3 +1,5 @@
+![](https://i.imgur.com/h97blvN.png)
+
 # Sumário:
 
 - [O que é PyElit ?](#o-que-é-pyelit-)

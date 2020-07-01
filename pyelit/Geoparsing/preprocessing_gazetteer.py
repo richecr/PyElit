@@ -7,7 +7,7 @@ maxInt = sys.maxsize
 csv.field_size_limit(maxInt)
 
 
-def convertGeometryPoint(geometry):
+def convert_geometry_point(geometry):
     """
     Pre-processing function that turns a code into geometry(Point)
     for a list of floats.
@@ -28,7 +28,7 @@ def convertGeometryPoint(geometry):
     return coord
 
 
-def convertGeometryPolygon(geometry):
+def convert_geometry_polygon(geometry):
     """
     Pre-processing function that turns a code into geometry(polygon)
     for a list of floats.
@@ -52,7 +52,7 @@ def convertGeometryPolygon(geometry):
     return saida
 
 
-def convertFeature(geometry):
+def convert_feature(geometry):
     """
     Pre-processing function that turns a code into geometry(Feature)
     for a list of floats.
@@ -102,7 +102,7 @@ def polygons(localidade="cg"):
     f.writerow(fields)
 
     for p in arq:
-        coord = convertGeometryPolygon(p['geometry'])
+        coord = convert_geometry_polygon(p['geometry'])
         t = [p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(),
              p["type"].__str__(), coord]
         f.writerow(t)
@@ -134,7 +134,7 @@ def points(localidade="cg"):
     f.writerow(fields)
 
     for p in arq:
-        coord = convertGeometryPoint(p['geometry'])
+        coord = convert_geometry_point(p['geometry'])
         t = [p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(),
              p["type"].__str__(), coord]
         f.writerow(t)
@@ -165,7 +165,7 @@ def features(localidade="cg"):
     f.writerow(fields)
 
     for p in arq:
-        coord = convertFeature(p['geometry'])
+        coord = convert_feature(p['geometry'])
         t = [p['osm_id'].__str__(), p["fclass"].__str__(), p["name"].__str__(),
              p["type"].__str__(), coord]
         f.writerow(t)

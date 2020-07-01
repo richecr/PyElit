@@ -73,13 +73,13 @@ class TopicModeling:
         """
         doc_out = []
         doc = self.nlp(text)
-        entidades_loc = [
-            entidade for entidade in doc.ents if entidade.label_ == "LOC"]
+        location_entities = [
+            entity for entity in doc.ents if entity.label_ == "LOC"]
         for token in doc:
             if (token.text not in self.stop_words_spacy and
                 len(token.text) > 3 and
                 token.pos_ in self.allowed_postags and not
-                    self.is_entities_loc(token.text, entidades_loc)):
+                    self.is_entities_loc(token.text, location_entities)):
                 doc_out.append(self.lemmatization(token.text))
 
         return doc_out
@@ -100,7 +100,7 @@ class TopicModeling:
         """
         return self.stemmer.stem(WordNetLemmatizer().lemmatize(word, pos="v"))
 
-    def is_entities_loc(self, word, entities_loc):
+    def is_entities_loc(self, word, location_entities):
         """
         Method that check if the word is entity of location.
 
@@ -108,7 +108,7 @@ class TopicModeling:
         ----------
         word : String
             - Word.
-        entities_loc : List
+        location_entities : List
             - List of location entities recognized by spacy.
 
         Return:
@@ -116,19 +116,19 @@ class TopicModeling:
         True: If the word is a location entity.\n
         False: Othwerwise..
         """
-        for e in entities_loc:
-            if (e.text.lower() == word.lower()):
+        for entity in location_entities:
+            if (entity.text.lower() == word.lower()):
                 return True
 
         return False
 
-    def print_keywords(self, quant_max_palavras=None):
+    def print_keywords(self, max_number_words=None):
         """
         Method that will print the keywords for each of topics in the model.
 
         Params:
         ----------
-        quant_max_palavras: Int
+        max_number_words: Int
             - Maximum number of words that representing a topic to be returned
 
         Return:
@@ -136,10 +136,10 @@ class TopicModeling:
         topics : List
             - List of keywords for topics in the model.
         """
-        if quant_max_palavras is None:
-            quant_max_palavras = 5
+        if max_number_words is None:
+            max_number_words = 5
         topics = []
-        for topic in self.model.print_topics(-1, quant_max_palavras):
+        for topic in self.model.print_topics(-1, max_number_words):
             topics.append(topic)
         return topics
 

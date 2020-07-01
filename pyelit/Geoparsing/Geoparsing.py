@@ -75,13 +75,13 @@ class Geoparsing:
         only_ascii = nfkd_form.encode('ASCII', 'ignore')
         return only_ascii.decode('utf-8')
 
-    def concatena_end(self, list_end, exclude=False):
+    def concantenate_address(self, list_address, exclude=False):
         """
         Method that concatenates addresses.
 
         Params:
         ----------
-        list_end: List
+        list_address: List
             - List containing all addresses found.
 
         Return:
@@ -92,14 +92,14 @@ class Geoparsing:
         if exclude:
             out = []
         else:
-            out = [e for e in list_end]
-        for i in range(len(list_end) - 1):
-            for j in range(i+1, len(list_end)):
-                temp = str(list_end[i]) + " " + str(list_end[j])
+            out = [e for e in list_address]
+        for i in range(len(list_address) - 1):
+            for j in range(i+1, len(list_address)):
+                temp = str(list_address[i]) + " " + str(list_address[j])
                 out.append(temp)
         return out
 
-    def verifica_endereco(self, end):
+    def check_reliability_address(self, address):
         """
         Method that check if an address is from Paraíba
         and whether its reliability is greater than or equal to 5.
@@ -107,7 +107,7 @@ class Geoparsing:
 
         Params:
         ----------
-        end: Dict
+        address: Dict
             - Dictionary containing all address information.
 
         Return:
@@ -115,24 +115,24 @@ class Geoparsing:
         True: If the address meets the requirements.
         False: otherwise
         """
-        if (end['confidence'] >= 5):
+        if (address['confidence'] >= 5):
             # ", campina grande" in end['address'].lower() and
             # if (", paraíba" in end['address'].lower()):
             return True
         else:
             return False
 
-    def verfica(self, ents_loc, limit):
+    def check_address(self, location_entities, limit):
         """
         Method that checks if the addresses are correct.
             - Find the locations of the location entities.
-            - Check if is from PB and your reliability(`verifica_endereco`).
+            - Check if is from PB and your reliability(`check_reliability_address`).
             - Concatenates of addresses.
             - Sort addresses by reliability.
 
         Params:
         ----------
-        ents_loc : List
+        location_entities : List
              - List of locations entities.
         limit : Integer
             - Number of addresses you want to return.
@@ -144,26 +144,27 @@ class Geoparsing:
             If you have found at least one address in these requirements.
             List of addresses(len = limit))
         """
-        ends = []
-        for loc in ents_loc:
-            loc = str(loc)
-            g = geocoder.arcgis(loc)
-            end = g.json
-            if (end is not None):
-                ends.append(end)
+        addresses = []
+        for location in location_entities:
+            location = str(location)
+            g = geocoder.arcgis(location)
+            address = g.json
+            if (address is not None):
+                addresses.append(address)
 
-        ends_corretos = []
-        for e in ends:
-            if (self.verifica_endereco(e)):
-                ends_corretos.append(e)
+        correct_addresses = []
+        for addr in addresses:
+            if (self.check_reliability_address(addr)):
+                correct_addresses.append(addr)
 
-        if (len(ends_corretos)):
-            end_final = ends_corretos[0]
-            for ed in ends_corretos:
-                if (ed['confidence'] > end_final['confidence']):
-                    end_final = ed
-            end_ = sorted(ends_corretos, key=lambda end: end['confidence'])
-            return (True, end_[0:limit])
+        if (len(correct_addresses)):
+            addr_final = correct_addresses[0]
+            for addr in correct_addresses:
+                if (addr['confidence'] > addr_final['confidence']):
+                    addr_final = addr
+            addrs_ = sorted(correct_addresses,
+                            key=lambda end: end['confidence'])
+            return (True, addrs_[0:limit])
         else:
             return (False, [])
 
@@ -183,9 +184,9 @@ class Geoparsing:
         out : Integer
             - Position where the new address must be added.
         """
-        for i in range(len(list_best_address)):
-            if list_best_address[i]['type_class'] == "geral":
-                return i
+        for index in range(len(list_best_address)):
+            if list_best_address[index]['type_class'] == "geral":
+                return index
 
         return len(list_best_address) - 1
 
@@ -213,7 +214,7 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text, addresses_, cities):
+    def choose_best_addresses(self, adresses, text, addresses_concatenated, cities):
         """
         Method that performs the chose of the best addresses found.
 
@@ -231,8 +232,8 @@ class Geoparsing:
             - Adddresses dictionary and its cordinates .
         text : String
             - Text that is going through geoparsing..
-        addresses_ : List
-            - List with all addresses concantenates with each other.
+        addresses_concatenated : List
+            - List with all addresses concatenated   with each other.
         cities : List
             - List of city names found.
 
@@ -242,70 +243,71 @@ class Geoparsing:
             - List of best addresses objects.
         """
         result = []
-        for loc in adresses.keys():
-            coord, type_ = adresses[loc]
+        for location in adresses.keys():
+            coord, type_ = adresses[location]
             lat, lon = string_to_list(coord)
-            loc_ = str(lat[0]) + ", " + str(lon[0])
-            g = geocoder.reverse(location=loc_, provider="arcgis")
-            g = g.json
-            if g is not None:
-                g['occurrences_in_text'] = text.count(loc)
-                result.append(g)
-                self.insert_ordened_to_priority(result, g, type_)
+            location_ = str(lat[0]) + ", " + str(lon[0])
+            addr = geocoder.reverse(location=location_, provider="arcgis")
+            addr = addr.json
+            if addr is not None:
+                addr['occurrences_in_text'] = text.count(location)
+                result.append(addr)
+                self.insert_ordened_to_priority(result, addr, type_)
 
-        result = sorted(result, key=lambda e: e['occurrences_in_text'])
+        result = sorted(result, key=lambda addr: addr['occurrences_in_text'])
 
         new_result = []
-        for i in range(len(result) - 1, -1, -1):
-            loc = result[i]
-            if loc['raw'].__contains__('address'):
-                loc_district = loc['raw']['address']['District'].lower()
-                if loc_district in adresses.keys():
-                    new_result.insert(0, loc)
+        for index in range(len(result) - 1, -1, -1):
+            location = result[index]
+            if location['raw'].__contains__('address'):
+                location_district = location['raw']['address']['District'].lower(
+                )
+                if location_district in adresses.keys():
+                    new_result.insert(0, location)
                 else:
-                    new_result.append(loc)
+                    new_result.append(location)
             else:
-                if loc['raw']['name'].lower() in adresses.keys():
-                    new_result.insert(0, loc)
+                if location['raw']['name'].lower() in adresses.keys():
+                    new_result.insert(0, location)
                 else:
-                    new_result.append(loc)
+                    new_result.append(location)
         result = new_result
 
-        for loc in addresses_:
-            loc_ = str(loc)
-            g = geocoder.arcgis(loc_)
-            end = g.json
-            result.insert(0, end)
+        for location in addresses_concatenated:
+            location_ = str(location)
+            addr = geocoder.arcgis(location_)
+            addr = addr.json
+            result.insert(0, addr)
 
         new_result = []
-        for i in range(len(result) - 1, -1, -1):
-            if result[i].__contains__('quality'):
-                if result[i]['quality'] == "StreetName":
-                    new_result.insert(0, result[i])
+        for index in range(len(result) - 1, -1, -1):
+            if result[index].__contains__('quality'):
+                if result[index]['quality'] == "StreetName":
+                    new_result.insert(0, result[index])
                 else:
-                    new_result.append(result[i])
+                    new_result.append(result[index])
             else:
-                new_result.append(result[i])
+                new_result.append(result[index])
 
         result = new_result
 
         new_result = []
         if (cities != []):
-            for i in range(len(result) - 1, -1, -1):
+            for index in range(len(result) - 1, -1, -1):
                 for city in cities:
-                    if result[i].__contains__('quality'):
-                        if city in result[i]['address'].lower():
-                            new_result.insert(0, result[i])
+                    if result[index].__contains__('quality'):
+                        if city in result[index]['address'].lower():
+                            new_result.insert(0, result[index])
                     else:
-                        loc_city = str(result[i]['raw']
+                        loc_city = str(result[index]['raw']
                                        ['address']['City']).lower()
                         if loc_city == city:
-                            new_result.insert(0, result[i])
+                            new_result.insert(0, result[index])
             result = new_result
 
         return result
 
-    def filterAddressCGText(self, text):
+    def filter_address_text(self, text):
         """
         Method that performs the filtering of the text addresses
         that are in the gazetteer.
@@ -320,34 +322,36 @@ class Geoparsing:
         result : Dict
             - Addresses dictionary and its cordinates.
         """
-        addresses_geral = {}
+        general_addresses = {}
 
         text = self.remove_accents(text)
 
         for osm_id in self.gazetteer.keys():
             address = self.gazetteer.get(osm_id)[2]
-            address_aux = address.split()
-            if address_aux[0] == "rua":
-                address_aux = address_aux[1:]
-            if len(address_aux) > 1 or self.gazetteer[osm_id][1] == "suburb":
+            auxiliary_address = address.split()
+            if auxiliary_address[0] == "rua":
+                auxiliary_address = auxiliary_address[1:]
+            if len(auxiliary_address) > 1 or self.gazetteer[osm_id][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 txt_contains_addr = re.search("\\b" + address + "\\b", text)
                 if txt_contains_addr:
                     addr_repeated = self.repeated_address(
-                        addresses_geral.keys(), address)
+                        general_addresses.keys(), address)
                     if not addr_repeated:
-                        addresses_geral[address] = (
+                        general_addresses[address] = (
                             self.gazetteer[osm_id][0],
                             self.gazetteer[osm_id][1])
 
-        cities = [str(a) for a in addresses_geral.keys()
-                  if addresses_geral[a][1] == "city"]
+        cities = [str(addr) for addr in general_addresses.keys()
+                  if general_addresses[addr][1] == "city"]
 
-        addresses_ = [str(a) for a in addresses_geral.keys()]
-        addresses_ = self.concatena_end(addresses_, exclude=True)
+        addresses_concatenated = [str(addr)
+                                  for addr in general_addresses.keys()]
+        addresses_concatenated = self.concantenate_address(
+            addresses_concatenated, exclude=True)
         result = self.choose_best_addresses(
-            addresses_geral, text, addresses_, cities)
+            general_addresses, text, addresses_concatenated, cities)
         return result
 
     def repeated_address(self, addresses, address):
@@ -366,8 +370,8 @@ class Geoparsing:
         True: if the address is repeated.
         False: Otherwise.
         """
-        for a in addresses:
-            if address in a:
+        for addr in addresses:
+            if address in addr:
                 return True
         return False
 
@@ -397,25 +401,25 @@ class Geoparsing:
             - List of addresses.
         """
         if gazetteer_cg:
-            result = self.filterAddressCGText(text.lower())
+            result = self.filter_address_text(text.lower())
             if result:
                 return result
             else:
                 raise Exception(
-                    "Não foi possível realizar o geoparsing do texto")
+                    "Text geoparsing could not be performed")
         else:
             if case_correct:
                 doc = self.nlp(text)
                 ents_loc = list(filter(
                     lambda entity: entity.label_ == "LOC" or
                     entity.label_ == "GPE", doc.ents))
-                address_found = self.concatena_end(ents_loc)
-                result = self.verfica(address_found, limit)
+                address_found = self.concantenate_address(ents_loc)
+                result = self.check_address(address_found, limit)
                 if result[0]:
                     return result[1]
                 else:
                     raise Exception(
-                        "Não foi possivel realizar o geoparsing do texto")
+                        "Text geoparsing could not be performed")
             else:
                 text = truecase.get_true_case(text)
 
