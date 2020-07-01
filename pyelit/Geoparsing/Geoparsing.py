@@ -126,7 +126,8 @@ class Geoparsing:
         """
         Method that checks if the addresses are correct.
             - Find the locations of the location entities.
-            - Check if is from PB and your reliability(`check_reliability_address`).
+            - Check if is from PB and your reliability
+              (`check_reliability_address`).
             - Concatenates of addresses.
             - Sort addresses by reliability.
 
@@ -214,7 +215,8 @@ class Geoparsing:
                 address['type_class'] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text, addresses_concatenated, cities):
+    def choose_best_addresses(self, adresses, text, addresses_concatenated,
+                              cities):
         """
         Method that performs the chose of the best addresses found.
 
@@ -260,8 +262,8 @@ class Geoparsing:
         for index in range(len(result) - 1, -1, -1):
             location = result[index]
             if location['raw'].__contains__('address'):
-                location_district = location['raw']['address']['District'].lower(
-                )
+                location_district = location['raw']['address']['District']\
+                    .lower()
                 if location_district in adresses.keys():
                     new_result.insert(0, location)
                 else:
@@ -331,7 +333,8 @@ class Geoparsing:
             auxiliary_address = address.split()
             if auxiliary_address[0] == "rua":
                 auxiliary_address = auxiliary_address[1:]
-            if len(auxiliary_address) > 1 or self.gazetteer[osm_id][1] == "suburb":
+            if (len(auxiliary_address) > 1 or
+                    self.gazetteer[osm_id][1] == "suburb"):
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 txt_contains_addr = re.search("\\b" + address + "\\b", text)
