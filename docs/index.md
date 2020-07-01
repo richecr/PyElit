@@ -1,4 +1,4 @@
-![](https://i.imgur.com/h97blvN.png)
+![](https://i.imgur.com/ccaix2x.png)
 
 # Sumário:
 

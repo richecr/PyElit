@@ -1,4 +1,4 @@
-![](https://i.imgur.com/h97blvN.png)
+![](https://i.imgur.com/ccaix2x.png)
 ![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/Rickecr/PyElit)
 ![PyPI](https://img.shields.io/pypi/v/PyElit)
 ![PyPI - License](https://img.shields.io/pypi/l/PyElit)
