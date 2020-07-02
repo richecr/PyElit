@@ -17,7 +17,7 @@ You work with very texts ? Want to extract locations ? Want to know which urban 
 
 PyElit has as one of the objectives to perform the Geoparsing, allowing gazetteer to be used to improve the searches, currently there is only the gazetteer in some regions of the state of Paraíba, mostly in the cities of: Campina Grande and João Pessoa.
 
-And too has as objective perform the classification of texts that involve certain types of urban problem. In the future, we can allow library users to provide texts so that we can then process and generate topics.
+It also aims to classify texts that involve certain types of urban problems. In the future, we can allow library users to provide texts so that we can then process and generate topics.
 
 We know that the library is not able to solve all problems, but it was useful for the project that started its creation. So we allow library users to make changes to the source code to adapt to their problem and then get betteer results in their research, and with that the library can be useful for a greater number of developers.
 
