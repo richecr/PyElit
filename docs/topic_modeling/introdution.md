@@ -1,16 +1,16 @@
 # Introduction
 
-PyElit is also a library that allows classify texts that deal with urban problems. For now it is not possible to train the model with your own data.
+PyElit is also a library that allows classifying texts that deal with urban problems. For now, it is not possible to train the model with your own data.
 
 ## Objective
 
-The module aims to classify a text in one of the urban problems trained in the model: basic sanitation, traffic, works and miscellaneous. The model was trained with television news reports: JPB Calendar of the JPB newscast of TV Cabo Branco affiliated with TV Globo.
+The module aims to classify a text in one of the urban problems trained in the model: basic sanitation, traffic, works, and miscellaneous. The model was trained with television news reports: JPB Calendar of the JPB newscast of TV Cabo Branco affiliated with TV Globo.
 
-It also allows the visualization of texts documents of that topic, allows us to see the keywords for a given topic.
+It also allows the visualization of text documents of that topic, and also allows us to see the keywords for a given topic.
 
 # How to use ?
 
-The `TopicModeling` class is quite simple to use. Just import and instantiate an object of the class and then call the mian method: `rate_text`.
+The `TopicModeling` class is quite simple to use. Just import and instantiate an object of the class and then call the main method: `rate_text`.
 
 Let's see some examples of how to use:
 
