@@ -7,7 +7,7 @@
 - [How to Install ?](#how-to-install-)
 - [Geoparsing](#geoparsing)
 - [Topic Modeling](#topic-modeling)
-- [How to contribute ?](#contribuir)
+- [How to contribute ?](#how-to-contribute-)
 
 ## What is PyElit ?
 
@@ -64,4 +64,4 @@ Details of how the library Topic Modeling works.
 
 ## How to contribute ?:
 
-If you want to contribute to the project, you can start by taking a look [here](CONTRIBUTING-pt_br.md).
+If you want to contribute to the project, you can start by taking a look [here](CONTRIBUTING.md).

@@ -49,7 +49,7 @@ class TopicModeling:
         self.model = gensim.models.LdaMulticore.load(fname=fname)
         self.topics = {}
         self.represent_topics(
-            [0, 1, 2, 3], ['saneamento', 'trânsito', 'obras', 'diversos'])
+            [0, 1, 2, 3], ['Sanitation', 'Traffic', 'Construction', 'Several'])
 
     def pre_processing(self, text):
         """
