@@ -64,4 +64,4 @@ Details of how the library Topic Modeling works.
 
 ## How to contribute ?:
 
-If you want to contribute to the project, you can start by taking a look [here](CONTRIBUTING.md).
+If you want to contribute to the project, you can start by taking a look [here](contributing/contributing.md).
