@@ -1,19 +1,18 @@
-# Introdução
+# Introduction
 
-PyElit é uma biblioteca que permite realizar o geoparsing de um certo texto. Por enquanto não é possível treinar com um gazetteer passado, mas isso está como ideias futuras para a biblioteca.
+PyElit is a library that allows performing the geoparsing of a certain text. For now, it is not possible to train with a past gazetteer, but this is one of the future ideas for the library.
 
-## Objetivo
+## Objective
 
-A biblioteca tem como um dos objetivos realizar o Geoparsing de textos, permitindo que seja utilizados gazetteer para melhorar as buscas, atualmente só tem o gazetteer de algumas regiões do estado da Paraíba, em grande parte nas cidades de: Campina Grande e João Pessoa.
+One goal of the library is to perform text geoparsing, allowing gazetteer to be used for improved searches, currently, there is only the gazetteer in some regions of the state of Paraíba, widely in the cities of Campina Grande and João Pessoa.
 
-# Como usar ?
+# How to use ?
 
-A classe `Geoparsing` é bastante simples de usar, basta importar e iniciar um objeto como instância da classe.
-O `geoparsing` é o principal método da classe, pois ele quem é responsável por realizar o geoparsing de textos.
+The `Geoparsing` class is quite simple to use, just import and instantiate an object of the class. The `geoparsing` is the main method of the class since it is responsible for performing the geoparsing of texts.
 
-Vamos ver alguns exemplos de como usar:
+Let's see some examples of how to use:
 
-## Geoparsing com case correto **sem** utilização do gazetteer:
+## Geoparsing with the correct case **without** using the gazetteer:
 
 ```python
 from pyelit import Geoparsing
@@ -24,13 +23,13 @@ a = geop.geoparsing(text=text, case_correct=True)
 print(a)
 ```
 
-Entidades reconhecidas nesse exemplo:
+ Recognized entities in this example:
 
 ```python
 ["Rua João Sérgio de Almeida", "Bodócongo", "Campina Grande"]
 ```
 
-## Geoparsing com case incorreto **sem** utilização do gazetteer:
+## Geoparsing with incorrect case ** without ** use of the gazetteer:
 
 ```python
 from pyelit import Geoparsing
@@ -41,13 +40,13 @@ a = geop.geoparsing(text=text, case_correct=False)
 print(a)
 ```
 
-Entidades reconhecidas nesse exemplo:
+Entities recognized in this example:
 
 ```python
 ["Bodocongó"]
 ```
 
-## Geoparsing com o gazetteer:
+## Geoparsing with the gazetteer:
 
 ```python
 from pyelit import Geoparsing
@@ -58,7 +57,7 @@ a = geop.geoparsing(text=text, case_correct=True, gazetteer_cg=True)
 print(a)
 ```
 
-Entidades reconhecidas nesse exemplo:
+Recognized entities in this example
 
 ```python
 [["rua joao sergio de almeida", "campina grande", "bodocongo"]]

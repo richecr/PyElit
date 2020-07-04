@@ -26,13 +26,13 @@ class TestTopicModeling:
 
     def test_topic_modeling_print_topics(self, init_topic_modeling):
         assert init_topic_modeling.print_topics(
-        ) == {0: 'saneamento', 1: 'trânsito', 2: 'obras', 3: 'diversos'}
+        ) == {0: 'Sanitation', 1: 'Traffic', 2: 'Construction', 3: 'Several'}
 
     def test_topic_modeling_get_topic(self, init_topic_modeling):
-        assert init_topic_modeling.get_topic(0) == "saneamento"
-        assert init_topic_modeling.get_topic(1) == "trânsito"
-        assert init_topic_modeling.get_topic(2) == "obras"
-        assert init_topic_modeling.get_topic(3) == "diversos"
+        assert init_topic_modeling.get_topic(0) == "Sanitation"
+        assert init_topic_modeling.get_topic(1) == "Traffic"
+        assert init_topic_modeling.get_topic(2) == "Construction"
+        assert init_topic_modeling.get_topic(3) == "Several"
 
     def test_topic_modeling_represent_topics(self, init_topic_modeling):
         ids = [0, 1, 2, 3]

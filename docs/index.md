@@ -1,37 +1,38 @@
 ![](https://i.imgur.com/ccaix2x.png)
 
-# Sumário:
+# Summary:
 
-- [O que é PyElit ?](#o-que-é-pyelit-)
-- [Funcionalidades](#funcionalidades)
+- [What is PyElit ?](#what-is-pyelit-)
+- [Features](#features)
+- [How to Install ?](#how-to-install-)
 - [Geoparsing](#geoparsing)
-- [TopicModeling](#topicmodeling)
-- [Contribuir](#contribuir)
+- [Topic Modeling](#topic-modeling)
+- [How to contribute ?](#how-to-contribute-)
 
-## O que é PyElit ?
+## What is PyElit ?
 
-PyElit, Extraction of Locations and Issues of a Text, é uma biblioteca open-source para realização de Geoparsing e Modelagem de Tópicos desenvolvida em Python. É uma biblioteca desenvolvida para ser utilizada em um projeto de pesquisa no [Laboratório de Sistemas da Informação - UFCG](https://sites.google.com/view/lsi-ufcg). Entretanto foi decidido que seria melhor disponibilizar para a comunidade, assim permitindo que outros desenvolvedores possam contribuir para melhorar a biblioteca, seja com novas funcionalidades, melhorias, reportando BUGs e etc.
+PyElit, Extraction of Locations and Issues of a Text, is a library open-source to performing Geoparsing and Topic Modeling developed in Python. It was developed to be used in a research project at [Laboratório de Sistemas da Informação - UFCG](https://sites.google.com/view/lsi-ufcg). However, it was decided that it would be better to make it available to the community and thereby allowing other developers to contribute to the library, whether with new features, improvements, reporting bugs and etc.
 
-Você trabalha com muitos textos ? Quer extrair localizações ? Quer saber qual problema urbano é tratado em um texto ?
+Do you work with a lot of texts ? Want to extract locations ? Want to know which urban problem is addressed in a text ?
 
-PyElit tem como um dos objetivos realizar o Geoparsing de textos, permitindo que seja utilizado gazetteer para melhorar as buscas, atualmente só tem o gazetteer de algumas regiões do estado da Paraíba, em grande parte nas cidades de: Campina Grande e João Pessoa.
+PyElit has as one of the objectives to perform the Geoparsing, allowing gazetteer to be used to improve the searches, currently, there is only the gazetteer in some regions of the state of Paraíba, mostly in the cities of Campina Grande and João Pessoa.
 
-E também tem como objetivo realizar a classificação de textos que envolvam certos tipos de problemas urbanos. Futuramente poderiamos permitir que os usuários da biblioteca forneça os textos para que então realizassemos o tratamento e a geração de tópicos.
+It also aims to classify texts that involve certain types of urban problems. In the future, we can allow library users to provide texts so that we can then process and generate topics.
 
-Sabemos que a biblioteca não é capaz de resolver todos os problemas, mas foi útil para o projeto que deu inicio a sua criação. Portanto permitimos que os usuários da biblioteca possam fazer alterações no código fonte, adaptando ao seu problema para então obter melhores resultados em suas pesquisas, assim a biblioteca poderá ser útil para um maior número de pessoas.
+We know that the library is not able to solve all problems, but it was useful for the project that started its creation. So we allow library users to make changes to the source code to adapt to their problem and then get better results in their research, and with that, the library can be useful for a greater number of developers.
 
-E assim os usuários que conseguirem fazer melhorias poderá enviar PRs para o aprimoramento da biblioteca.
+And so users who manage to make improvements will be able to send PR for the improvement of the library.
 
-## Funcionalidades:
+## Features:
 
-| Funcionalidade | Descrição                                                    |
-| -------------- | ------------------------------------------------------------ |
-| Geoparsing     | Permite extrair localizações de um texto qualquer.           |
-| Topic Modeling | Permite classificar um dado texto para um determinado tópico |
+| Features       | Description                                      |
+| -------------- | ------------------------------------------------ |
+| Geoparsing     | It allows extracting locations from any text.    |
+| Topic Modeling | It allows you to classify text for a given topic |
 
-## Como instalar:
+## How to Install ?
 
-A versão 0.1.2 do PyElit está publicada no [PyPI](https://pypi.org/). Portanto para instalar basta executar:
+PyElit version 0.1.2 is published in [PyPI](https://pypi.org/). So to install just run:
 
 ```sh
 $ pip install PyElit
@@ -39,28 +40,28 @@ $ pip install PyElit
 
 ## Geoparsing
 
-Detalhes de como funciona o Geoparsing da biblioteca.
+Details of how the library Geoparsing works.
 
-- [Introdução](geoparsing/introdution.md)
-  - [Objetivo](geoparsing/introdution.md#objetivo)
-- [Como usar ?](geoparsing/introdution.md#como-usar-)
-  - [Geoparsing em texto com case correto](geoparsing/introdution.md#geoparsing-com-case-correto-sem-utilização-do-gazetteer)
-  - [Geoparsing em texto com case incorreto](geoparsing/introdution.md#geoparsing-com-case-incorreto-sem-utilização-do-gazetteer)
-  - [Geoparsing com o gazetteer(disponibilizado pela própria biblioteca)](geoparsing/introdution.md#geoparsing-com-gazetteer)
+- [Introduction](geoparsing/introdution.md)
+  - [Objective](geoparsing/introdution.md#objetivo)
+- [How to use ?](geoparsing/introdution.md#como-usar-)
+  - [Geoparsin with correct case](geoparsing/introdution.md#geoparsing-com-case-correto-sem-utilização-do-gazetteer)
+  - [Geoparsin with incorrect case](geoparsing/introdution.md#geoparsing-com-case-incorreto-sem-utilização-do-gazetteer)
+  - [Geoparsing with the gazetteer(provided by the library itself)](geoparsing/introdution.md#geoparsing-com-gazetteer)
 
 ## Topic Modeling
 
-Detalhes de como funciona o Topic Modeling da biblioteca
+Details of how the library Topic Modeling works.
 
-- [Introdução](topic_modeling/introdution.md#introdução)
-  - [Objetivo](topic_modeling/introdution.md#objetivo)
-- [Como usar ?](topic_modeling/introdution.md#como-usar-)
-  - [Classificar um texto](topic_modeling/introdution.md#topicmodeling-classificar-um-texto)
-  - [Imrpimir tópicos](topic_modeling/introdution.md#topicmodeling-imprimir-tópicos)
-  - [Imprimir palavras chaves dos tópicos](topic_modeling/introdution.md#topicmodeling-imprimir-palavras-chaves-e-seus-pesos-em-cada-tópico)
-  - [Representatividade do nome dos tópicos](topic_modeling/introdution.md#topicmodeling-mudar-representatividade-do-nomes-dos-tópicos)
-  - [Imprimir tópico pelo ID](topic_modeling/introdution.md#topicmodeling-imprimir-um-tópico-por-meio-do-id-dele)
+- [Introduction](topic_modeling/introdution.md#introdução)
+  - [Objective](topic_modeling/introdution.md#objetivo)
+- [How to use ?](topic_modeling/introdution.md#como-usar-)
+  - [Classify a text](topic_modeling/introdution.md#topicmodeling-classificar-um-texto)
+  - [Print topics](topic_modeling/introdution.md#topicmodeling-imprimir-tópicos)
+  - [Print topics keywords](topic_modeling/introdution.md#topicmodeling-imprimir-palavras-chaves-e-seus-pesos-em-cada-tópico)
+  - [Representativeness of the name of the topics](topic_modeling/introdution.md#topicmodeling-mudar-representatividade-do-nomes-dos-tópicos)
+  - [Print topic by ID](topic_modeling/introdution.md#topicmodeling-imprimir-um-tópico-por-meio-do-id-dele)
 
-## Contribuir:
+## How to contribute ?:
 
-Se você deseja contribuir para o projeto, pode começar dando uma olhada [aqui](CONTRIBUTING-pt_br.md).
+If you want to contribute to the project, you can start by taking a look [here](CONTRIBUTING.md).
