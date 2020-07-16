@@ -5,7 +5,7 @@ import pandas as pd
 import nltk
 import spacy
 import gensim
-from nltk.stem.porter import *
+from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 
 # Objective is to place all texts (data) in a CSV file, pre-processed.

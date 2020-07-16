@@ -4,8 +4,8 @@ import spacy
 import gensim
 import numpy as np
 import pyLDAvis.gensim
-from nltk.stem import *
-from nltk.stem.porter import *
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
 from nltk.corpus import stopwords
 from gensim import corpora, models
 from gensim.test.utils import datapath

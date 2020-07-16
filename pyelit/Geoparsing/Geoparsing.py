@@ -9,7 +9,7 @@ import spacy
 import geocoder
 
 import nltk
-from nltk.stem.porter import *
+from nltk.stem.porter import PorterStemmer, re
 
 from .utils.utils import string_to_list
 
