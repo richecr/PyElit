@@ -17,7 +17,7 @@ It started with a research at [LSI-UFCG](https://sites.google.com/view/lsi-ufcg)
 
 ## Library documentation:
 
-- [Documentation](https://rickecr.github.io/PyElit/)
+- [Documentation](https://richecr.github.io/PyElit/)
 - [PyPI](https://pypi.org/project/PyElit/)
 
 ## Contributing:
