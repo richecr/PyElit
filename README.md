@@ -1,5 +1,4 @@
 ![](https://i.imgur.com/ccaix2x.png)
-![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/Rickecr/PyElit)
 ![PyPI](https://img.shields.io/pypi/v/PyElit)
 ![PyPI - License](https://img.shields.io/pypi/l/PyElit)
 
@@ -27,5 +26,5 @@ Contributions, issues and features are welcome. We have the file `CONTRIBUTING.m
 ## Author:
 
 - Rich Elton
-  - GitHub: [@rickecr](https://github.com/Rickecr)
+  - GitHub: [@rickecr](https://github.com/rickecr)
   - Twitter: [@rickzinho_ecr](https://twitter.com/rickzinho_ecr)

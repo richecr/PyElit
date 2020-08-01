@@ -1,5 +1,4 @@
 ![](https://i.imgur.com/ccaix2x.png)
-![GitHub Pipenv locked Python version](https://img.shields.io/github/pipenv/locked/python-version/Rickecr/PyElit)
 ![PyPI](https://img.shields.io/pypi/v/PyElit)
 ![PyPI - License](https://img.shields.io/pypi/l/PyElit)
 
@@ -23,5 +22,5 @@ Começou com uma pesquisa no [LSI-UFCG](https://sites.google.com/view/lsi-ufcg) 
 ## Autor:
 
 - Rich Elton
-  - GitHub: [@rickecr](https://github.com/Rickecr)
+  - GitHub: [@rickecr](https://github.com/richecr)
   - Twitter: [@rickzinho_ecr](https://twitter.com/rickzinho_ecr)
