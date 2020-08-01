@@ -14,6 +14,6 @@ print(r[:3])
 # text = "Minha rua esta cheia de lixo, as pessoas não respeitam nada"
 # r = t.rate_text(text)
 
-# print(t.print_keywords(quant_max_palavras=5))
+# print(t.print_keywords(max_number_words=5))
 
 # print(r)
