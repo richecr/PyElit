@@ -103,19 +103,19 @@ It has the texts used to train the topic modeling.
 
 ### How to run the application:
 
-We use the pipenv for better facility of management of the dependencies.
+We use the poetry for better facility of management of the dependencies.
 So you need to install first of all:
 
 - Install pipenv:
 
 ```bash
-$ pip install pipenv
+$ pip install poetry
 ```
 
 Now you should ativate the virtualenv(here will be installed all the used libraries):
 
 ```bash
-$ pipenv shell
+$ poetry shell
 ```
 
 Now you need install the model pt-br of spacy:
@@ -133,7 +133,7 @@ And you're done, you're ready to start development.
 ### Run the tests:
 
 ```bash
-$ pytest --disable-warnings
+$ poetry run pytest --disable-warnings
 ```
 
 ### Entering the pattern:
@@ -149,7 +149,7 @@ With the virtualenv ativated, you can run the pycodestyle:
 - To run the pycodestyle:
 
   ```bash
-  pycodestyle .
+  $ poetry run pycodestyle .
   ```
 
 ##
