@@ -26,5 +26,5 @@ Contributions, issues and features are welcome. We have the file `CONTRIBUTING.m
 ## Author:
 
 - Rich Elton
-  - GitHub: [@rickecr](https://github.com/rickecr)
+  - GitHub: [@rickecr](https://github.com/richecr)
   - Twitter: [@rickzinho_ecr](https://twitter.com/rickzinho_ecr)
