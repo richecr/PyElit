@@ -1,22 +1,22 @@
 ---
 name: BUG
-about: Crie um relatório para nos ajudar
+about: Create a report to help us
 title: Bug
 labels: bug
 assignees: ""
 ---
 
-**Descrição do bug**
+**Bug description:**
 
-<!-- Uma descrição clara e concisa do que é o bug. -->
+<!-- A clear and concise description of what the bug is. -->
 
-**Reproduzir o bug**
-Etapas para reproduzir o bug:
+**Reproduce the bug:**
+Steps to reproduce the bug:
 
 1.
 2.
 3.
 
-**Comportamento esperado**
+**Expected behavior:**
 
-<!-- Uma descrição clara e concisa do que você acha que deveria acontecer. -->
+<!-- A clear and concise description of what you think should happen. -->
