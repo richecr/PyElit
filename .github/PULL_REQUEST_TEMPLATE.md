@@ -1,24 +1,21 @@
 ---
 name: PR
-about: Abrir uma Pull Request
+about: Open a Pull Request
 title: PR
 labels: enhancement
 assignees: ""
 ---
 
-#Numero_da_issue
+#number_of_issue
 
-**Descrição do bug/feature:**
+**Description of bug/feature:**
 
-<!-- Aqui você descreve sua feature ou bug de sua Pull Request. -->
+<!-- Here you describe your feature or your Pull Request bug -->
 
-**Solução**
+**Solution**
 
-<!-- Aqui você descreve qual sua solução e como foi a implementação. -->
+<!-- Here you describe your solution and how it was implemented. -->
 
-**Coisas a serem feitas**
+**Things to do**
 
-<!-- Aqui você diz o que deve ser feito nas próximas Pull Requests. -->
-
-<!-- APAGAR O COMENTÁRIOS AO TERMINAR DE PREENCHER.
-     PODE CLICAR EM PREVIEW PARA VER COMO ESTA FICANDO. -->
+<!-- Here you say what to do in the next Pull Requests. -->
