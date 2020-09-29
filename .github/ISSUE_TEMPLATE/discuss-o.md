@@ -1,19 +1,19 @@
 ---
-name: DISCUSSÃO
-about: Inicia uma discussão sobre um determinado assunto.
-title: Discussão
+name: DISCUSSION
+about: Starts a discussion on a particular subject.
+title: Discussion
 labels: question
 assignees: ""
 ---
 
-**Descrição da discussão:**
+**Description of discussion:**
+ 
+<!-- Here you describe the subject that will be discussed in this issue -->
 
-<!--Aqui você descreve o assunto que irá ser discutido nessa issue. -->
+**Need:**
 
-**Necessidade:**
+<!--Here you can explain why this discussion is necessary. -->
 
-<!--Aqui você pode explicar porquê essa discussão é necessária. -->
+**Your point of view:**
 
-**Seu ponto de vista:**
-
-<!-- Aqui você pode dar seu ponto de vista e mostrar os pontos que você considerou importantes para a sua decisão. -->
+<!-- Here you can give your point of view and show the points that you considered important for your decision. -->
