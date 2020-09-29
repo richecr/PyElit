@@ -6,14 +6,14 @@ labels: enhancement
 assignees: ""
 ---
 
-**Descrição da feature:**
+**Feature description::**
 
-<!-- Aqui você descreve o que irá mudar com sua feature. -->
+<!-- Here you describe what will change with your feature. -->
 
-**Necessidade:**
+**Need:**
 
-<!-- Aqui você descreve o porquê de sua feature é necessária. -->
+<!-- Here you describe why your feature is needed. -->
 
-**Implementação:**
+**Implementation:**
 
-<!-- Aqui você pode dar ideias de implementações para sua feature. -->
+<!-- Here you can give implementation ideas for your feature. -->
