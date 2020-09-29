@@ -6,7 +6,7 @@ labels: question
 assignees: ""
 ---
 
-**Description of discussion:**
+**Discussion description:**
  
 <!-- Here you describe the subject that will be discussed in this issue -->
 
