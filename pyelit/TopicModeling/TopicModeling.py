@@ -3,15 +3,9 @@ import nltk
 import spacy
 import gensim
 import numpy as np
-import pyLDAvis.gensim
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
-from nltk.corpus import stopwords
-from gensim import corpora, models
 from gensim.test.utils import datapath
-from gensim.parsing.preprocessing import STOPWORDS
-from gensim.utils import simple_preprocess, deaccent
-from gensim.models.coherencemodel import CoherenceModel
 
 
 class TopicModeling:
@@ -33,23 +27,52 @@ class TopicModeling:
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {
-            "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido",
-            "aqui", "gente", "tá", "né", "calendário", "jpb", "agora",
-            "voltar", "lá", "hoje", "aí", "ainda", "então", "vai", "porque",
-            "moradores", "fazer", "rua", "bairro", "prefeitura", "todo",
-            "vamos", "problema", "fica", "ver", "tô"
+            "tudo",
+            "coisa",
+            "toda",
+            "tava",
+            "pessoal",
+            "dessa",
+            "resolvido",
+            "aqui",
+            "gente",
+            "tá",
+            "né",
+            "calendário",
+            "jpb",
+            "agora",
+            "voltar",
+            "lá",
+            "hoje",
+            "aí",
+            "ainda",
+            "então",
+            "vai",
+            "porque",
+            "moradores",
+            "fazer",
+            "rua",
+            "bairro",
+            "prefeitura",
+            "todo",
+            "vamos",
+            "problema",
+            "fica",
+            "ver",
+            "tô",
         }
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         np.random.seed(2018)
-        nltk.download('wordnet')
-        self.allowed_postags = ['NOUN', 'ADJ', 'PRON']
+        nltk.download("wordnet")
+        self.allowed_postags = ["NOUN", "ADJ", "PRON"]
         # Carrega o modelo.
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = datapath(ROOT + "/modelo/meu_lda_model")
         self.model = gensim.models.LdaMulticore.load(fname=fname)
         self.topics = {}
         self.represent_topics(
-            [0, 1, 2, 3], ['Sanitation', 'Traffic', 'Construction', 'Several'])
+            [0, 1, 2, 3], ["Sanitation", "Traffic", "Construction", "Several"]
+        )
 
     def pre_processing(self, text):
         """
@@ -73,13 +96,14 @@ class TopicModeling:
         """
         doc_out = []
         doc = self.nlp(text)
-        location_entities = [
-            entity for entity in doc.ents if entity.label_ == "LOC"]
+        location_entities = [entity for entity in doc.ents if entity.label_ == "LOC"]
         for token in doc:
-            if (token.text not in self.stop_words_spacy and
-                len(token.text) > 3 and
-                token.pos_ in self.allowed_postags and not
-                    self.is_entities_loc(token.text, location_entities)):
+            if (
+                token.text not in self.stop_words_spacy
+                and len(token.text) > 3
+                and token.pos_ in self.allowed_postags
+                and not self.is_entities_loc(token.text, location_entities)
+            ):
                 doc_out.append(self.lemmatization(token.text))
 
         return doc_out
@@ -117,7 +141,7 @@ class TopicModeling:
         False: Othwerwise..
         """
         for entity in location_entities:
-            if (entity.text.lower() == word.lower()):
+            if entity.text.lower() == word.lower():
                 return True
 
         return False

@@ -25,7 +25,7 @@ def to_convert_geometry_point(geometry):
       - List of cordenates.
     """
     g = Geometry(geometry)
-    coord = g.geojson['coordinates']
+    coord = g.geojson["coordinates"]
     coord.reverse()
     return coord
 
@@ -46,7 +46,7 @@ def to_convert_geometry_polygon(geometry):
       - List of cordenates.
     """
     g = Geometry(geometry)
-    coord = g.geojson['coordinates']
+    coord = g.geojson["coordinates"]
     saida = []
     for c in coord[0]:
         c.reverse()
@@ -70,7 +70,7 @@ def to_convert_feature(geometry):
       - List of cordenates.
     """
     g = Geometry(geometry)
-    coord = g.geojson['coordinates'][0][0]
+    coord = g.geojson["coordinates"][0][0]
     saida = []
     for c in coord:
         c.reverse()
@@ -88,25 +88,34 @@ def polygons(localidade="cg"):
     localidade : String
       - String representing the city/state("cg", "jp" ou "pb").
     """
-    if (localidade == "cg"):
+    if localidade == "cg":
         arq = csv.DictReader(
-            open("./dados/features_campina_ln.csv", "r", encoding='utf-8'))
-    elif (localidade == "jp"):
+            open("./dados/features_campina_ln.csv", "r", encoding="utf-8")
+        )
+    elif localidade == "jp":
+        arq = csv.DictReader(open("./dados/features_jp_ln.csv", "r", encoding="utf-8"))
+    elif localidade == "pb":
         arq = csv.DictReader(
-            open("./dados/features_jp_ln.csv", "r", encoding='utf-8'))
-    elif (localidade == "pb"):
-        arq = csv.DictReader(
-            open("./dados/features_paraiba_ln.csv", "r", encoding='utf-8'))
+            open("./dados/features_paraiba_ln.csv", "r", encoding="utf-8")
+        )
 
     fields = ["osm_id", "fclass", "name", "type", "coordenates"]
-    f = csv.writer(open('./processamento/gazetteer/' +
-                        localidade + '_ln.csv', 'w', encoding='utf-8'))
+    f = csv.writer(
+        open(
+            "./processamento/gazetteer/" + localidade + "_ln.csv", "w", encoding="utf-8"
+        )
+    )
     f.writerow(fields)
 
     for p in arq:
-        coord = converterGeometryPolygon(p['geometry'])
-        t = [p['osm_id'].__str__(), p["fclass"].__str__(
-        ), p["name"].__str__(), p["type"].__str__(), coord]
+        coord = converterGeometryPolygon(p["geometry"])
+        t = [
+            p["osm_id"].__str__(),
+            p["fclass"].__str__(),
+            p["name"].__str__(),
+            p["type"].__str__(),
+            coord,
+        ]
         f.writerow(t)
 
 
@@ -120,25 +129,34 @@ def points(localidade="cg"):
     localidade : String
       - String representing the city/state("cg", "jp" ou "pb").
     """
-    if (localidade == "cg"):
+    if localidade == "cg":
         arq = csv.DictReader(
-            open("./dados/features_campina_pt.csv", "r", encoding='utf-8'))
-    elif (localidade == "jp"):
+            open("./dados/features_campina_pt.csv", "r", encoding="utf-8")
+        )
+    elif localidade == "jp":
+        arq = csv.DictReader(open("./dados/features_jp_pt.csv", "r", encoding="utf-8"))
+    elif localidade == "pb":
         arq = csv.DictReader(
-            open("./dados/features_jp_pt.csv", "r", encoding='utf-8'))
-    elif (localidade == "pb"):
-        arq = csv.DictReader(
-            open("./dados/features_paraiba_pt.csv", "r", encoding='utf-8'))
+            open("./dados/features_paraiba_pt.csv", "r", encoding="utf-8")
+        )
 
     fields = ["osm_id", "fclass", "name", "type", "coordenates"]
-    f = csv.writer(open('./processamento/gazetteer/' +
-                        localidade + '_pt.csv', 'w', encoding='utf-8'))
+    f = csv.writer(
+        open(
+            "./processamento/gazetteer/" + localidade + "_pt.csv", "w", encoding="utf-8"
+        )
+    )
     f.writerow(fields)
 
     for p in arq:
-        coord = converterGeometryPoint(p['geometry'])
-        t = [p['osm_id'].__str__(), p["fclass"].__str__(
-        ), p["name"].__str__(), p["type"].__str__(), coord]
+        coord = converterGeometryPoint(p["geometry"])
+        t = [
+            p["osm_id"].__str__(),
+            p["fclass"].__str__(),
+            p["name"].__str__(),
+            p["type"].__str__(),
+            coord,
+        ]
         f.writerow(t)
 
 
@@ -152,22 +170,28 @@ def features(localidade="cg"):
     localidade : String
       - String representing the city/state("cg", "jp" ou "pb").
     """
-    if (localidade == "cg"):
+    if localidade == "cg":
         arq = csv.DictReader(open("./dados/features_campina.csv", mode="r"))
-    elif (localidade == "jp"):
+    elif localidade == "jp":
         arq = csv.DictReader(open("./dados/features_jp.csv", mode="r"))
-    elif (localidade == "pb"):
+    elif localidade == "pb":
         arq = csv.DictReader(open("./dados/features_paraiba.csv", mode="r"))
 
     fields = ["osm_id", "fclass", "name", "type", "coordenates"]
-    f = csv.writer(open('./processamento/gazetteer/' +
-                        localidade + '.csv', 'w', encoding='utf-8'))
+    f = csv.writer(
+        open("./processamento/gazetteer/" + localidade + ".csv", "w", encoding="utf-8")
+    )
     f.writerow(fields)
 
     for p in arq:
-        coord = to_convert_feature(p['geometry'])
-        t = [p['osm_id'].__str__(), p["fclass"].__str__(
-        ), p["name"].__str__(), p["type"].__str__(), coord]
+        coord = to_convert_feature(p["geometry"])
+        t = [
+            p["osm_id"].__str__(),
+            p["fclass"].__str__(),
+            p["name"].__str__(),
+            p["type"].__str__(),
+            coord,
+        ]
         f.writerow(t)
 
 
@@ -211,24 +235,26 @@ def clear_gazetteer():
     from the state of Paraíba.
     """
     arq = csv.DictReader(
-        open("./gazetteer/processados/gazetteer.csv", "r", encoding='utf-8'))
+        open("./gazetteer/processados/gazetteer.csv", "r", encoding="utf-8")
+    )
     arq1 = csv.writer(
-        open("./gazetteer/processados/gazetteer1.csv", "w", encoding='utf-8'))
+        open("./gazetteer/processados/gazetteer1.csv", "w", encoding="utf-8")
+    )
     arq1.writerow(["osm_id", "fclass", "name", "type", "coordenates"])
     for row in arq:
-        lat, lon = string_to_list(row['coordenates'])
+        lat, lon = string_to_list(row["coordenates"])
         loc_ = str(lat) + ", " + str(lon)
         g = geocoder.reverse(location=loc_, provider="arcgis")
         g = g.json
 
         try:
-            if (g['state'] == "Paraíba"):
+            if g["state"] == "Paraíba":
                 t = [
-                    row['osm_id'].__str__(),
+                    row["osm_id"].__str__(),
                     row["fclass"].__str__(),
                     row["name"].__str__(),
                     row["type"].__str__(),
-                    row['coordenates']
+                    row["coordenates"],
                 ]
                 arq1.writerow(t)
         except Exception as e:
@@ -236,7 +262,7 @@ def clear_gazetteer():
 
 
 def main():
-    locs = ['cg', 'jp', 'pb']
+    locs = ["cg", "jp", "pb"]
 
     for loc in locs:
         points(localidade=loc)
@@ -246,6 +272,7 @@ def main():
 
     for loc in locs:
         features(localidade=loc)
+
 
 # clear_gazetteer()
 # main()

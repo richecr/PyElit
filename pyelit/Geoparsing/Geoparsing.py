@@ -1,6 +1,7 @@
 import os
 import csv
 import unicodedata
+from googletrans.models import Translated
 
 import truecase
 from googletrans import Translator
@@ -8,9 +9,9 @@ from googletrans import Translator
 import spacy
 import geocoder
 
-import nltk
 from nltk.stem.porter import PorterStemmer, re
 
+from .exceptions.GeoparsingException import GeoparsingException
 from .utils.utils import string_to_list
 
 
@@ -28,12 +29,39 @@ class Geoparsing:
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {
-            "vamos", "olha", "pois", "tudo",
-            "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui",
-            "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá",
-            "hoje", "aí", "ainda", "então", "vai", "porque", "moradores",
-            "fazer", "prefeitura", "todo", "vamos", "problema", "fica", "ver",
-            "tô"
+            "vamos",
+            "olha",
+            "pois",
+            "tudo",
+            "coisa",
+            "toda",
+            "tava",
+            "pessoal",
+            "dessa",
+            "resolvido",
+            "aqui",
+            "gente",
+            "tá",
+            "né",
+            "calendário",
+            "jpb",
+            "agora",
+            "voltar",
+            "lá",
+            "hoje",
+            "aí",
+            "ainda",
+            "então",
+            "vai",
+            "porque",
+            "moradores",
+            "fazer",
+            "prefeitura",
+            "todo",
+            "problema",
+            "fica",
+            "ver",
+            "tô",
         }
         self.stop_words_spacy = self.nlp.Defaults.stop_words
         self.residential = {}
@@ -41,7 +69,8 @@ class Geoparsing:
         ROOT = os.path.abspath(os.path.dirname(__file__))
         fname = ROOT + "/gazetteer/processados"
         self.gazetteer_ln = csv.DictReader(
-            open(fname + "/gazetteerpb.csv", "r", encoding='utf-8'))
+            open(fname + "/gazetteerpb.csv", "r", encoding="utf-8")
+        )
         self.pre_process(self.gazetteer_ln)
 
     def pre_process(self, gazetteer):
@@ -55,11 +84,11 @@ class Geoparsing:
             - Python native library object: `CSV`.
         """
         for row in gazetteer:
-            self.gazetteer[self.remove_accents(row['osm_id'])] = (
-                row['coordenates'],
-                row['fclass'],
-                self.remove_accents(row['name'].lower()),
-                row['type']
+            self.gazetteer[self.remove_accents(row["osm_id"])] = (
+                row["coordenates"],
+                row["fclass"],
+                self.remove_accents(row["name"].lower()),
+                row["type"],
             )
 
     def remove_accents(self, input_str):
@@ -71,9 +100,9 @@ class Geoparsing:
         input_str: String
             - Input to be removed the accents
         """
-        nfkd_form = unicodedata.normalize('NFKD', input_str)
-        only_ascii = nfkd_form.encode('ASCII', 'ignore')
-        return only_ascii.decode('utf-8')
+        nfkd_form = unicodedata.normalize("NFKD", input_str)
+        only_ascii = nfkd_form.encode("ASCII", "ignore")
+        return only_ascii.decode("utf-8")
 
     def concantenate_address(self, list_address, exclude=False):
         """
@@ -94,7 +123,7 @@ class Geoparsing:
         else:
             out = [e for e in list_address]
         for i in range(len(list_address) - 1):
-            for j in range(i+1, len(list_address)):
+            for j in range(i + 1, len(list_address)):
                 temp = str(list_address[i]) + " " + str(list_address[j])
                 out.append(temp)
         return out
@@ -115,7 +144,7 @@ class Geoparsing:
         True: If the address meets the requirements.
         False: otherwise
         """
-        if (address['confidence'] >= 5):
+        if address["confidence"] >= 5:
             # ", campina grande" in end['address'].lower() and
             # if (", paraíba" in end['address'].lower()):
             return True
@@ -150,21 +179,20 @@ class Geoparsing:
             location = str(location)
             g = geocoder.arcgis(location)
             address = g.json
-            if (address is not None):
+            if address is not None:
                 addresses.append(address)
 
         correct_addresses = []
         for addr in addresses:
-            if (self.check_reliability_address(addr)):
+            if self.check_reliability_address(addr):
                 correct_addresses.append(addr)
 
-        if (len(correct_addresses)):
+        if len(correct_addresses):
             addr_final = correct_addresses[0]
             for addr in correct_addresses:
-                if (addr['confidence'] > addr_final['confidence']):
+                if addr["confidence"] > addr_final["confidence"]:
                     addr_final = addr
-            addrs_ = sorted(correct_addresses,
-                            key=lambda end: end['confidence'])
+            addrs_ = sorted(correct_addresses, key=lambda end: end["confidence"])
             return (True, addrs_[0:limit])
         else:
             return (False, [])
@@ -186,7 +214,7 @@ class Geoparsing:
             - Position where the new address must be added.
         """
         for index in range(len(list_best_address)):
-            if list_best_address[index]['type_class'] == "geral":
+            if list_best_address[index]["type_class"] == "geral":
                 return index
 
         return len(list_best_address) - 1
@@ -206,17 +234,16 @@ class Geoparsing:
         """
         if address not in result:
             if type_ == "school":
-                address['type_class'] = "school"
+                address["type_class"] = "school"
                 result.insert(0, address)
             elif type_ == "residential":
-                address['type_class'] = "residential"
+                address["type_class"] = "residential"
                 result.insert(self.search_next_index(result), address)
             else:
-                address['type_class'] = "geral"
+                address["type_class"] = "geral"
                 result.append(address)
 
-    def choose_best_addresses(self, adresses, text, addresses_concatenated,
-                              cities):
+    def choose_best_addresses(self, adresses, text, addresses_concatenated, cities):
         """
         Method that performs the chose of the best addresses found.
 
@@ -252,24 +279,23 @@ class Geoparsing:
             addr = geocoder.reverse(location=location_, provider="arcgis")
             addr = addr.json
             if addr is not None:
-                addr['occurrences_in_text'] = text.count(location)
+                addr["occurrences_in_text"] = text.count(location)
                 result.append(addr)
                 self.insert_ordened_to_priority(result, addr, type_)
 
-        result = sorted(result, key=lambda addr: addr['occurrences_in_text'])
+        result = sorted(result, key=lambda addr: addr["occurrences_in_text"])
 
         new_result = []
         for index in range(len(result) - 1, -1, -1):
             location = result[index]
-            if location['raw'].__contains__('address'):
-                location_district = location['raw']['address']['District']\
-                    .lower()
+            if location["raw"].__contains__("address"):
+                location_district = location["raw"]["address"]["District"].lower()
                 if location_district in adresses.keys():
                     new_result.insert(0, location)
                 else:
                     new_result.append(location)
             else:
-                if location['raw']['name'].lower() in adresses.keys():
+                if location["raw"]["name"].lower() in adresses.keys():
                     new_result.insert(0, location)
                 else:
                     new_result.append(location)
@@ -283,8 +309,8 @@ class Geoparsing:
 
         new_result = []
         for index in range(len(result) - 1, -1, -1):
-            if result[index].__contains__('quality'):
-                if result[index]['quality'] == "StreetName":
+            if result[index].__contains__("quality"):
+                if result[index]["quality"] == "StreetName":
                     new_result.insert(0, result[index])
                 else:
                     new_result.append(result[index])
@@ -294,15 +320,14 @@ class Geoparsing:
         result = new_result
 
         new_result = []
-        if (cities != []):
+        if cities != []:
             for index in range(len(result) - 1, -1, -1):
                 for city in cities:
-                    if result[index].__contains__('quality'):
-                        if city in result[index]['address'].lower():
+                    if result[index].__contains__("quality"):
+                        if city in result[index]["address"].lower():
                             new_result.insert(0, result[index])
                     else:
-                        loc_city = str(result[index]['raw']
-                                       ['address']['City']).lower()
+                        loc_city = str(result[index]["raw"]["address"]["City"]).lower()
                         if loc_city == city:
                             new_result.insert(0, result[index])
             result = new_result
@@ -333,28 +358,33 @@ class Geoparsing:
             auxiliary_address = address.split()
             if auxiliary_address[0] == "rua":
                 auxiliary_address = auxiliary_address[1:]
-            if (len(auxiliary_address) > 1 or
-                    self.gazetteer[osm_id][1] == "suburb"):
+            if len(auxiliary_address) > 1 or self.gazetteer[osm_id][1] == "suburb":
                 address = address.replace("(", "")
                 address = address.replace(")", "")
                 txt_contains_addr = re.search("\\b" + address + "\\b", text)
                 if txt_contains_addr:
                     addr_repeated = self.repeated_address(
-                        general_addresses.keys(), address)
+                        general_addresses.keys(), address
+                    )
                     if not addr_repeated:
                         general_addresses[address] = (
                             self.gazetteer[osm_id][0],
-                            self.gazetteer[osm_id][1])
+                            self.gazetteer[osm_id][1],
+                        )
 
-        cities = [str(addr) for addr in general_addresses.keys()
-                  if general_addresses[addr][1] == "city"]
+        cities = [
+            str(addr)
+            for addr in general_addresses.keys()
+            if general_addresses[addr][1] == "city"
+        ]
 
-        addresses_concatenated = [str(addr)
-                                  for addr in general_addresses.keys()]
+        addresses_concatenated = [str(addr) for addr in general_addresses.keys()]
         addresses_concatenated = self.concantenate_address(
-            addresses_concatenated, exclude=True)
+            addresses_concatenated, exclude=True
+        )
         result = self.choose_best_addresses(
-            general_addresses, text, addresses_concatenated, cities)
+            general_addresses, text, addresses_concatenated, cities
+        )
         return result
 
     def repeated_address(self, addresses, address):
@@ -378,8 +408,7 @@ class Geoparsing:
                 return True
         return False
 
-    def geoparsing(self, text, case_correct=False, limit=5,
-                   gazetteer_cg=False):
+    def geoparsing(self, text, case_correct=False, limit=5, gazetteer_cg=False):
         """
         Method that performs the geoparsing of text,
 
@@ -408,21 +437,22 @@ class Geoparsing:
             if result:
                 return result
             else:
-                raise Exception(
-                    "Text geoparsing could not be performed")
+                raise GeoparsingException()
         else:
             if case_correct:
                 doc = self.nlp(text)
-                ents_loc = list(filter(
-                    lambda entity: entity.label_ == "LOC" or
-                    entity.label_ == "GPE", doc.ents))
+                ents_loc = list(
+                    filter(
+                        lambda entity: entity.label_ == "LOC" or entity.label_ == "GPE",
+                        doc.ents,
+                    )
+                )
                 address_found = self.concantenate_address(ents_loc)
                 result = self.check_address(address_found, limit)
                 if result[0]:
                     return result[1]
                 else:
-                    raise Exception(
-                        "Text geoparsing could not be performed")
+                    raise GeoparsingException()
             else:
                 text = truecase.get_true_case(text)
 
@@ -430,9 +460,7 @@ class Geoparsing:
                 text_en = text_en.text
                 text_true_case = truecase.get_true_case(text_en)
 
-                text_pt = self.translator.translate(
-                    text_true_case, src="en", dest="pt")
+                text_pt = self.translator.translate(text_true_case, src="en", dest="pt")
                 text = text_pt.text
 
-                doc = self.nlp(text)
                 return self.geoparsing(text, case_correct=True)

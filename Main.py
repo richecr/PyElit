@@ -3,11 +3,14 @@ from pyelit import TopicModeling
 
 # Geoparsing
 g = Geoparsing()
-r = g.geoparsing(
-    "Eu moro na Rua Treze de Maio no centro de campina grande",
-    gazetteer_cg=True)
+result = g.geoparsing(text="Eu moro na rua joão sérgio em campina grande")
 
-print(r[:3])
+address_correct = (
+    "Rua João Sérgio de Almeida, " + "Malvinas, Campina Grande, Paraíba, 58433-395"
+)
+print(result)
+print(type(result) == list)
+print(result[0]["address"] == address_correct)
 
 # Topic Modeling
 # t = TopicModeling()

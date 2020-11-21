@@ -13,18 +13,47 @@ from nltk.stem import WordNetLemmatizer
 
 # Configuring libraries
 np.random.seed(2018)
-nltk.download('wordnet')
-nlp = spacy.load('pt_core_news_sm')
+nltk.download("wordnet")
+nlp = spacy.load("pt_core_news_sm")
 stemmer = PorterStemmer()
 nlp = spacy.load("pt_core_news_sm")
 nlp.Defaults.stop_words |= {
-    "tudo", "coisa", "toda", "tava", "pessoal", "dessa", "resolvido", "aqui",
-    "gente", "tá", "né", "calendário", "jpb", "agora", "voltar", "lá", "hoje",
-    "aí", "ainda", "então", "vai", "porque", "moradores", "fazer", "rua",
-    "bairro", "prefeitura", "todo", "vamos", "problema", "fica", "ver", "tô"
+    "tudo",
+    "coisa",
+    "toda",
+    "tava",
+    "pessoal",
+    "dessa",
+    "resolvido",
+    "aqui",
+    "gente",
+    "tá",
+    "né",
+    "calendário",
+    "jpb",
+    "agora",
+    "voltar",
+    "lá",
+    "hoje",
+    "aí",
+    "ainda",
+    "então",
+    "vai",
+    "porque",
+    "moradores",
+    "fazer",
+    "rua",
+    "bairro",
+    "prefeitura",
+    "todo",
+    "vamos",
+    "problema",
+    "fica",
+    "ver",
+    "tô",
 }
 stop_words_spacy = nlp.Defaults.stop_words
-allowed_postags = ['NOUN', 'ADJ', 'PRON']
+allowed_postags = ["NOUN", "ADJ", "PRON"]
 
 
 def verificar_palavra_entidade_loc(palavra, entidades_loc):
@@ -44,7 +73,7 @@ def verificar_palavra_entidade_loc(palavra, entidades_loc):
     False: Othwerwise..
     """
     for e in entidades_loc:
-        if (e.text.lower() == palavra.lower()):
+        if e.text.lower() == palavra.lower():
             return True
 
     return False
@@ -110,13 +139,14 @@ def pre_processamento(texto, titulo):
     """
     doc_out = []
     doc = nlp(texto)
-    entidades_loc = [
-        entidade for entidade in doc.ents if entidade.label_ == "LOC"]
+    entidades_loc = [entidade for entidade in doc.ents if entidade.label_ == "LOC"]
     for token in doc:
-        if (token.text not in stop_words_spacy and
-            len(token.text) > 3 and
-            token.pos_ in allowed_postags and not
-                verificar_palavra_entidade_loc(token.text, entidades_loc)):
+        if (
+            token.text not in stop_words_spacy
+            and len(token.text) > 3
+            and token.pos_ in allowed_postags
+            and not verificar_palavra_entidade_loc(token.text, entidades_loc)
+        ):
             doc_out.append(lematizacao(token.text))
 
     texto = lista_para_texto(doc_out)
@@ -127,21 +157,21 @@ def main():
     # PREPARING FILES.
 
     fields = ["titulo", "texto"]
-    f = csv.writer(open('../dados/textos_limpos.csv', 'w', encoding='utf-8'))
+    f = csv.writer(open("../dados/textos_limpos.csv", "w", encoding="utf-8"))
     f.writerow(fields)
 
     # Load data.
-    dados = csv.DictReader(
-        open("../dados/textos_videos.csv", encoding='utf-8'))
+    dados = csv.DictReader(open("../dados/textos_videos.csv", encoding="utf-8"))
     textos = []
     titulo_textos = []
 
     for arq in dados:
-        textos.append(arq['texto'])
-        titulo_textos.append(arq['titulo'])
+        textos.append(arq["texto"])
+        titulo_textos.append(arq["titulo"])
 
     for texto, titulo in zip(textos, titulo_textos):
         t = pre_processamento(texto, titulo)
         f.writerow([titulo, t])
+
 
 # main()
