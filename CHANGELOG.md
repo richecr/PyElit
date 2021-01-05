@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased](https://github.com/richecr/PyElit/compare/v0.2.0...master)
 
 ### Added
 
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-## [0.2.0] - 2020-11-21
+## [0.2.0](https://github.com/richecr/PyElit/compare/0.1.2...v0.2.0) - 2020-11-21
 
 ### Added
 
@@ -37,14 +37,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update documentation #18
 - Refactor code: Rename variables, methods, classes to English #26
 
-## [0.1.2] - 2020-06-14
+## [0.1.2](https://github.com/richecr/PyElit/compare/0.1.1...0.1.2) - 2020-06-14
 
 ### Fixed
 
 - Fixed the requirements packages for the installation.
   - Including the gazetteer files in the library.
 
-## [0.1.1] - 2020-06-14
+## [0.1.1](https://github.com/richecr/PyElit/compare/0.1.0...0.1.1) - 2020-06-14
 
 ### Added
 
