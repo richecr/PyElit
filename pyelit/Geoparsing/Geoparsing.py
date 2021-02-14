@@ -1,10 +1,10 @@
 import os
 import csv
 import unicodedata
-from googletrans.models import Translated
 
 import truecase
 from googletrans import Translator
+from google_trans_new import google_translator
 
 import spacy
 import geocoder
@@ -25,7 +25,7 @@ class Geoparsing:
         Class constructor. Where all attributes are started
         and undergo pre-processing.
         """
-        self.translator = Translator()
+        self.translator = google_translator()
         self.stemmer = PorterStemmer()
         self.nlp = spacy.load("pt_core_news_sm")
         self.nlp.Defaults.stop_words |= {
@@ -151,6 +151,19 @@ class Geoparsing:
         else:
             return False
 
+    def order_address_by_type(self, adddress):
+        result = []
+        for index in range(len(adddress) - 1, -1, -1):
+            if adddress[index].__contains__("quality"):
+                if adddress[index]["quality"] == "StreetName":
+                    result.insert(0, adddress[index])
+                else:
+                    result.append(adddress[index])
+            else:
+                result.append(adddress[index])
+
+        return result
+
     def check_address(self, location_entities, limit):
         """
         Method that checks if the addresses are correct.
@@ -193,7 +206,9 @@ class Geoparsing:
                 if addr["confidence"] > addr_final["confidence"]:
                     addr_final = addr
             addrs_ = sorted(correct_addresses, key=lambda end: end["confidence"])
-            return (True, addrs_[0:limit])
+            result = self.order_address_by_type(addrs_)
+
+            return (True, result[0:limit])
         else:
             return (False, [])
 
@@ -307,18 +322,7 @@ class Geoparsing:
             addr = addr.json
             result.insert(0, addr)
 
-        new_result = []
-        for index in range(len(result) - 1, -1, -1):
-            if result[index].__contains__("quality"):
-                if result[index]["quality"] == "StreetName":
-                    new_result.insert(0, result[index])
-                else:
-                    new_result.append(result[index])
-            else:
-                new_result.append(result[index])
-
-        result = new_result
-
+        result = self.order_address_by_type(result)
         new_result = []
         if cities != []:
             for index in range(len(result) - 1, -1, -1):
@@ -408,12 +412,12 @@ class Geoparsing:
                 return True
         return False
 
-    def geoparsing(self, text, case_correct=False, limit=5, gazetteer_cg=False):
+    def geoparsing(self, text, case_correct=False, limit=5, gazetteer_pb=False):
         """
         Method that performs the geoparsing of text,
 
-        NOTE: use the geoparsing without the correct case and withour
-        the gazetteer will give you poor results.
+        NOTE: use the geoparsing without the correct case and without the
+        gazetteer will give you poor results.
 
         Params:
         ----------
@@ -423,7 +427,7 @@ class Geoparsing:
             - If the text is with correct case.
         limit: Int
             - Maximum limit of returned addresses.
-        gazetteer_cg: Bool
+        gazetteer_pb: Bool
             - If you want to use the gazetteer with locations in
             the state of Paraíba.
 
@@ -432,7 +436,7 @@ class Geoparsing:
         result : List
             - List of addresses.
         """
-        if gazetteer_cg:
+        if gazetteer_pb:
             result = self.filter_address_text(text.lower())
             if result:
                 return result
@@ -447,20 +451,19 @@ class Geoparsing:
                         doc.ents,
                     )
                 )
-                address_found = self.concantenate_address(ents_loc)
+                address_found = self.concantenate_address(ents_loc, exclude=True)
                 result = self.check_address(address_found, limit)
                 if result[0]:
                     return result[1]
                 else:
                     raise GeoparsingException()
             else:
-                text = truecase.get_true_case(text)
-
-                text_en = self.translator.translate(text, dest="en")
-                text_en = text_en.text
+                text_en = self.translator.translate(text, lang_tgt="en")
                 text_true_case = truecase.get_true_case(text_en)
 
-                text_pt = self.translator.translate(text_true_case, src="en", dest="pt")
-                text = text_pt.text
+                text_pt = self.translator.translate(
+                    text_true_case, lang_src="en", lang_tgt="pt"
+                )
+                text = text_pt
 
                 return self.geoparsing(text, case_correct=True)

@@ -40,9 +40,9 @@ setup(
     packages=find_packages(),
     install_requires=requirements,
     include_package_data=True,
-    url="https://github.com/Rickecr/PyElit",
+    url="https://github.com/richecr/PyElit",
     project_urls={
-        "Código fonte": "https://github.com/Rickecr/PyElit",
+        "Código fonte": "https://github.com/richecr/PyElit",
     },
     keywords=keywords,
     license="MIT",

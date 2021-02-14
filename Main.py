@@ -3,7 +3,9 @@ from pyelit import TopicModeling
 
 # Geoparsing
 g = Geoparsing()
-result = g.geoparsing(text="Eu moro na rua joão sérgio em campina grande")
+result = g.geoparsing(
+    text="Eu moro na Rua João Sérgio em Campina Grande", case_correct=True
+)
 
 address_correct = (
     "Rua João Sérgio de Almeida, " + "Malvinas, Campina Grande, Paraíba, 58433-395"

@@ -24,7 +24,7 @@ class TestGeoparsing:
         assert result[0]["address"] == address_correct
 
     def test_geoparsing_case_using_gazetteer(self, init_geoparsing):
-        result = init_geoparsing.geoparsing(text=self.correct_phrase, gazetteer_cg=True)
+        result = init_geoparsing.geoparsing(text=self.correct_phrase, gazetteer_pb=True)
 
         address_correct = (
             "Rua João Sérgio de Almeida 1015-1015, "
@@ -48,5 +48,5 @@ class TestGeoparsing:
     def test_geoparsing_case_using_gazetteer_exception(self, init_geoparsing):
         with pytest.raises(Exception):
             init_geoparsing.geoparsing(
-                text="Eu moro na rua joão sérgio", gazetteer_cg=True
+                text="Eu moro na rua joão sérgio", gazetteer_pb=True
             )
